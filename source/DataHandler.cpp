@@ -5,9 +5,10 @@
 void DataHandler::read_observations(std::string filename){
     std::ifstream file(filename);
     std::string data_line;
+
     int ind = 0;
     if (!file.is_open())
-        std::cout << "Файл не может быть открыт!\n";
+        std::cout << "Файл с данными наблюдений не может быть открыт!\n";
     else
     {
         while (getline(file, data_line)) {
@@ -30,10 +31,10 @@ void DataHandler::read_observations(std::string filename){
 
 //Считывание данных местоположений обсерваторий
 void DataHandler::read_observatory_data(std::string filename){
-    std::ifstream file("observatory.txt");
+    std::ifstream file(filename);
     std::string data_line;
     if (!file.is_open())
-         std::cout << "Файл не может быть открыт!\n";
+         std::cout << "Файл с данными обсерваторий не может быть открыт!\n";
     else
     {
          while (getline(file, data_line)) {

@@ -15,7 +15,18 @@ ObservatoryCartesianFrame Converter::cylindrical_to_cartesian(ObservatoryCylindr
 }
 
 
-//Эта функция должна переводить в TDB
-Date Converter::julian_date_to_tdb(Date){
+//Эта функция должна переводить в TT
+void Converter::julian_date_to_tdb(Date date){
+    //Перевод в TAI
+    double deltat;
+    int status = iauDat(date.get_year(), date.get_month(), date.get_day(), date.get_day_fraction(),
+        &deltat);
 
+    if (status){
+        std::cout<<"Что-то пошло не так\n";
+        return;
+    }
+
+    //Перевод в TT
+    date.set_TT(date.get_JD() + deltat + 32.184);
 };

@@ -15,11 +15,11 @@
 #include "ObservatoryCylindricalFrame.h"
 #include "Observation.h"
 
-#include "sofa/sofa.h"
+#include "../sofa/sofa.h"
 
 //Класс для разных переводов систем
 class Converter{
     public:
     ObservatoryCartesianFrame cylindrical_to_cartesian(ObservatoryCylindricalFrame measure);
-    Date julian_date_to_tdb(Date);
+    void julian_date_to_tdb(Date);
 };
