@@ -1,5 +1,6 @@
 #pragma once
 #include <cstddef>
+#include <string>
 
 class ObservatoryCartesianFrame {
 private:
@@ -7,6 +8,7 @@ private:
     double y = NULL;
     double z = NULL;
 public:
+    void set_from_string(std::string);
     double get_x();
     double get_y();
     double get_z();

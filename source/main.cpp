@@ -11,5 +11,10 @@ int main(){
     DataHandler dhand;
     dhand.read_observations();
     dhand.read_observatory_data();
+    dhand.read_hubble_data();
+
+    dhand.read_interpolation_time_data();
+    cnv.interpolation_date_to_tt_tdb(dhand.get_observations(), dhand.get_interpolation_time());
+
     return 0;
 }

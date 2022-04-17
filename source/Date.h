@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 
 
@@ -17,10 +18,14 @@ class Date{
         double JD;
         double MJD;
         double TT;
-        double TBD;
+        double TDB;
+        double TT_TDB;
     public:
         Date(){};
         Date(std::string);
+
+        void set_time_from_fraction();
+        void set_time_from_string(std::string);
 
         int get_year();
         int get_month();
@@ -29,8 +34,10 @@ class Date{
         double get_JD();
         double get_MJD();
         double get_TT();
-        double get_TBD();
+        double get_TDB();
+        double get_TT_TDB();
 
+        void set_JD();
         void set_TT(double TT);
-        void set_TBD(double TT);
+        void set_TT_TDB(double TT_TDB);
 };
