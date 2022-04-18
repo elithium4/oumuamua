@@ -1,7 +1,7 @@
 all: program
 
-program: 	main.o CelestialCoord.o Date.o ObservatoryCartesianFrame.o ObservatoryCylindricalFrame.o Observation.o HubbleInterpolator.o InterpolationTimeFrame.o Converter.o DataHandler.o libsofa.a
-			g++ main.o CelestialCoord.o Date.o ObservatoryCartesianFrame.o ObservatoryCylindricalFrame.o Observation.o HubbleInterpolator.o InterpolationTimeFrame.o Converter.o DataHandler.o ../sofa/libsofa_c.a -o ../program
+program: 	main.o CelestialCoord.o Date.o ObservatoryCartesianFrame.o ObservatoryCylindricalFrame.o ObservatoryGeocentricFrame.o Observation.o HubbleInterpolator.o InterpolationHubbleFrame.o InterpolationTimeFrame.o Converter.o DataHandler.o libsofa.a
+			g++ main.o CelestialCoord.o Date.o ObservatoryCartesianFrame.o ObservatoryCylindricalFrame.o ObservatoryGeocentricFrame.o Observation.o HubbleInterpolator.o InterpolationHubbleFrame.o InterpolationTimeFrame.o Converter.o DataHandler.o ../sofa/libsofa_c.a -o ../program
 
 main.o: main.cpp
 		g++ -c main.cpp
@@ -18,11 +18,17 @@ InterpolationTimeFrame.o:
 HubbleInterpolator.o: HubbleInterpolator.cpp
 		g++ -c HubbleInterpolator.cpp
 
+ObservatoryGeocentricFrame.o: ObservatoryGeocentricFrame.cpp
+		g++ -c ObservatoryGeocentricFrame.cpp
+
 ObservatoryCylindricalFrame.o: ObservatoryCylindricalFrame.cpp
 		g++ -c ObservatoryCylindricalFrame.cpp
 
 ObservatoryCartesianFrame.o: ObservatoryCartesianFrame.cpp
 		g++ -c ObservatoryCartesianFrame.cpp
+
+InterpolationHubbleFrame.o: InterpolationHubbleFrame.cpp
+		g++ -c InterpolationHubbleFrame.cpp
 
 Observation.o: Observation.cpp
 		g++ -c Observation.cpp

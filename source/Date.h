@@ -24,6 +24,15 @@ class Date{
         Date(){};
         Date(std::string);
 
+        Date(const Date& other);
+        Date& operator=(const Date& other);
+        Date(const Date&& other);
+        Date& operator=(const Date&& other);
+
+        friend bool operator< (const Date&, const Date&);
+        friend bool operator> (const Date&, const Date&);
+        friend bool operator== (const Date&, const Date&);
+
         void set_time_from_fraction();
         void set_time_from_string(std::string);
 

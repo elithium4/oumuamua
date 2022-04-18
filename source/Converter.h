@@ -14,9 +14,11 @@
 
 #include "ObservatoryCartesianFrame.h"
 #include "ObservatoryCylindricalFrame.h"
+#include "ObservatoryGeocentricFrame.h"
 #include "Observation.h"
 
 #include "InterpolationTimeFrame.h"
+#include "InterpolationHubbleFrame.h"
 
 #include "../sofa/sofa.h"
 
@@ -26,4 +28,8 @@ class Converter{
     ObservatoryCartesianFrame cylindrical_to_cartesian(ObservatoryCylindricalFrame measure);
     void julian_date_to_tdb(Date);
     void interpolation_date_to_tt_tdb(std::vector<Observation> observations, std::vector<InterpolationTimeFrame> interpolation_time);
+    ObservatoryCartesianFrame interpolation_hubble_data(Date date, std::vector<InterpolationHubbleFrame> interpolation_data);
+    ObservatoryGeocentricFrame cartesian_to_geocentric(ObservatoryCartesianFrame, Date);
+
+    void transpose(double mtr[3][3]);
 };
