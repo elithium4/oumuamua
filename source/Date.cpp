@@ -178,6 +178,10 @@ void Date::set_time_from_string(std::string time){
     }
 }
 
+void Date::set_MJD(double MJD){
+    this->MJD = MJD;
+}
+
 void Date::set_JD(){
     double JDN = 367 * year - (7 * (year + 5001 + (month - 9) / 7)) / 4 + (275 * month) / 9 + day + 1729777;
     JD = JDN + (hours - 12) / 24.0 + minutes / 1440.0 + seconds / 86400.0;

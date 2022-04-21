@@ -46,6 +46,7 @@ class Date{
         double get_TDB();
         double get_TT_TDB();
 
+        void set_MJD(double);
         void set_JD();
         void set_TT(double TT);
         void set_TT_TDB(double TT_TDB);

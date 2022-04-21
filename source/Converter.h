@@ -20,6 +20,8 @@
 #include "InterpolationHubbleFrame.h"
 #include "InterpolationCenterEarth.h"
 
+#include "IntegrationVector.h"
+
 #include "../sofa/sofa.h"
 
 //Класс для разных переводов систем
@@ -31,7 +33,6 @@ class Converter{
     
     CartesianFrame interpolation_hubble_data(Date date, std::vector<InterpolationHubbleFrame> interpolation_data);
     GeocentricFrame cartesian_to_geocentric(CartesianFrame, Date);
-    BarycentricFrame interpolation_center_of_earth_for_observatory(Date date, GeocentricFrame frame, std::vector<InterpolationCenterEarth> interpolation_earth);
-
+    BarycentricFrame interpolation_center_of_earth_for_observatory(Date date, GeocentricFrame frame, std::vector<IntegrationVector> interpolation_earth);
     void transpose(double mtr[3][3]);
 };

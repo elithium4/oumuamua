@@ -95,24 +95,61 @@ void DataHandler::read_interpolation_time_data(std::string filename) {
     file.close();
 }
 
-void DataHandler::read_interpolation_center_earth(std::string filename) {
+void DataHandler::read_interpolation_center_planet(std::string filename, std::string name) {
     std::ifstream file(filename);
     std::string data_line;
+    double x;
+    double y;
+    double z;
+
     if (!file.is_open())
         std::cout << "Файл с данными для интерполяции центра Земли не может быть открыт!\n";
     else
     {
+        std::vector<IntegrationVector> planet;
         while (getline(file, data_line)) {
-            InterpolationCenterEarth data_frame;
-            Date observation_date(data_line.substr(0, 16));
+            IntegrationVector data_frame;
+            Date observation_date(data_line.substr(0, 13));
             observation_date.set_time_from_fraction();
             observation_date.set_JD();
             data_frame.set_julian_date(observation_date);
-            data_frame.set_x(data_line.substr(19, 16));
-            data_frame.set_y(data_line.substr(38, 16));
-            data_frame.set_z(data_line.substr(58, 15));
-            interpolation_earth.push_back(data_frame);
+            int prev = 14;
+            bool flag = false;
+            int last = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = prev; j < data_line.length() + 1; j++) {
+                    if (data_line[j] != ' ' or data_line[j] != '\0') {
+                        flag = true;
+                    }
+                    if (((data_line[j] == ' ' and data_line[j + 1] != ' ') or (data_line[j] == '\0')) and flag) {
+                        last = j;
+                        while (data_line[last - 1] == ' ') {
+                            last--;
+                        }
+                        switch (i) {
+                        case 0:
+                            x = std::stod(data_line.substr(prev, last - prev));
+                            break;
+                        case 1:
+                            y = std::stod(data_line.substr(prev, last - prev));
+                            break;
+                        case 2:
+                            z = std::stod(data_line.substr(prev, last - prev));
+                            break;
+                        default:
+                            break;
+                        }
+                        data_frame.set_position(x, y, z);
+                        planet.push_back(data_frame);
+                        prev = j + 1;
+                        flag = false;
+                        break;
+                    }
+
+                }
+            }
         }
+        InterpolationPlanets[name] = planet;
     }
     file.close();
 }
@@ -122,8 +159,8 @@ std::vector<InterpolationTimeFrame> DataHandler::get_interpolation_time() {
     return interpolation_time;
 }
 
-std::vector<InterpolationCenterEarth> DataHandler::get_interpolation_earth() {
-    return interpolation_earth;
+std::vector<IntegrationVector> DataHandler::get_interpolation_earth() {
+    return InterpolationPlanets["earth"];
 }
 
 std::vector<Observation> DataHandler::get_observations() {

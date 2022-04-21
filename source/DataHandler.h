@@ -1,7 +1,8 @@
 #include "Observation.h"
 #include "ObservatoryData.h"
 #include "InterpolationTimeFrame.h"
-#include "InterpolationCenterEarth.h"
+//#include "InterpolationCenterEarth.h"
+#include "IntegrationVector.h"
 
 #include "HubbleInterpolator.h"
 
@@ -20,15 +21,15 @@ class DataHandler{
     std::map<std::string,ObservatoryData> observatory;
 
     std::vector<InterpolationTimeFrame> interpolation_time;
-    std::vector<InterpolationCenterEarth> interpolation_earth;
+    std::map<std::string, std::vector<IntegrationVector>> InterpolationPlanets;
     HubbleInterpolator hubble;
     public:
         void read_observations(std::string filename="./data/observations.txt");
         void read_observatory_data(std::string filename="./data/observatory.txt");
         void read_hubble_data(std::string filename="./data/hubble_data.txt");
         void read_interpolation_time_data(std::string filename="./data/interpolation_time_data.txt");
-        void read_interpolation_center_earth(std::string filename = "./data/interpolation_center_earth.txt");
+        void read_interpolation_center_planet(std::string filename, std::string name);
         std::vector<InterpolationTimeFrame> get_interpolation_time();
-        std::vector<InterpolationCenterEarth> get_interpolation_earth();
+        std::vector<IntegrationVector> get_interpolation_earth();
         std::vector<Observation> get_observations();
 };

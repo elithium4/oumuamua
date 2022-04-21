@@ -125,15 +125,15 @@ GeocentricFrame Converter::cartesian_to_geocentric(CartesianFrame frame, Date da
 };
 
 //Интерполяция центра Земли
-BarycentricFrame Converter::interpolation_center_of_earth_for_observatory(Date date, GeocentricFrame frame, std::vector<InterpolationCenterEarth> interpolation_earth) {
+BarycentricFrame Converter::interpolation_center_of_earth_for_observatory(Date date, GeocentricFrame frame, std::vector<IntegrationVector> interpolation_earth) {
     double delta_x;
     double delta_y;
     double delta_z;
     for (int j = 0; j < interpolation_earth.size(); j++) {
         if (date.get_MJD() < interpolation_earth[j].get_julian_date().get_MJD()) {
-                delta_x = interpolation_earth[j - 1].get_x() + (interpolation_earth[j].get_x() - interpolation_earth[j - 1].get_x()) / (interpolation_earth[j].get_julian_date().get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD()) * (date.get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD());
-                delta_x = interpolation_earth[j - 1].get_y() + (interpolation_earth[j].get_y() - interpolation_earth[j - 1].get_y()) / (interpolation_earth[j].get_julian_date().get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD()) * (date.get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD());
-                delta_x = interpolation_earth[j - 1].get_z() + (interpolation_earth[j].get_z() - interpolation_earth[j - 1].get_z()) / (interpolation_earth[j].get_julian_date().get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD()) * (date.get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD());
+                delta_x = interpolation_earth[j - 1].get_position().get_x() + (interpolation_earth[j].get_position().get_x() - interpolation_earth[j - 1].get_position().get_x()) / (interpolation_earth[j].get_julian_date().get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD()) * (date.get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD());
+                delta_x = interpolation_earth[j - 1].get_position().get_y() + (interpolation_earth[j].get_position().get_y() - interpolation_earth[j - 1].get_position().get_y()) / (interpolation_earth[j].get_julian_date().get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD()) * (date.get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD());
+                delta_x = interpolation_earth[j - 1].get_position().get_z() + (interpolation_earth[j].get_position().get_z() - interpolation_earth[j - 1].get_position().get_z()) / (interpolation_earth[j].get_julian_date().get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD()) * (date.get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD());
                 BarycentricFrame new_frame;
                 new_frame.set_x(frame.get_x() + delta_x);
                 new_frame.set_y(frame.get_y() + delta_y);
