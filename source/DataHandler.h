@@ -15,13 +15,16 @@
 //Класс, читающий данные из файлов
 class DataHandler{
     private:
-    std::vector<Observation> observations;
+        std::vector<Observation> observations;
     //std::vector<CylindricalFrame> observatory;
 
     std::map<std::string,ObservatoryData> observatory;
 
     std::vector<InterpolationTimeFrame> interpolation_time;
     std::map<std::string, std::vector<IntegrationVector>> InterpolationPlanets;
+
+    std::map<Date, CartesianFrame> interpolation_hubble;
+    //std::map<Date, CartesianFrame> interpolation_hubble;
     HubbleInterpolator hubble;
     public:
         void read_observations(std::string filename="./data/observations.txt");

@@ -1,4 +1,4 @@
-#include "Observation.h"    
+#include "Observation.h"
 
 Date Observation::get_julian_date() {
     return julian_date;
