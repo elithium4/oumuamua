@@ -1,14 +1,14 @@
 #include "Date.h"
-#include "ObservatoryCartesianFrame.h"
+#include "CartesianFrame.h"
 
 class InterpolationHubbleFrame{
     private:
-        ObservatoryCartesianFrame position_data;
+        CartesianFrame position_data;
         Date date;
     public:
         void set_date(Date);
-        void set_data(ObservatoryCartesianFrame);
+        void set_data(CartesianFrame);
 
         Date get_date();
-        ObservatoryCartesianFrame get_data();
+        CartesianFrame get_data();
 };

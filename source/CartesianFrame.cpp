@@ -1,6 +1,6 @@
-#include "ObservatoryCartesianFrame.h"
+#include "CartesianFrame.h"
 
-void ObservatoryCartesianFrame::set_from_string(std::string coord){
+void CartesianFrame::set_from_string(std::string coord){
     int prev = 0;
     for (int i = 0; i < 4; i++){
         for (int j = prev; j < coord.length()+1; j++){
@@ -25,26 +25,26 @@ void ObservatoryCartesianFrame::set_from_string(std::string coord){
     }
 }
 
-double ObservatoryCartesianFrame::get_x() {
+double CartesianFrame::get_x() {
         return x;
 }
 
-double ObservatoryCartesianFrame::get_y() {
+double CartesianFrame::get_y() {
     return y;
 }
 
-double ObservatoryCartesianFrame::get_z() {
+double CartesianFrame::get_z() {
     return z;
 }
 
-void ObservatoryCartesianFrame::set_x(double value) {
+void CartesianFrame::set_x(double value) {
     x = value;
 }
 
-void ObservatoryCartesianFrame::set_y(double value) {
+void CartesianFrame::set_y(double value) {
     y = value;
 }
 
-void ObservatoryCartesianFrame::set_z(double value) {
+void CartesianFrame::set_z(double value) {
     z = value;
 }

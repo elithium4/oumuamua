@@ -1,6 +1,6 @@
 #include <cstddef>
 
-class ObservatoryGeocentricFrame{
+class GeocentricFrame{
     private:
         double x = NULL;
         double y = NULL;

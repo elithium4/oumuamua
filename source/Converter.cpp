@@ -1,8 +1,8 @@
 #include "Converter.h"
 
 //Функция, переводащая цилиндрические координаты в декартовы
-ObservatoryCartesianFrame Converter::cylindrical_to_cartesian(ObservatoryCylindricalFrame measure) {
-    ObservatoryCartesianFrame cartesian_data;
+CartesianFrame Converter::cylindrical_to_cartesian(CylindricalFrame measure) {
+    CartesianFrame cartesian_data;
     if (measure.get_longitude() != NULL){
         if (measure.get_cos() != NULL){
             cartesian_data.set_x(cos(measure.get_longitude()) * measure.get_cos() * EARTH_RADIUS); // cartesian_data.set_x(cos(measure.get_longitude()) * 6378.140);
@@ -50,10 +50,10 @@ void Converter::interpolation_date_to_tt_tdb(std::vector<Observation> observatio
 
 
 //Интерполяция положения Хаббла
-ObservatoryCartesianFrame Converter::interpolation_hubble_data(Date date, std::vector<InterpolationHubbleFrame> interpolation_data){
+CartesianFrame Converter::interpolation_hubble_data(Date date, std::vector<InterpolationHubbleFrame> interpolation_data){
     for (int i = 0; i < interpolation_data.size() - 1; i++){
         if ((interpolation_data[i].get_date() < date) and (interpolation_data[i+1].get_date() > date)){
-            ObservatoryCartesianFrame new_frame;
+            CartesianFrame new_frame;
 
             double x = interpolation_data[i].get_data().get_x() + (interpolation_data[i+1].get_data().get_x()
             - interpolation_data[i+1].get_data().get_x())*(date.get_MJD() - interpolation_data[i].get_date().get_MJD());
@@ -88,7 +88,7 @@ void Converter::transpose(double mtr[3][3]){
 }
 
 //Перевод из земных координат в геоцентрические небесные
-ObservatoryGeocentricFrame Converter::cartesian_to_geocentric(ObservatoryCartesianFrame frame, Date date){
+GeocentricFrame Converter::cartesian_to_geocentric(CartesianFrame frame, Date date){
     double transition_matrix[3][3];
 
     double x, y;
@@ -116,10 +116,29 @@ ObservatoryGeocentricFrame Converter::cartesian_to_geocentric(ObservatoryCartesi
     double geo_y = transition_matrix[1][0] * frame.get_x() + transition_matrix[1][1] * frame.get_y() + transition_matrix[1][2] * frame.get_z();
     double geo_z = transition_matrix[2][0] * frame.get_x() + transition_matrix[2][1] * frame.get_y() + transition_matrix[2][2] * frame.get_z();
 
-    ObservatoryGeocentricFrame new_frame;
+    GeocentricFrame new_frame;
     new_frame.set_x(geo_x);
     new_frame.set_y(geo_y);
     new_frame.set_z(geo_z);
     return new_frame;
 
 };
+
+//Интерполяция центра Земли
+BarycentricFrame Converter::interpolation_center_of_earth_for_observatory(Date date, GeocentricFrame frame, std::vector<InterpolationCenterEarth> interpolation_earth) {
+    double delta_x;
+    double delta_y;
+    double delta_z;
+    for (int j = 0; j < interpolation_earth.size(); j++) {
+        if (date.get_MJD() < interpolation_earth[j].get_julian_date().get_MJD()) {
+                delta_x = interpolation_earth[j - 1].get_x() + (interpolation_earth[j].get_x() - interpolation_earth[j - 1].get_x()) / (interpolation_earth[j].get_julian_date().get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD()) * (date.get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD());
+                delta_x = interpolation_earth[j - 1].get_y() + (interpolation_earth[j].get_y() - interpolation_earth[j - 1].get_y()) / (interpolation_earth[j].get_julian_date().get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD()) * (date.get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD());
+                delta_x = interpolation_earth[j - 1].get_z() + (interpolation_earth[j].get_z() - interpolation_earth[j - 1].get_z()) / (interpolation_earth[j].get_julian_date().get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD()) * (date.get_MJD() - interpolation_earth[j - 1].get_julian_date().get_MJD());
+                BarycentricFrame new_frame;
+                new_frame.set_x(frame.get_x() + delta_x);
+                new_frame.set_y(frame.get_y() + delta_y);
+                new_frame.set_z(frame.get_z() + delta_z);
+                return new_frame;
+        }
+    }
+}

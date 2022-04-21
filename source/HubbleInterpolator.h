@@ -1,13 +1,13 @@
 #include <string>
 #include <map>
 
-#include "ObservatoryCartesianFrame.h"
+#include "CartesianFrame.h"
 #include "Date.h"
 
 class HubbleInterpolator{
     private:
-        std::map<Date, ObservatoryCartesianFrame> interpolation_data;
+        std::map<Date, CartesianFrame> interpolation_data;
     public:
-        ObservatoryCartesianFrame interpolate(Date date);
-        void set_dataframe(Date, ObservatoryCartesianFrame);
+        CartesianFrame interpolate(Date date);
+        void set_dataframe(Date, CartesianFrame);
 };

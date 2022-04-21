@@ -1,30 +1,33 @@
 #include "Date.h"
 
-
 Date::Date(std::string date){
     int prev = 0;
+    int last = 0;
     for (int i = 0; i < 4; i++){
         for (int j = prev; j < date.length()+1; j++){
-            if ((date[j] == ' ') or (date[j] == '\0')){
+            if ((date[j] == ' ' and date[j+1] != ' ') or (date[j] == '\0')) {
+                last = j;
+                while (date[last - 1] == ' '){
+                    last--;
+                }
                 switch (i){
                     case 0:
-                        year = std::stoi(date.substr(prev, j-prev));
+                        year = std::stoi(date.substr(prev, last-prev));
                         break;
                     case 1:
-                        month = std::stoi(date.substr(prev, j-prev));
+                        month = std::stoi(date.substr(prev, last-prev));
                         break;
                     case 2:
-                        day = std::stoi(date.substr(prev, j-prev));
-                        day_fraction = std::stod(date.substr(prev, j-prev)) - day;
+                        day = std::stoi(date.substr(prev, last -prev));
+                        day_fraction = std::stod(date.substr(prev, last-prev)) - day;
                         break;
                     default:
                         break;
                 }
+                    prev = j + 1;
                 break;
             }
-            if ((date[j] == ' ' and date[j] != ' ') or date[j] == '\0') {
-                prev = j + 1;
-            }
+                
         }
     }
 }

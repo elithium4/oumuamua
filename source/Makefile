@@ -1,7 +1,7 @@
 all: program
 
-program: 	main.o CelestialCoord.o Date.o ObservatoryCartesianFrame.o ObservatoryCylindricalFrame.o ObservatoryGeocentricFrame.o Observation.o HubbleInterpolator.o InterpolationHubbleFrame.o InterpolationTimeFrame.o Converter.o DataHandler.o libsofa.a
-			g++ main.o CelestialCoord.o Date.o ObservatoryCartesianFrame.o ObservatoryCylindricalFrame.o ObservatoryGeocentricFrame.o Observation.o HubbleInterpolator.o InterpolationHubbleFrame.o InterpolationTimeFrame.o Converter.o DataHandler.o ../sofa/libsofa_c.a -o ../program
+program: 	main.o CelestialCoord.o Date.o CartesianFrame.o CylindricalFrame.o GeocentricFrame.o BarycentricFrame.o Observation.o InterpolationCenterEarth.o HubbleInterpolator.o InterpolationHubbleFrame.o ObservatoryData.o InterpolationTimeFrame.o Converter.o DataHandler.o libsofa.a
+			g++ main.o CelestialCoord.o Date.o CartesianFrame.o CylindricalFrame.o GeocentricFrame.o BarycentricFrame.o Observation.o InterpolationCenterEarth.o HubbleInterpolator.o InterpolationHubbleFrame.o ObservatoryData.o InterpolationTimeFrame.o Converter.o DataHandler.o ../sofa/libsofa_c.a -o ../program
 
 main.o: main.cpp
 		g++ -c main.cpp
@@ -18,14 +18,23 @@ InterpolationTimeFrame.o:
 HubbleInterpolator.o: HubbleInterpolator.cpp
 		g++ -c HubbleInterpolator.cpp
 
-ObservatoryGeocentricFrame.o: ObservatoryGeocentricFrame.cpp
-		g++ -c ObservatoryGeocentricFrame.cpp
+ObservatoryData.o: ObservatoryData.cpp
+		g++ -c ObservatoryData.cpp
 
-ObservatoryCylindricalFrame.o: ObservatoryCylindricalFrame.cpp
-		g++ -c ObservatoryCylindricalFrame.cpp
+BarycentricFrame.o: BarycentricFrame.cpp
+		g++ -c BarycentricFrame.cpp
 
-ObservatoryCartesianFrame.o: ObservatoryCartesianFrame.cpp
-		g++ -c ObservatoryCartesianFrame.cpp
+GeocentricFrame.o: GeocentricFrame.cpp
+		g++ -c GeocentricFrame.cpp
+
+CylindricalFrame.o: CylindricalFrame.cpp
+		g++ -c CylindricalFrame.cpp
+
+CartesianFrame.o: CartesianFrame.cpp
+		g++ -c CartesianFrame.cpp
+
+InterpolationCenterEarth.o: InterpolationCenterEarth.cpp
+		g++ -c InterpolationCenterEarth.cpp
 
 InterpolationHubbleFrame.o: InterpolationHubbleFrame.cpp
 		g++ -c InterpolationHubbleFrame.cpp

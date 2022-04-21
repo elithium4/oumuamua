@@ -39,3 +39,27 @@ void Observation::set_ascension_from_string(std::string value) {
 void Observation::set_declination_from_string(std::string value) {
     declination.set_from_string(value);
 }
+
+double Observation::get_x() {
+    return x;
+}
+
+double Observation::get_y() {
+    return y;
+}
+
+double Observation::get_z() {
+    return z;
+}
+
+void Observation::set_x(double value) {
+    x = value;
+}
+
+void Observation::set_y(double value) {
+    y = value;
+}
+
+void Observation::set_z(double value) {
+    z = value;
+}

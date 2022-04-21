@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <string>
 
-class ObservatoryCylindricalFrame {
+class CylindricalFrame {
 private:
     double longitude = NULL;
     double cos = NULL;

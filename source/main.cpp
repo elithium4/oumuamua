@@ -1,5 +1,3 @@
-#include "ObservatoryCartesianFrame.h"
-#include "ObservatoryCylindricalFrame.h"
 #include "Observation.h"
 
 #include "Converter.h"

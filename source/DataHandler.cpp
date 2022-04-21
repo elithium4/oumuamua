@@ -16,6 +16,7 @@ void DataHandler::read_observations(std::string filename){
                 Observation data_frame;
                 Date observation_date(data_line.substr(15, 17));
                 observation_date.set_time_from_fraction();
+                std::cout<<observation_date.get_year()<<" "<<observation_date.get_day()<<"\n";
                 observation_date.set_JD();
                 data_frame.set_julian_date(observation_date);
                 data_frame.set_code(data_line.substr(77, 3));
@@ -40,11 +41,15 @@ void DataHandler::read_observatory_data(std::string filename){
     else
     {
          while (getline(file, data_line)) {
-             ObservatoryCylindricalFrame data_frame;
+             std::string code = data_line.substr(0, 3);
+             observatory[code] = ObservatoryData();
+
+             CylindricalFrame data_frame;
              data_frame.set_longitude_from_string(data_line.substr(5, 8));
              data_frame.set_cos_from_string(data_line.substr(13, 8));
              data_frame.set_sin_from_string(data_line.substr(21, 9));
-             observatory.push_back(data_frame);
+
+             observatory[code].set_cylindrical(data_frame);
          }
     }
     file.close();
@@ -59,7 +64,7 @@ void DataHandler::read_hubble_data(std::string filename){
     else
     {
          while (getline(file, data_line)) {
-            ObservatoryCartesianFrame data_frame;
+            CartesianFrame data_frame;
             data_frame.set_from_string(data_line.substr(28, data_line.length()));
             Date hubble_date(data_line.substr(0, 11));
             hubble_date.set_time_from_string(data_line.substr(11, 25));
@@ -90,11 +95,36 @@ void DataHandler::read_interpolation_time_data(std::string filename) {
     file.close();
 }
 
+void DataHandler::read_interpolation_center_earth(std::string filename) {
+    std::ifstream file(filename);
+    std::string data_line;
+    if (!file.is_open())
+        std::cout << "Файл с данными для интерполяции центра Земли не может быть открыт!\n";
+    else
+    {
+        while (getline(file, data_line)) {
+            InterpolationCenterEarth data_frame;
+            Date observation_date(data_line.substr(0, 16));
+            observation_date.set_time_from_fraction();
+            observation_date.set_JD();
+            data_frame.set_julian_date(observation_date);
+            data_frame.set_x(data_line.substr(19, 16));
+            data_frame.set_y(data_line.substr(38, 16));
+            data_frame.set_z(data_line.substr(58, 15));
+            interpolation_earth.push_back(data_frame);
+        }
+    }
+    file.close();
+}
+
 
 std::vector<InterpolationTimeFrame> DataHandler::get_interpolation_time() {
     return interpolation_time;
 }
 
+std::vector<InterpolationCenterEarth> DataHandler::get_interpolation_earth() {
+    return interpolation_earth;
+}
 
 std::vector<Observation> DataHandler::get_observations() {
     return observations;

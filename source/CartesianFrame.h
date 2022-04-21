@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <string>
 
-class ObservatoryCartesianFrame {
+class CartesianFrame {
 private:
     double x = NULL;
     double y = NULL;
