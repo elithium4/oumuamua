@@ -7,6 +7,11 @@ void IntegrationVector::set_position(double x, double y, double z){
     this->position.set_z(z);
 }
 
+void IntegrationVector::set_spherical_position(double longitude, double latitude){
+    this->spherical_position.set_longitude(longitude);
+    this->spherical_position.set_latitude(latitude);
+}
+
 void IntegrationVector::set_velocity(double vx, double vy, double vz){
     this->velocity.set(vx, vy, vz);
 }
@@ -17,6 +22,10 @@ void IntegrationVector::set_julian_date(Date date){
 
 BarycentricFrame IntegrationVector::get_position(){
     return position;
+}
+
+SphericalFrame IntegrationVector::get_spherical_position(){
+    return spherical_position;
 }
 
 Velocity IntegrationVector::get_velocity(){

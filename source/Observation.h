@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CelestialCoord.h"
+#include "SphericalFrame.h"
 #include "Date.h"
 
 #include <string>
@@ -11,6 +12,7 @@ private:
     std::string code;
     CelestialCoord ascension;
     CelestialCoord declination;
+    SphericalFrame spherical_position;
 
     double x = NULL;
     double y = NULL;
@@ -26,6 +28,7 @@ public:
     void set_declination(CelestialCoord value);
     void set_ascension_from_string(std::string value);
     void set_declination_from_string(std::string value);
+    void set_spherical(double longitude, double latitude);
 
     double get_x();
     double get_y();
@@ -33,4 +36,5 @@ public:
     void set_x(double value);
     void set_y(double value);
     void set_z(double value);
+    SphericalFrame get_spherical_position();
 };

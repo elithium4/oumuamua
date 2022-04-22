@@ -40,6 +40,11 @@ void Observation::set_declination_from_string(std::string value) {
     declination.set_from_string(value);
 }
 
+void Observation::set_spherical(double longitude, double latitude){
+    spherical_position.set_latitude(latitude);
+    spherical_position.set_longitude(longitude);
+}
+
 double Observation::get_x() {
     return x;
 }
@@ -62,4 +67,8 @@ void Observation::set_y(double value) {
 
 void Observation::set_z(double value) {
     z = value;
+}
+
+SphericalFrame Observation::get_spherical_position(){
+    return spherical_position;
 }

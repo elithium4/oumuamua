@@ -49,4 +49,6 @@ class Converter{
 
     BarycentricFrame n_abs(BarycentricFrame);
 
+    void celestial_to_spherical(Observation*);
+    void barycentric_to_spherical(IntegrationVector*);
 };

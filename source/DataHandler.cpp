@@ -175,3 +175,7 @@ std::vector<Observation>* DataHandler::get_observations() {
 std::map<std::string, std::vector<IntegrationVector>> DataHandler::get_interpolation_planets() {
     return InterpolationPlanets;
 }
+
+Observation* DataHandler::get_observation(int ind){
+    return &observations[ind];
+}

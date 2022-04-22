@@ -34,9 +34,30 @@ void Facade::convert_observations(){
 }
 
 void Facade::convert_observatory(){
-    
+
 }
 
 void Facade::integrate(){
     //integration.dormand_prince(x0, dhand.get_observations()[0].get_julian_date(), dhand.get_observations()[-1].get_julian_date(), 10, cnv.interpolation_center_planet(0.1, dhand.get_observations()[0].get_julian_date(), dhand.get_observations()[-1].get_julian_date(), dhand.get_interpolation_planets()));
+    IntegrationVector vec;
+    vec.set_position(9, 4, 5);
+    std::cout<<"\nBefore: "<<vec.get_spherical_position().get_longitude()<<" "<<vec.get_spherical_position().get_latitude();
+    cnv.barycentric_to_spherical(&vec);
+    std::cout<<"\nAfter: "<<vec.get_spherical_position().get_longitude()<<" "<<vec.get_spherical_position().get_latitude();
+    std::vector<IntegrationVector> model_measures;
+    least_squares(model_measures);
+}
+
+void Facade::least_squares(std::vector<IntegrationVector> model){
+
+    for (int i = 0; i < model.size(); i++){
+        cnv.barycentric_to_spherical(&model[i]);
+        cnv.celestial_to_spherical(dhand.get_observation(i));
+    }
+
+    double wrms_longitude;
+    double wrms_latitude;
+
+    least_sq.calculate_wmrs(model, *dhand.get_observations(), &wrms_longitude, &wrms_latitude);
+
 }

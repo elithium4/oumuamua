@@ -206,6 +206,23 @@ std::vector<IntegrationVector> Converter::interpolation_to_observation(std::vect
     }
 }
 
+
+void Converter::celestial_to_spherical(Observation* observation){
+    double AD = NULL;
+    double DEC = NULL;
+    iauAf2a('+', 360 / 24 * observation->get_ascension().get_h(), observation->get_ascension().get_m(), observation->get_ascension().get_s(), &AD);
+    iauAf2a('+', observation->get_declination().get_h(), observation->get_declination().get_m(), observation->get_declination().get_s(), &DEC);
+    observation->set_spherical(AD, DEC);
+}
+
+void Converter::barycentric_to_spherical(IntegrationVector* vector){
+    double bary[3] = {vector->get_position().get_x(), vector->get_position().get_y(), vector->get_position().get_z()};
+    double longitude;
+    double latitude;
+    iauC2s(bary, &longitude, &latitude);
+    vector->set_spherical_position(longitude, latitude);
+}
+
 std::vector<IntegrationVector> Converter::light_time_correction(std::vector<IntegrationVector> vector, std::map<std::string, ObservatoryData> observatory, std::vector< Observation> observations, std::vector<IntegrationVector> modal_vector) {
     std::vector<IntegrationVector> result;
     for (int i = 0; i < vector.size(); i++) {
@@ -235,7 +252,6 @@ BarycentricFrame Converter::interpolation_orbits(double date, std::vector<Integr
             delta_x = interpolation_orbits[j - 1].get_position().get_x() + (interpolation_orbits[j].get_position().get_x() - interpolation_orbits[j - 1].get_position().get_x()) / (interpolation_orbits[j].get_julian_date().get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD()) * (date - interpolation_orbits[j - 1].get_julian_date().get_MJD());
             delta_y = interpolation_orbits[j - 1].get_position().get_y() + (interpolation_orbits[j].get_position().get_y() - interpolation_orbits[j - 1].get_position().get_y()) / (interpolation_orbits[j].get_julian_date().get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD()) * (date - interpolation_orbits[j - 1].get_julian_date().get_MJD());
             delta_z = interpolation_orbits[j - 1].get_position().get_z() + (interpolation_orbits[j].get_position().get_z() - interpolation_orbits[j - 1].get_position().get_z()) / (interpolation_orbits[j].get_julian_date().get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD()) * (date - interpolation_orbits[j - 1].get_julian_date().get_MJD());
-            //можно и для скоростей посчитать, но по факту они нам не нужны
             BarycentricFrame new_frame;
             new_frame.set_x(delta_x);
             new_frame.set_y(delta_y);
@@ -245,10 +261,56 @@ BarycentricFrame Converter::interpolation_orbits(double date, std::vector<Integr
     }
 };
 
-BarycentricFrame Converter::n_abs(BarycentricFrame frame_1) {
+BarycentricFrame Converter::n_abs(BarycentricFrame frame) {
     BarycentricFrame result;
-    result.set_x(std::abs(frame_1.get_x()));
-    result.set_y(std::abs(frame_1.get_y()));
-    result.set_z(std::abs(frame_1.get_z()));
+    result.set_x(std::abs(frame.get_x()));
+    result.set_y(std::abs(frame.get_y()));
+    result.set_z(std::abs(frame.get_z()));
     return result;
 };
+
+std::vector<IntegrationVector> Converter::gravitational_deflection(std::vector<IntegrationVector> modal_position, std::map<std::string, ObservatoryData> observatory, std::vector< Observation> observations, std::vector<IntegrationVector> sun_observations) {
+    double mass_sun = 1.989e30;
+    double new_direction[3];
+    BarycentricFrame tmp;
+    std::vector<IntegrationVector> result;
+    std::vector<IntegrationVector>  sun_interpolation = interpolation_to_observation(observations, sun_observations);
+    for (int i = 0; i < modal_position.size(); i++) {
+        IntegrationVector frame;
+        tmp = modal_position[i].get_position() - observatory[observations[i].get_code()].get_barycentric();
+        double direction_observatory_to_asteroid[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
+        tmp = modal_position[i].get_position() - sun_interpolation[i].get_position();
+        double direction_sun_to_asteroid[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
+        tmp = observatory[observations[i].get_code()].get_barycentric() - sun_interpolation[i].get_position();
+        double direction_sun_to_observatory[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
+        double distance_sun_observatory = tmp.len();
+        iauLd(mass_sun, direction_observatory_to_asteroid, direction_sun_to_asteroid, direction_sun_to_observatory, distance_sun_observatory, 0, new_direction);
+        frame.set_position(new_direction[0], new_direction[1], new_direction[2]);
+        frame.set_julian_date(modal_position[i].get_julian_date());
+        frame.set_velocity(0, 0, 0);
+        result.push_back(frame);
+    }
+    return result;
+};
+
+std::vector<IntegrationVector> Converter::aberration(std::vector<IntegrationVector> modal_position, std::map<std::string, ObservatoryData> observatory, std::vector< Observation> observations, std::vector<IntegrationVector> sun_observations) {
+    std::vector<IntegrationVector> result;
+    double new_direction[3];
+    double velocity[3] = { 0, 0, 0 };
+    BarycentricFrame tmp;
+    std::vector<IntegrationVector>  sun_interpolation = interpolation_to_observation(observations, sun_observations);
+    for (int i = 0; i < modal_position.size(); i++) {
+        IntegrationVector frame;
+        tmp = modal_position[i].get_position() - observatory[observations[i].get_code()].get_barycentric();
+        double direction_observatory_to_asteroid[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
+        tmp = observatory[observations[i].get_code()].get_barycentric() - sun_interpolation[i].get_position();
+        double distance_sun_observatory = tmp.len();
+        iauAb(direction_observatory_to_asteroid, velocity, distance_sun_observatory, 1, new_direction);
+        frame.set_position(new_direction[0], new_direction[1], new_direction[2]);
+        frame.set_julian_date(modal_position[i].get_julian_date());
+        frame.set_velocity(0, 0, 0);
+        result.push_back(frame);
+
+    }
+    return result;
+}
