@@ -40,4 +40,13 @@ class Converter{
     BarycentricFrame interpolation_center_of_earth_for_observatory(Date date, GeocentricFrame frame, std::vector<IntegrationVector> interpolation_earth);
     std::map<std::string, std::vector<IntegrationVector>> interpolation_center_planet(double h, Date date_start, Date date_finish, std::map<std::string, std::vector<IntegrationVector>> interpolation_planet);
     void transpose(double mtr[3][3]);
+
+    std::vector<IntegrationVector> light_time_correction(std::vector<IntegrationVector>, std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>);
+
+    std::vector<IntegrationVector> interpolation_to_observation(std::vector<IntegrationVector> vector, std::vector<IntegrationVector> interpolation_orbits);
+
+    BarycentricFrame interpolation_orbits(double date, std::vector<IntegrationVector> interpolation_orbits); //смоделированная
+
+    BarycentricFrame n_abs(BarycentricFrame);
+
 };

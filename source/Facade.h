@@ -7,7 +7,7 @@ class Facade{
     private:
         Converter cnv;
         DataHandler dhand;
-
+        
         IntegrationVector x0;
         OrbitalIntegration integration;
 
