@@ -1,4 +1,5 @@
 #pragma once
+#include <math.h>
 #include <cstddef>
 
 class BarycentricFrame {
@@ -18,8 +19,13 @@ public:
 
     void increase(double);
     void multiply(double);
+    double len();
 
     friend BarycentricFrame operator+(BarycentricFrame, BarycentricFrame);
+    friend BarycentricFrame operator-(BarycentricFrame, BarycentricFrame);
+    friend BarycentricFrame operator*(const double&, BarycentricFrame);
+    friend BarycentricFrame operator/(BarycentricFrame, BarycentricFrame);
+    friend BarycentricFrame operator/(BarycentricFrame, const double&);
 
     BarycentricFrame(const BarycentricFrame& other);
     BarycentricFrame& operator=(const BarycentricFrame& other);

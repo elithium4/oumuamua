@@ -16,10 +16,10 @@ CartesianFrame Converter::cylindrical_to_cartesian(CylindricalFrame measure) {
 
 
 //Эта функция должна переводить в TT
-void Converter::julian_date_to_tdb(Date date){
+void Converter::julian_date_to_tdb(Date* date){
     //Перевод в TAI
     double deltat;
-    int status = iauDat(date.get_year(), date.get_month(), date.get_day(), date.get_day_fraction(),
+    int status = iauDat(date->get_year(), date->get_month(), date->get_day(), date->get_day_fraction(),
         &deltat);
 
     if (status){
@@ -28,20 +28,20 @@ void Converter::julian_date_to_tdb(Date date){
     }
 
     //Перевод в TT
-    date.set_TT(date.get_JD() + deltat + 32.184);
+    date->set_TT(date->get_MJD() + deltat + 32.184);
 };
 
 //Интерполяция времени в TDB
-void Converter::interpolation_date_to_tt_tdb(std::vector<Observation> observations, std::vector<InterpolationTimeFrame> interpolation_time) {
+void Converter::interpolation_date_to_tt_tdb(std::vector<Observation> *observations, std::vector<InterpolationTimeFrame> interpolation_time) {
     double delta;
     int last_min = 0;
-    for (int i = 0; i < observations.size(); i++) {
+    for (int i = 0; i < observations->size(); i++) {
         int j = last_min;
         for (j; j < interpolation_time.size(); j++) {
-            if (observations[i].get_julian_date().get_MJD() < interpolation_time[j].get_julian_date().get_MJD()) {
+            if ((observations->at(i)).get_julian_date()->get_MJD() < interpolation_time[j].get_julian_date().get_MJD()) {
                 last_min = j - 1;
-                delta = interpolation_time[j - 1].get_TT_TDB() + (interpolation_time[j].get_TT_TDB() - interpolation_time[j - 1].get_TT_TDB()) / (interpolation_time[j].get_julian_date().get_MJD() - interpolation_time[j - 1].get_julian_date().get_MJD()) * (observations[i].get_julian_date().get_MJD() - interpolation_time[j - 1].get_julian_date().get_MJD());
-                observations[i].get_julian_date().set_TT_TDB(delta);
+                delta = interpolation_time[j - 1].get_TT_TDB() + (interpolation_time[j].get_TT_TDB() - interpolation_time[j - 1].get_TT_TDB()) / (interpolation_time[j].get_julian_date().get_MJD() - interpolation_time[j - 1].get_julian_date().get_MJD()) * ((observations->at(i)).get_julian_date()->get_MJD() - interpolation_time[j - 1].get_julian_date().get_MJD());
+                (observations->at(i)).get_julian_date()->set_TT_TDB(delta);
                 break;
             }
         }
@@ -141,4 +141,40 @@ BarycentricFrame Converter::interpolation_center_of_earth_for_observatory(Date d
                 return new_frame;
         }
     }
+}
+
+std::map<std::string, std::vector<IntegrationVector>> Converter::interpolation_center_planet(double h, Date date_start, Date date_finish, std::map<std::string, std::vector<IntegrationVector>> interpolation_planets) {
+    double delta_x;
+    double delta_y;
+    double delta_z;
+    std::map<std::string, std::vector<IntegrationVector>> new_interpolation_planet;
+    for (auto interpolation_planet : interpolation_planets) {
+        int last_min = 0;
+        double flag = 1;
+        Date current_date = date_start;
+        std::vector<IntegrationVector> new_center_planet;
+        while (current_date < date_finish) {
+            int j = last_min;
+            for (j; j < interpolation_planet.second.size(); j++) {
+                if (current_date.get_MJD() < interpolation_planet.second[j].get_julian_date().get_MJD()) {
+                    last_min = j - 1;
+                    if (current_date.get_MJD() == interpolation_planet.second[last_min].get_julian_date().get_MJD()) // проверить какая дата у current_date get+MJD/TDB
+                        flag = 0;
+                    IntegrationVector new_vector;
+                    delta_x = interpolation_planet.second[last_min].get_position().get_x() + flag * (interpolation_planet.second[j].get_position().get_x() - interpolation_planet.second[last_min].get_position().get_x()) / (interpolation_planet.second[j].get_julian_date().get_MJD() - interpolation_planet.second[last_min].get_julian_date().get_MJD()) * (current_date.get_MJD() - interpolation_planet.second[last_min].get_julian_date().get_MJD());
+                    delta_x = interpolation_planet.second[last_min].get_position().get_y() + flag * (interpolation_planet.second[j].get_position().get_y() - interpolation_planet.second[last_min].get_position().get_y()) / (interpolation_planet.second[j].get_julian_date().get_MJD() - interpolation_planet.second[last_min].get_julian_date().get_MJD()) * (current_date.get_MJD() - interpolation_planet.second[last_min].get_julian_date().get_MJD());
+                    delta_x = interpolation_planet.second[last_min].get_position().get_y() + flag * (interpolation_planet.second[j].get_position().get_y() - interpolation_planet.second[last_min].get_position().get_y()) / (interpolation_planet.second[j].get_julian_date().get_MJD() - interpolation_planet.second[last_min].get_julian_date().get_MJD()) * (current_date.get_MJD() - interpolation_planet.second[last_min].get_julian_date().get_MJD());
+                    delta_x = interpolation_planet.second[last_min].get_position().get_z() + flag * (interpolation_planet.second[j].get_position().get_z() - interpolation_planet.second[last_min].get_position().get_z()) / (interpolation_planet.second[j].get_julian_date().get_MJD() - interpolation_planet.second[last_min].get_julian_date().get_MJD()) * (current_date.get_MJD() - interpolation_planet.second[last_min].get_julian_date().get_MJD());
+                    flag = 1;
+                    new_vector.set_julian_date(current_date);
+                    new_vector.set_position(delta_x, delta_y, delta_z);
+                    new_center_planet.push_back(new_vector);
+                    break;
+                }
+            }
+        }
+        new_interpolation_planet[interpolation_planet.first] = new_center_planet;
+    }
+
+    return new_interpolation_planet;
 }

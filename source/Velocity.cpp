@@ -74,3 +74,35 @@ Velocity& Velocity::operator=(const Velocity&& other){
     this->vz = other.vz;
     return *this;
 }
+
+Velocity operator-(Velocity frame_1, Velocity frame_2) {
+    Velocity result;
+    result.vx = frame_1.vx - frame_2.vx;
+    result.vy = frame_1.vy - frame_2.vy;
+    result.vz = frame_1.vz - frame_2.vz;
+    return result;
+}
+
+Velocity operator*(const double& m, Velocity frame) {
+    Velocity result;
+    result.vx = m * frame.vx;
+    result.vy = m * frame.vy;
+    result.vz = m * frame.vz;
+    return result;
+}
+
+Velocity operator/(Velocity frame_1, Velocity frame_2) {
+    Velocity result;
+    result.vx = frame_1.vx / frame_2.vx;
+    result.vy = frame_1.vy / frame_2.vy;
+    result.vz = frame_1.vz / frame_2.vz;
+    return result;
+}
+
+Velocity operator/(Velocity frame, const double& m) {
+    Velocity result;
+    result.vx = frame.vx / m;
+    result.vy = frame.vy / m;
+    result.vz = frame.vz / m;
+    return result;
+}

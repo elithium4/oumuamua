@@ -1,3 +1,4 @@
+#pragma once
 #define EARTH_RADIUS 6378.140
 
 #include<stdlib.h>
@@ -24,15 +25,19 @@
 
 #include "../sofa/sofa.h"
 
+#include <map>
+
 //Класс для разных переводов систем
 class Converter{
     public:
+
     CartesianFrame cylindrical_to_cartesian(CylindricalFrame measure);
-    void julian_date_to_tdb(Date);
-    void interpolation_date_to_tt_tdb(std::vector<Observation> observations, std::vector<InterpolationTimeFrame> interpolation_time);
+    void julian_date_to_tdb(Date*);
+    void interpolation_date_to_tt_tdb(std::vector<Observation>* observations, std::vector<InterpolationTimeFrame> interpolation_time);
     
     CartesianFrame interpolation_hubble_data(Date date, std::vector<InterpolationHubbleFrame> interpolation_data);
     GeocentricFrame cartesian_to_geocentric(CartesianFrame, Date);
     BarycentricFrame interpolation_center_of_earth_for_observatory(Date date, GeocentricFrame frame, std::vector<IntegrationVector> interpolation_earth);
+    std::map<std::string, std::vector<IntegrationVector>> interpolation_center_planet(double h, Date date_start, Date date_finish, std::map<std::string, std::vector<IntegrationVector>> interpolation_planet);
     void transpose(double mtr[3][3]);
 };

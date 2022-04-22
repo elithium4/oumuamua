@@ -1,6 +1,9 @@
 #include "IntegrationVector.h"
 #include "DataHandler.h"
 #include <vector>
+#include <map>
+#include <math.h>
+#include <string>
 
 
 class OrbitalIntegration{
@@ -41,7 +44,9 @@ class OrbitalIntegration{
         double a74  = (125.0/192.0);
         double a75  = (-2187.0/6784.0);
         double a76  = (11.0/84.0);
+        std::map<std::string, double> GM = { {"sun", 132712440043.85333}, {"jupiter", 126712764.13345} };
     public:
-        IntegrationVector diff(double, IntegrationVector);
-        std::vector<IntegrationVector> dormand_prince(IntegrationVector, Date, Date, double);
+        IntegrationVector diff(double, IntegrationVector, std::map<std::string, std::vector<IntegrationVector>>);
+        std::vector<IntegrationVector> dormand_prince(IntegrationVector, Date, Date, double, std::map<std::string, std::vector<IntegrationVector>>);
+        BarycentricFrame sqrt(BarycentricFrame);
 };

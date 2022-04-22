@@ -21,6 +21,10 @@ class Velocity{
         void multiply(double);
 
         friend Velocity operator+(Velocity, Velocity);
+        friend Velocity operator-(Velocity, Velocity);
+        friend Velocity operator*(const double&, Velocity);
+        friend Velocity operator/(Velocity, Velocity);
+        friend Velocity operator/(Velocity, const double&);
 
         Velocity(const Velocity& other);
         Velocity& operator=(const Velocity& other);

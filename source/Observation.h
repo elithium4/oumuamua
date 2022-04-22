@@ -16,7 +16,7 @@ private:
     double y = NULL;
     double z = NULL;
 public:
-    Date get_julian_date();
+    Date* get_julian_date();
     std::string get_code();
     CelestialCoord get_ascension();
     CelestialCoord get_declination();

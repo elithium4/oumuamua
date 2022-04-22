@@ -74,22 +74,27 @@ void DataHandler::read_hubble_data(std::string filename){
     file.close();
 }
 
-//Считывание данных для интерполяции TDB
+//Считывание данных для интерполяции
 void DataHandler::read_interpolation_time_data(std::string filename) {
     std::ifstream file(filename);
     std::string data_line;
+    int ind = 0;
     if (!file.is_open())
         std::cout << "Файл с данными для интерполяции даты не может быть открыт!\n";
     else
     {
         while (getline(file, data_line)) {
+            ind++;
             InterpolationTimeFrame data_frame;
-            data_frame.set_julian_date(Date(data_line.substr(0, 12)));
+            Date observation_date(data_line.substr(0, 12));
+            observation_date.set_time_from_fraction();
+            observation_date.set_JD();
+          //  std::cout << "READ "<<observation_date.get_MJD()<<std::endl;
+            data_frame.set_julian_date(observation_date);
             data_frame.set_TT_TDB(data_line.substr(13, 9));
             interpolation_time.push_back(data_frame);
         }
     }
-    std::cout << "Ok";
     file.close();
 }
 
@@ -163,6 +168,10 @@ std::vector<IntegrationVector> DataHandler::get_interpolation_earth() {
     return InterpolationPlanets["earth"];
 }
 
-std::vector<Observation> DataHandler::get_observations() {
-    return observations;
+std::vector<Observation>* DataHandler::get_observations() {
+    return &observations;
+}
+
+std::map<std::string, std::vector<IntegrationVector>> DataHandler::get_interpolation_planets() {
+    return InterpolationPlanets;
 }
