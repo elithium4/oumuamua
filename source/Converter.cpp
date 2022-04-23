@@ -179,34 +179,6 @@ std::map<std::string, std::vector<IntegrationVector>> Converter::interpolation_c
     return new_interpolation_planet;
 }
 
-
-std::vector<IntegrationVector> Converter::interpolation_to_observation(std::vector<IntegrationVector> vector, std::vector<IntegrationVector> interpolation_orbits) {
-    double delta_x;
-    double delta_y;
-    double delta_z;   
-    int last_min = 0;
-    std::vector<IntegrationVector> result;
-    for (int i = 0; i < vector.size(); i++) {
-        IntegrationVector new_vector;
-        int j = last_min;
-        int count = 0;
-        for (j; j < interpolation_orbits.size(); j++) {
-            count++;
-            if (vector[i].get_julian_date().get_MJD() < interpolation_orbits[j].get_julian_date().get_MJD()) {
-                last_min = j - 1;
-                double t;
-                delta_x = interpolation_orbits[j - 1].get_position().get_x() + (interpolation_orbits[j].get_position().get_x() - interpolation_orbits[j - 1].get_position().get_x()) / (interpolation_orbits[j].get_julian_date().get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD()) * (vector[i].get_julian_date().get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD());
-                delta_y = interpolation_orbits[j - 1].get_position().get_y() + (interpolation_orbits[j].get_position().get_y() - interpolation_orbits[j - 1].get_position().get_y()) / (interpolation_orbits[j].get_julian_date().get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD()) * (vector[i].get_julian_date().get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD());
-                delta_z = interpolation_orbits[j - 1].get_position().get_z() + (interpolation_orbits[j].get_position().get_z() - interpolation_orbits[j - 1].get_position().get_z()) / (interpolation_orbits[j].get_julian_date().get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD()) * (vector[i].get_julian_date().get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD());
-                
-                new_vector.set_position(delta_x, delta_y, delta_z);
-                new_vector.set_velocity(vector[i].get_velocity().get_vx(), vector[i].get_velocity().get_vy(), vector[i].get_velocity().get_vz());
-            }
-        }
-    }
-}
-
-
 void Converter::celestial_to_spherical(Observation* observation){
     double AD = NULL;
     double DEC = NULL;
@@ -223,6 +195,35 @@ void Converter::barycentric_to_spherical(IntegrationVector* vector){
     vector->set_spherical_position(longitude, latitude);
 }
 
+
+std::vector<IntegrationVector> Converter::interpolation_to_observation(std::vector<Observation> vector, std::vector<IntegrationVector> interpolation_orbits) {
+    double delta_x;
+    double delta_y;
+    double delta_z;
+    int last_min = 0;
+    std::vector<IntegrationVector> result;
+    for (int i = 0; i < vector.size(); i++) {
+        IntegrationVector new_vector;
+        int j = last_min;
+        int count = 0;
+        for (j; j < interpolation_orbits.size(); j++) {
+            count++;
+            if (vector[i].get_julian_date()->get_MJD() < interpolation_orbits[j].get_julian_date().get_MJD()) {
+                last_min = j - 1;
+                double t;
+                delta_x = interpolation_orbits[j - 1].get_position().get_x() + (interpolation_orbits[j].get_position().get_x() - interpolation_orbits[j - 1].get_position().get_x()) / (interpolation_orbits[j].get_julian_date().get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD()) * (vector[i].get_julian_date()->get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD());
+                delta_y = interpolation_orbits[j - 1].get_position().get_y() + (interpolation_orbits[j].get_position().get_y() - interpolation_orbits[j - 1].get_position().get_y()) / (interpolation_orbits[j].get_julian_date().get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD()) * (vector[i].get_julian_date()->get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD());
+                delta_z = interpolation_orbits[j - 1].get_position().get_z() + (interpolation_orbits[j].get_position().get_z() - interpolation_orbits[j - 1].get_position().get_z()) / (interpolation_orbits[j].get_julian_date().get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD()) * (vector[i].get_julian_date()->get_MJD() - interpolation_orbits[j - 1].get_julian_date().get_MJD());
+                new_vector.set_julian_date(interpolation_orbits[j].get_julian_date());
+                new_vector.set_position(delta_x, delta_y, delta_z);
+                new_vector.set_velocity(0, 0, 0);
+                result.push_back(new_vector);
+            }
+        }
+    }
+    return result;
+}
+
 std::vector<IntegrationVector> Converter::light_time_correction(std::vector<IntegrationVector> vector, std::map<std::string, ObservatoryData> observatory, std::vector< Observation> observations, std::vector<IntegrationVector> modal_vector) {
     std::vector<IntegrationVector> result;
     for (int i = 0; i < vector.size(); i++) {
@@ -230,7 +231,7 @@ std::vector<IntegrationVector> Converter::light_time_correction(std::vector<Inte
         double delta_t = vector[i].get_julian_date().get_MJD();
         double delta = 0;
         for (int j = 0; j < 3; j++) {
-            delta = n_abs(vector[i].get_position() - observatory[observations[i].get_code()].get_barycentric()).len() / (1079252848.8*3600.0);
+            delta = n_abs(vector[i].get_position() - observatory[observations[i].get_code()].get_barycentric()).len() / (1079252848.8 * 3600.0);
             delta_t -= delta;
         }
         new_vector.set_julian_date(vector[i].get_julian_date());
@@ -269,45 +270,45 @@ BarycentricFrame Converter::n_abs(BarycentricFrame frame) {
     return result;
 };
 
-std::vector<IntegrationVector> Converter::gravitational_deflection(std::vector<IntegrationVector> modal_position, std::map<std::string, ObservatoryData> observatory, std::vector< Observation> observations, std::vector<IntegrationVector> sun_observations) {
+std::vector<IntegrationVector> Converter::gravitational_deflection(std::vector<IntegrationVector> model_position, std::map<std::string, ObservatoryData> observatory, std::vector< Observation> observations, std::vector<IntegrationVector> sun_observations) {
     double mass_sun = 1.989e30;
     double new_direction[3];
     BarycentricFrame tmp;
     std::vector<IntegrationVector> result;
     std::vector<IntegrationVector>  sun_interpolation = interpolation_to_observation(observations, sun_observations);
-    for (int i = 0; i < modal_position.size(); i++) {
+    for (int i = 0; i < model_position.size(); i++) {
         IntegrationVector frame;
-        tmp = modal_position[i].get_position() - observatory[observations[i].get_code()].get_barycentric();
+        tmp = model_position[i].get_position() - observatory[observations[i].get_code()].get_barycentric();
         double direction_observatory_to_asteroid[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
-        tmp = modal_position[i].get_position() - sun_interpolation[i].get_position();
+        tmp = model_position[i].get_position() - sun_interpolation[i].get_position();
         double direction_sun_to_asteroid[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
         tmp = observatory[observations[i].get_code()].get_barycentric() - sun_interpolation[i].get_position();
         double direction_sun_to_observatory[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
         double distance_sun_observatory = tmp.len();
         iauLd(mass_sun, direction_observatory_to_asteroid, direction_sun_to_asteroid, direction_sun_to_observatory, distance_sun_observatory, 0, new_direction);
         frame.set_position(new_direction[0], new_direction[1], new_direction[2]);
-        frame.set_julian_date(modal_position[i].get_julian_date());
+        frame.set_julian_date(model_position[i].get_julian_date());
         frame.set_velocity(0, 0, 0);
         result.push_back(frame);
     }
     return result;
 };
 
-std::vector<IntegrationVector> Converter::aberration(std::vector<IntegrationVector> modal_position, std::map<std::string, ObservatoryData> observatory, std::vector< Observation> observations, std::vector<IntegrationVector> sun_observations) {
+std::vector<IntegrationVector> Converter::aberration(std::vector<IntegrationVector> model_position, std::map<std::string, ObservatoryData> observatory, std::vector< Observation> observations, std::vector<IntegrationVector> sun_observations) {
     std::vector<IntegrationVector> result;
     double new_direction[3];
     double velocity[3] = { 0, 0, 0 };
     BarycentricFrame tmp;
     std::vector<IntegrationVector>  sun_interpolation = interpolation_to_observation(observations, sun_observations);
-    for (int i = 0; i < modal_position.size(); i++) {
+    for (int i = 0; i < model_position.size(); i++) {
         IntegrationVector frame;
-        tmp = modal_position[i].get_position() - observatory[observations[i].get_code()].get_barycentric();
+        tmp = model_position[i].get_position() - observatory[observations[i].get_code()].get_barycentric();
         double direction_observatory_to_asteroid[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
         tmp = observatory[observations[i].get_code()].get_barycentric() - sun_interpolation[i].get_position();
         double distance_sun_observatory = tmp.len();
         iauAb(direction_observatory_to_asteroid, velocity, distance_sun_observatory, 1, new_direction);
         frame.set_position(new_direction[0], new_direction[1], new_direction[2]);
-        frame.set_julian_date(modal_position[i].get_julian_date());
+        frame.set_julian_date(model_position[i].get_julian_date());
         frame.set_velocity(0, 0, 0);
         result.push_back(frame);
 

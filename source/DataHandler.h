@@ -37,7 +37,10 @@ class DataHandler{
         
         std::vector<IntegrationVector> get_interpolation_earth();
         std::map<std::string, std::vector<IntegrationVector>> get_interpolation_planets();
-
         std::vector<Observation>* get_observations();
         Observation* get_observation(int);
+
+        std::vector<Observation> get_observations_vector();
+        std::map<std::string, ObservatoryData> get_observatory();
+
 };

@@ -21,7 +21,7 @@ void Facade::convert_observations(){
     std::vector<Observation>* data = dhand.get_observations();
     for (int ind = 0; ind < data->size(); ind++){
         if (ind == 0){
-            std::cout<<"Before: "<<data->at(ind).get_julian_date()->get_TT();
+            std::cout<<"Before: "<<data->at(ind).get_julian_date()->get_MJD();
         }
         cnv.julian_date_to_tdb(data->at(ind).get_julian_date());
         if (ind == 0){
@@ -38,13 +38,20 @@ void Facade::convert_observatory(){
 }
 
 void Facade::integrate(){
-    //integration.dormand_prince(x0, dhand.get_observations()[0].get_julian_date(), dhand.get_observations()[-1].get_julian_date(), 10, cnv.interpolation_center_planet(0.1, dhand.get_observations()[0].get_julian_date(), dhand.get_observations()[-1].get_julian_date(), dhand.get_interpolation_planets()));
-    IntegrationVector vec;
-    vec.set_position(9, 4, 5);
-    std::cout<<"\nBefore: "<<vec.get_spherical_position().get_longitude()<<" "<<vec.get_spherical_position().get_latitude();
-    cnv.barycentric_to_spherical(&vec);
-    std::cout<<"\nAfter: "<<vec.get_spherical_position().get_longitude()<<" "<<vec.get_spherical_position().get_latitude();
     std::vector<IntegrationVector> model_measures;
+    std::vector<IntegrationVector> model_orbits;
+    //integration.dormand_prince(x0, dhand.get_observations()[0].get_julian_date(), dhand.get_observations()[-1].get_julian_date(), 10, cnv.interpolation_center_planet(0.1, dhand.get_observations()[0].get_julian_date(), dhand.get_observations()[-1].get_julian_date(), dhand.get_interpolation_planets()));
+    model_measures = cnv.interpolation_to_observation(dhand.get_observations_vector(), model_orbits);
+    model_measures = cnv.light_time_correction(model_measures, dhand.get_observatory(), dhand.get_observations_vector(), model_orbits);
+    model_measures = cnv.aberration(model_measures, dhand.get_observatory(), dhand.get_observations_vector(), model_orbits);
+
+    
+    
+  //  IntegrationVector vec;
+  //  vec.set_position(9, 4, 5);
+  //  std::cout<<"\nBefore: "<<vec.get_spherical_position().get_longitude()<<" "<<vec.get_spherical_position().get_latitude();
+  //  cnv.barycentric_to_spherical(&vec);
+ //   std::cout<<"\nAfter: "<<vec.get_spherical_position().get_longitude()<<" "<<vec.get_spherical_position().get_latitude();
     least_squares(model_measures);
 }
 

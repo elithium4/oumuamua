@@ -42,12 +42,14 @@ class Converter{
     void transpose(double mtr[3][3]);
 
     std::vector<IntegrationVector> light_time_correction(std::vector<IntegrationVector>, std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>);
-
-    std::vector<IntegrationVector> interpolation_to_observation(std::vector<IntegrationVector> vector, std::vector<IntegrationVector> interpolation_orbits);
-
-    BarycentricFrame interpolation_orbits(double date, std::vector<IntegrationVector> interpolation_orbits); //смоделированная
-
+    std::vector<IntegrationVector> interpolation_to_observation(std::vector<Observation> vector, std::vector<IntegrationVector> interpolation_orbits);
+    BarycentricFrame interpolation_orbits(double date, std::vector<IntegrationVector> interpolation_orbits);
     BarycentricFrame n_abs(BarycentricFrame);
+    std::vector<IntegrationVector> gravitational_deflection(std::vector<IntegrationVector>, std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>);
+    std::vector<IntegrationVector> aberration(std::vector<IntegrationVector>, std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>);
+
+
+
 
     void celestial_to_spherical(Observation*);
     void barycentric_to_spherical(IntegrationVector*);

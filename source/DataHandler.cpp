@@ -179,3 +179,11 @@ std::map<std::string, std::vector<IntegrationVector>> DataHandler::get_interpola
 Observation* DataHandler::get_observation(int ind){
     return &observations[ind];
 }
+
+std::vector<Observation> DataHandler::get_observations_vector() {
+    return observations;
+}
+
+std::map<std::string, ObservatoryData> DataHandler::get_observatory() {
+    return observatory;
+}
