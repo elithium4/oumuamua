@@ -38,7 +38,7 @@ class Converter{
     CartesianFrame interpolation_hubble_data(Date date, std::vector<InterpolationHubbleFrame> interpolation_data);
     GeocentricFrame cartesian_to_geocentric(CartesianFrame, Date);
     BarycentricFrame interpolation_center_of_earth_for_observatory(Date date, GeocentricFrame frame, std::vector<IntegrationVector> interpolation_earth);
-    std::map<std::string, std::vector<IntegrationVector>> interpolation_center_planet(double h, Date date_start, Date date_finish, std::map<std::string, std::vector<IntegrationVector>> interpolation_planet);
+    std::map<std::string, std::vector<IntegrationVector>> interpolation_center_planet(double h, Date* date_start, Date* date_finish, std::map<std::string, std::vector<IntegrationVector>> interpolation_planet);
     void transpose(double mtr[3][3]);
 
     std::vector<IntegrationVector> light_time_correction(std::vector<IntegrationVector>, std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>);

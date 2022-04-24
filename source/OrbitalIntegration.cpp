@@ -18,10 +18,10 @@ IntegrationVector OrbitalIntegration::diff(double t, IntegrationVector asteroid,
     return d_vector;
 };
 
-std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVector y, Date start, Date end, double h, std::map<std::string, std::vector<IntegrationVector>> planets){
+std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVector y, Date* start, Date* end, double h, std::map<std::string, std::vector<IntegrationVector>> planets){
     IntegrationVector k1, k2, k3, k4, k5, k6, k7;
     std::vector<IntegrationVector> result;
-    for (int t = start.get_MJD(); t <= end.get_MJD(); t += h){
+    for (double t = start->get_MJD(); t <= end->get_MJD(); t += h){
         k1 = diff(t,  y, planets);
         k2 = diff(t + c2*h, y+h*(a21*k1), planets);
         k3 = diff(t + c3*h, y+h*(a31*k1+a32*k2), planets);

@@ -47,6 +47,6 @@ class OrbitalIntegration{
         std::map<std::string, double> GM = { {"sun", 132712440043.85333}, {"jupiter", 126712764.13345} };
     public:
         IntegrationVector diff(double, IntegrationVector, std::map<std::string, std::vector<IntegrationVector>>);
-        std::vector<IntegrationVector> dormand_prince(IntegrationVector, Date, Date, double, std::map<std::string, std::vector<IntegrationVector>>);
+        std::vector<IntegrationVector> dormand_prince(IntegrationVector, Date*, Date*, double, std::map<std::string, std::vector<IntegrationVector>>);
         BarycentricFrame sqrt(BarycentricFrame);
 };

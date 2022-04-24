@@ -40,21 +40,21 @@ void Facade::convert_observatory(){
 void Facade::integrate(){
     std::vector<IntegrationVector> model_measures;
     std::vector<IntegrationVector> model_orbits;
-    //integration.dormand_prince(x0, dhand.get_observations()[0].get_julian_date(), dhand.get_observations()[-1].get_julian_date(), 10, cnv.interpolation_center_planet(0.1, dhand.get_observations()[0].get_julian_date(), dhand.get_observations()[-1].get_julian_date(), dhand.get_interpolation_planets()));
+  //  std::map<std::string, std::vector<IntegrationVector>> map_planets = cnv.interpolation_center_planet(0.1, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), dhand.get_interpolation_planets());
+   // integration.dormand_prince(x0, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), 10, map_planets);
     model_measures = cnv.interpolation_to_observation(dhand.get_observations_vector(), model_orbits);
     model_measures = cnv.light_time_correction(model_measures, dhand.get_observatory(), dhand.get_observations_vector(), model_orbits);
     model_measures = cnv.aberration(model_measures, dhand.get_observatory(), dhand.get_observations_vector(), model_orbits);
 
     
-    
+    std::cout << "\nFIN";
   //  IntegrationVector vec;
   //  vec.set_position(9, 4, 5);
   //  std::cout<<"\nBefore: "<<vec.get_spherical_position().get_longitude()<<" "<<vec.get_spherical_position().get_latitude();
   //  cnv.barycentric_to_spherical(&vec);
  //   std::cout<<"\nAfter: "<<vec.get_spherical_position().get_longitude()<<" "<<vec.get_spherical_position().get_latitude();
-    least_squares(model_measures);
+   // least_squares(model_measures);
 }
-
 void Facade::least_squares(std::vector<IntegrationVector> model){
 
     for (int i = 0; i < model.size(); i++){
