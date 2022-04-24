@@ -60,21 +60,29 @@ IntegrationVector operator*(double delta, IntegrationVector vector){
 IntegrationVector::IntegrationVector(const IntegrationVector& other){
     this->position = other.position;
     this->velocity = other.velocity;
+    this->spherical_position = other.spherical_position;
+    this->julian_date = other.julian_date;
 }
 
 IntegrationVector& IntegrationVector::operator=(const IntegrationVector& other){
     this->position = other.position;
     this->velocity = other.velocity;
+    this->spherical_position = other.spherical_position;
+    this->julian_date = other.julian_date;
     return *this;
 }
 
 IntegrationVector::IntegrationVector(const IntegrationVector&& other){
     this->position = other.position;
     this->velocity = other.velocity;
+    this->spherical_position = other.spherical_position;
+    this->julian_date = other.julian_date;
 }
 
 IntegrationVector& IntegrationVector::operator=(const IntegrationVector&& other){
     this->position = other.position;
     this->velocity = other.velocity;
+    this->spherical_position = other.spherical_position;
+    this->julian_date = other.julian_date;
     return *this;
 }

@@ -105,6 +105,8 @@ void DataHandler::read_interpolation_center_planet(std::string filename, std::st
     double y;
     double z;
 
+    int ind = 0;
+
     if (!file.is_open())
         std::cout << "Файл с данными для интерполяции центра Земли не может быть открыт!\n";
     else
@@ -146,6 +148,7 @@ void DataHandler::read_interpolation_center_planet(std::string filename, std::st
                         }
                         data_frame.set_position(x, y, z);
                         planet.push_back(data_frame);
+                        ind++;
                         prev = j + 1;
                         flag = false;
                         break;
