@@ -17,6 +17,7 @@ class Facade{
         Facade();
         void read_data();
         void convert_observations();
+        void convert_observatory();
         void integrate();
         void least_squares(std::vector<IntegrationVector>);
         void write_to_file(std::vector<IntegrationVector>);

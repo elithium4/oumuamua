@@ -23,3 +23,31 @@ void GeocentricFrame::set_y(double value) {
 void GeocentricFrame::set_z(double value) {
     z = value;
 }
+
+GeocentricFrame::GeocentricFrame(const GeocentricFrame & other){
+    this->x = other.x;
+    this->y = other.y;
+    this->z = other.z;
+}
+
+GeocentricFrame& GeocentricFrame::operator=(const GeocentricFrame & other){
+    this->x = other.x;
+    this->y = other.y;
+    this->z = other.z;
+    
+    return *this;
+}
+
+GeocentricFrame::GeocentricFrame(const GeocentricFrame && other){
+    this->x = other.x;
+    this->y = other.y;
+    this->z = other.z;
+}
+
+GeocentricFrame& GeocentricFrame::operator=(const GeocentricFrame&& other){
+    this->x = other.x;
+    this->y = other.y;
+    this->z = other.z;
+    
+    return *this;
+}

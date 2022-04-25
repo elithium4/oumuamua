@@ -193,3 +193,11 @@ std::vector<Observation> DataHandler::get_observations_vector() {
 std::map<std::string, ObservatoryData> DataHandler::get_observatory() {
     return observatory;
 }
+
+std::vector<InterpolationHubbleFrame> DataHandler::get_interpolation_hubble() {
+    return interpolation_hubble;
+}
+
+ObservatoryData* DataHandler::get_observatory_data_by_code(std::string code){
+    return &observatory[code];
+}

@@ -17,7 +17,7 @@ class DataHandler{
     private:
     std::vector<Observation> observations;
 
-    std::map<std::string,ObservatoryData> observatory;
+    std::map<std::string, ObservatoryData> observatory;
 
     std::vector<InterpolationTimeFrame> interpolation_time;
     std::map<std::string, std::vector<IntegrationVector>> InterpolationPlanets;
@@ -38,5 +38,8 @@ class DataHandler{
 
         std::vector<Observation> get_observations_vector();
         std::map<std::string, ObservatoryData> get_observatory();
+
+        std::vector<InterpolationHubbleFrame> get_interpolation_hubble();
+        ObservatoryData* get_observatory_data_by_code(std::string);
 
 };

@@ -25,6 +25,15 @@ void Facade::convert_observations(){
     for (int ind = 0; ind < data->size(); ind++){
         cnv.julian_date_to_tdb(data->at(ind).get_julian_date());
     }
+    convert_observatory();
+}
+
+void Facade::convert_observatory(){
+    std::map<std::string, ObservatoryData> data = dhand.get_observatory();
+    for(auto& item : data) {
+        ObservatoryData* cur_obs = dhand.get_observatory_data_by_code(item.first);
+        cur_obs->set_cartesian(cnv.cylindrical_to_cartesian(cur_obs->get_cylindric()));
+    }
 }
 
 //Численное интегрирование
@@ -35,8 +44,10 @@ void Facade::integrate(){
     std::map<std::string, std::vector<IntegrationVector>> map_planets = cnv.interpolation_center_planet(0.1, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), dhand.get_interpolation_planets());
     model_orbits = integration.dormand_prince(x0, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), 0.2, map_planets);
     model_measures = cnv.interpolation_to_observation(dhand.get_observations_vector(), model_orbits);
-    model_measures = cnv.light_time_correction(model_measures, dhand.get_observatory(), dhand.get_observations_vector(), model_orbits);
-    model_measures = cnv.aberration(model_measures, dhand.get_observatory(), dhand.get_observations_vector(), model_orbits);
+    //model_measures = cnv.light_time_correction(model_measures, dhand.get_observatory(), dhand.get_observations_vector(), model_orbits, dhand.get_interpolation_hubble() ,map_planets["earth"]);
+    //model_measures = cnv.gravitational_deflection(model_measures, dhand.get_observatory(), dhand.get_observations_vector(), model_orbits, dhand.get_interpolation_hubble(), map_planets["earth"]);
+
+    //model_measures = cnv.aberration(model_measures, dhand.get_observatory(), dhand.get_observations_vector(), model_orbits, dhand.get_interpolation_hubble(), map_planets["earth"]);
     
     least_squares(model_measures);
 }
