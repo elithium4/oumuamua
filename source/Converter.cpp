@@ -304,6 +304,7 @@ std::vector<IntegrationVector> Converter::gravitational_deflection(std::vector<I
         double direction_sun_to_observatory[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
         double distance_sun_observatory = tmp.len();
         iauLd(mass_sun, direction_observatory_to_asteroid, direction_sun_to_asteroid, direction_sun_to_observatory, distance_sun_observatory, 0, new_direction);
+        std::cout<<new_direction[0]<<" "<<new_direction[1]<<" "<<new_direction[2]<<"\n";
         frame.set_position(new_direction[0], new_direction[1], new_direction[2]);
         frame.set_julian_date(model_position[i].get_julian_date());
         frame.set_velocity(0, 0, 0);

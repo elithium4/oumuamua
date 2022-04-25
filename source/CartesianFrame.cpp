@@ -48,3 +48,31 @@ void CartesianFrame::set_y(double value) {
 void CartesianFrame::set_z(double value) {
     z = value;
 }
+
+CartesianFrame::CartesianFrame(const CartesianFrame & other){
+    this->x = other.x;
+    this->y = other.y;
+    this->z = other.z;
+}
+
+CartesianFrame& CartesianFrame::operator=(const CartesianFrame & other){
+    this->x = other.x;
+    this->y = other.y;
+    this->z = other.z;
+    
+    return *this;
+}
+
+CartesianFrame::CartesianFrame(const CartesianFrame && other){
+    this->x = other.x;
+    this->y = other.y;
+    this->z = other.z;
+}
+
+CartesianFrame& CartesianFrame::operator=(const CartesianFrame&& other){
+    this->x = other.x;
+    this->y = other.y;
+    this->z = other.z;
+    
+    return *this;
+}

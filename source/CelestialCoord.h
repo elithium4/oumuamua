@@ -14,6 +14,7 @@ class CelestialCoord{
         CelestialCoord& operator=(const CelestialCoord& other);
         CelestialCoord(const CelestialCoord&& other);
         CelestialCoord& operator=(const CelestialCoord&& other);
+        
         void set_from_string(std::string);
         double get_h();
         double get_m();

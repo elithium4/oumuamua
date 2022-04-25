@@ -32,3 +32,31 @@ void CylindricalFrame::set_cos_from_string(std::string value) {
 void CylindricalFrame::set_sin_from_string(std::string value) {
         sin = is_empty(value) ? stod(value) : NULL;;
 }
+
+CylindricalFrame::CylindricalFrame(const CylindricalFrame & other){
+    this->longitude = other.longitude;
+    this->cos = other.cos;
+    this->sin = other.sin;
+}
+
+CylindricalFrame& CylindricalFrame::operator=(const CylindricalFrame & other){
+    this->longitude = other.longitude;
+    this->cos = other.cos;
+    this->sin = other.sin;
+    
+    return *this;
+}
+
+CylindricalFrame::CylindricalFrame(const CylindricalFrame && other){
+    this->longitude = other.longitude;
+    this->cos = other.cos;
+    this->sin = other.sin;
+}
+
+CylindricalFrame& CylindricalFrame::operator=(const CylindricalFrame&& other){
+    this->longitude = other.longitude;
+    this->cos = other.cos;
+    this->sin = other.sin;
+    
+    return *this;
+}

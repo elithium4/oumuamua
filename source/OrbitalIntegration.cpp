@@ -22,16 +22,17 @@ std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVec
     IntegrationVector k1, k2, k3, k4, k5, k6, k7;
     std::vector<IntegrationVector> result;
 
+    IntegrationVector new_y = y;
+
     for (double t = start->get_MJD(); t <= end->get_MJD() + h; t += h){
-        IntegrationVector new_y;
-        k1 = diff(t,  y, planets);
-        k2 = diff(t + c2*h, y+h*(a21*k1), planets);
-        k3 = diff(t + c3*h, y+h*(a31*k1+a32*k2), planets);
-        k4 = diff(t + c4*h, y+h*(a41*k1+a42*k2+a43*k3), planets);
-        k5 = diff(t + c5*h, y+h*(a51*k1+a52*k2+a53*k3+a54*k4), planets);
-        k6 = diff(t +    h, y+h*(a61*k1+a62*k2+a63*k3+a64*k4+a65*k5), planets);
-        k7 = diff(t +    h, y+h*(a71*k1+a72*k2+a73*k3+a74*k4+a75*k5+a76*k6), planets);
-        new_y = y + h * (b1 * k1 + b3 * k3 + b4 * k4 + b5 * k5 + b6 * k6);
+        k1 = diff(t,  new_y, planets);
+        k2 = diff(t + c2*h, new_y+h*(a21*k1), planets);
+        k3 = diff(t + c3*h, new_y+h*(a31*k1+a32*k2), planets);
+        k4 = diff(t + c4*h, new_y+h*(a41*k1+a42*k2+a43*k3), planets);
+        k5 = diff(t + c5*h, new_y+h*(a51*k1+a52*k2+a53*k3+a54*k4), planets);
+        k6 = diff(t +    h, new_y+h*(a61*k1+a62*k2+a63*k3+a64*k4+a65*k5), planets);
+        k7 = diff(t +    h, new_y+h*(a71*k1+a72*k2+a73*k3+a74*k4+a75*k5+a76*k6), planets);
+        new_y = new_y + h * (b1 * k1 + b3 * k3 + b4 * k4 + b5 * k5 + b6 * k6);
 
         Date date;
         date.set_MJD(t);

@@ -31,3 +31,35 @@ GeocentricFrame ObservatoryData::get_geocentric(){
 BarycentricFrame ObservatoryData::get_barycentric(){
     return barycentric_frame;
 }
+
+ObservatoryData::ObservatoryData(const ObservatoryData & other){
+    this->cartesian_frame = other.cartesian_frame;
+    this->cylindrical_frame = other.cylindrical_frame;
+    this->geocentric_frame = other.geocentric_frame;
+    this->barycentric_frame = other.barycentric_frame;
+}
+
+ObservatoryData& ObservatoryData::operator=(const ObservatoryData & other){
+    this->cartesian_frame = other.cartesian_frame;
+    this->cylindrical_frame = other.cylindrical_frame;
+    this->geocentric_frame = other.geocentric_frame;
+    this->barycentric_frame = other.barycentric_frame;
+    
+    return *this;
+}
+
+ObservatoryData::ObservatoryData(const ObservatoryData && other){
+    this->cartesian_frame = other.cartesian_frame;
+    this->cylindrical_frame = other.cylindrical_frame;
+    this->geocentric_frame = other.geocentric_frame;
+    this->barycentric_frame = other.barycentric_frame;
+}
+
+ObservatoryData& ObservatoryData::operator=(const ObservatoryData&& other){
+    this->cartesian_frame = other.cartesian_frame;
+    this->cylindrical_frame = other.cylindrical_frame;
+    this->geocentric_frame = other.geocentric_frame;
+    this->barycentric_frame = other.barycentric_frame;
+    
+    return *this;
+}

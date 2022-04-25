@@ -9,6 +9,8 @@ private:
     double cos = NULL;
     double sin = NULL;
 public:
+    CylindricalFrame() {};
+
     double get_longitude();
     double get_cos();
     double get_sin();
@@ -18,4 +20,9 @@ public:
     void set_longitude_from_string(std::string value);
     void set_cos_from_string(std::string value);
     void set_sin_from_string(std::string value);
+
+    CylindricalFrame(const CylindricalFrame& other);
+    CylindricalFrame& operator=(const CylindricalFrame& other);
+    CylindricalFrame(const CylindricalFrame&& other);
+    CylindricalFrame& operator=(const CylindricalFrame&& other);
 };

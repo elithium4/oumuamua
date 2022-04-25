@@ -12,6 +12,8 @@ class ObservatoryData{
         GeocentricFrame geocentric_frame;
         BarycentricFrame barycentric_frame;
     public:
+        ObservatoryData() {};
+
         void set_cartesian(CartesianFrame);
         void set_cylindrical(CylindricalFrame);
         void set_geocentric(GeocentricFrame);
@@ -21,4 +23,9 @@ class ObservatoryData{
         CylindricalFrame get_cylindric();
         GeocentricFrame get_geocentric();
         BarycentricFrame get_barycentric();
+
+        ObservatoryData(const ObservatoryData& other);
+        ObservatoryData& operator=(const ObservatoryData& other);
+        ObservatoryData(const ObservatoryData&& other);
+        ObservatoryData& operator=(const ObservatoryData&& other);
 };
