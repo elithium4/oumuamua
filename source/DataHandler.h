@@ -2,7 +2,6 @@
 #include "Observation.h"
 #include "ObservatoryData.h"
 #include "InterpolationTimeFrame.h"
-//#include "InterpolationCenterEarth.h"
 #include "IntegrationVector.h"
 
 #include "HubbleInterpolator.h"
@@ -16,8 +15,7 @@
 //Класс, читающий данные из файлов
 class DataHandler{
     private:
-        std::vector<Observation> observations;
-    //std::vector<CylindricalFrame> observatory;
+    std::vector<Observation> observations;
 
     std::map<std::string,ObservatoryData> observatory;
 
@@ -25,7 +23,6 @@ class DataHandler{
     std::map<std::string, std::vector<IntegrationVector>> InterpolationPlanets;
 
     std::map<Date, CartesianFrame> interpolation_hubble;
-    //std::map<Date, CartesianFrame> interpolation_hubble;
     HubbleInterpolator hubble;
     public:
         void read_observations(std::string filename="./data/observations.txt");

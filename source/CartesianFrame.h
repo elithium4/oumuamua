@@ -2,6 +2,8 @@
 #include <cstddef>
 #include <string>
 
+
+//Класс декартовых координат относительно центра Земли
 class CartesianFrame {
 private:
     double x = NULL;

@@ -1,7 +1,7 @@
 all: program
 
-program: 	main.o CelestialCoord.o Date.o Velocity.o CartesianFrame.o CylindricalFrame.o GeocentricFrame.o BarycentricFrame.o SphericalFrame.o Observation.o InterpolationCenterEarth.o HubbleInterpolator.o InterpolationHubbleFrame.o ObservatoryData.o InterpolationTimeFrame.o IntegrationVector.o OrbitalIntegration.o Converter.o DataHandler.o LeastSquares.o Facade.o libsofa.a
-			g++ main.o CelestialCoord.o Date.o Velocity.o CartesianFrame.o CylindricalFrame.o GeocentricFrame.o BarycentricFrame.o SphericalFrame.o Observation.o InterpolationCenterEarth.o HubbleInterpolator.o InterpolationHubbleFrame.o ObservatoryData.o InterpolationTimeFrame.o IntegrationVector.o OrbitalIntegration.o Converter.o DataHandler.o LeastSquares.o Facade.o ../sofa/libsofa_c.a -o ../program
+program: 	main.o CelestialCoord.o Date.o Velocity.o CartesianFrame.o CylindricalFrame.o GeocentricFrame.o BarycentricFrame.o SphericalFrame.o Observation.o HubbleInterpolator.o InterpolationHubbleFrame.o ObservatoryData.o InterpolationTimeFrame.o IntegrationVector.o OrbitalIntegration.o Converter.o DataHandler.o LeastSquares.o Facade.o libsofa.a
+			g++ main.o CelestialCoord.o Date.o Velocity.o CartesianFrame.o CylindricalFrame.o GeocentricFrame.o BarycentricFrame.o SphericalFrame.o Observation.o HubbleInterpolator.o InterpolationHubbleFrame.o ObservatoryData.o InterpolationTimeFrame.o IntegrationVector.o OrbitalIntegration.o Converter.o DataHandler.o LeastSquares.o Facade.o ../sofa/libsofa_c.a -o ../program
 
 main.o: main.cpp
 		g++ -c main.cpp
@@ -47,9 +47,6 @@ CylindricalFrame.o: CylindricalFrame.cpp
 
 CartesianFrame.o: CartesianFrame.cpp
 		g++ -c CartesianFrame.cpp
-
-InterpolationCenterEarth.o: InterpolationCenterEarth.cpp
-		g++ -c InterpolationCenterEarth.cpp
 
 InterpolationHubbleFrame.o: InterpolationHubbleFrame.cpp
 		g++ -c InterpolationHubbleFrame.cpp

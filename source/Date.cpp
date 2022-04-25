@@ -183,7 +183,10 @@ void Date::set_MJD(double MJD){
 }
 
 void Date::set_JD(){
-    double JDN = 367 * year - (7 * (year + 5001 + (month - 9) / 7)) / 4 + (275 * month) / 9 + day + 1729777;
+    double a = (14.0 - month) / 12.0;
+    double y = year + 4800 - a;
+    double m = month + 12 * a - 3;
+    double JDN = day + (153.0 * m + 2) / 5.0 + 365 * y + y / 4.0 - y / 100.0 + y / 400.0 - 32045;
     JD = JDN + (hours - 12) / 24.0 + minutes / 1440.0 + seconds / 86400.0;
     MJD = JD - 2400000.5;
 }

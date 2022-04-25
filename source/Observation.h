@@ -6,6 +6,7 @@
 
 #include <string>
 
+//Класс для хранения наблюдения
 class Observation {
 private:
     Date julian_date;

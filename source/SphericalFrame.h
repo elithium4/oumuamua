@@ -1,5 +1,6 @@
 #pragma once
 
+//Класс для сферических координат (в радианах)
 class SphericalFrame{
     private:
         double longitude;

@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string>
 
-
+//Класс для численного интегрирования
 class OrbitalIntegration{
     private:
         double c2 = (1.0/5.0);

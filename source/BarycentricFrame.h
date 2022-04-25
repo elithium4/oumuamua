@@ -2,6 +2,8 @@
 #include <math.h>
 #include <cstddef>
 
+
+//Класс координат относительно барицентра
 class BarycentricFrame {
 private:
     double x = NULL;

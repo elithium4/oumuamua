@@ -19,7 +19,6 @@
 
 #include "InterpolationTimeFrame.h"
 #include "InterpolationHubbleFrame.h"
-#include "InterpolationCenterEarth.h"
 
 #include "IntegrationVector.h"
 
@@ -47,9 +46,6 @@ class Converter{
     BarycentricFrame n_abs(BarycentricFrame);
     std::vector<IntegrationVector> gravitational_deflection(std::vector<IntegrationVector>, std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>);
     std::vector<IntegrationVector> aberration(std::vector<IntegrationVector>, std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>);
-
-
-
 
     void celestial_to_spherical(Observation*);
     void barycentric_to_spherical(IntegrationVector*);

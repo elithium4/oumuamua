@@ -4,6 +4,7 @@
 #include "GeocentricFrame.h"
 #include "BarycentricFrame.h"
 
+//Класс для хранения данных обсерватории
 class ObservatoryData{
     private:
         CartesianFrame cartesian_frame;

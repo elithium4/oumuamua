@@ -2,6 +2,7 @@
 #include "Date.h"
 #include <string>
 
+//Класс для хранения данных для интерполяции времени
 class InterpolationTimeFrame{
 private:
     Date julian_date;

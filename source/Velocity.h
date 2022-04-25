@@ -1,5 +1,5 @@
 
-
+//Класс для хранения скорости
 class Velocity{
     private:
         double vx;

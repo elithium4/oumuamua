@@ -4,6 +4,7 @@
 #include "Velocity.h"
 #include "Date.h"
 
+//Вектор для численного интегрирования
 class IntegrationVector{
     private:
         BarycentricFrame position;

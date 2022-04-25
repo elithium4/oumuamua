@@ -1,5 +1,6 @@
 #include <cstddef>
 
+//Класс геоцентрических координат
 class GeocentricFrame{
     private:
         double x = NULL;

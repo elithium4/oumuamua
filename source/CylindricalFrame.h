@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <string>
 
+//Класс цилиндрических координат
 class CylindricalFrame {
 private:
     double longitude = NULL;

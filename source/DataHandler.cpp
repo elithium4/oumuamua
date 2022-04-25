@@ -23,6 +23,7 @@ void DataHandler::read_observations(std::string filename){
                 data_frame.set_declination_from_string(data_line.substr(44, 12));
 
                 observations.push_back(data_frame);
+
             }
         }
     }
@@ -74,7 +75,7 @@ void DataHandler::read_hubble_data(std::string filename){
     file.close();
 }
 
-//Считывание данных для интерполяции
+//Считывание данных для интерполяции времени
 void DataHandler::read_interpolation_time_data(std::string filename) {
     std::ifstream file(filename);
     std::string data_line;
@@ -89,7 +90,6 @@ void DataHandler::read_interpolation_time_data(std::string filename) {
             Date observation_date(data_line.substr(0, 12));
             observation_date.set_time_from_fraction();
             observation_date.set_JD();
-          //  std::cout << "READ "<<observation_date.get_MJD()<<std::endl;
             data_frame.set_julian_date(observation_date);
             data_frame.set_TT_TDB(data_line.substr(13, 9));
             interpolation_time.push_back(data_frame);
@@ -98,6 +98,7 @@ void DataHandler::read_interpolation_time_data(std::string filename) {
     file.close();
 }
 
+//Считывание данных для интерполяции центра небесного тела
 void DataHandler::read_interpolation_center_planet(std::string filename, std::string name) {
     std::ifstream file(filename);
     std::string data_line;
@@ -108,7 +109,7 @@ void DataHandler::read_interpolation_center_planet(std::string filename, std::st
     int ind = 0;
 
     if (!file.is_open())
-        std::cout << "Файл с данными для интерполяции центра Земли не может быть открыт!\n";
+        std::cout << "Файл с данными для интерполяции центра небесного тела не может быть открыт!\n";
     else
     {
         std::vector<IntegrationVector> planet;
