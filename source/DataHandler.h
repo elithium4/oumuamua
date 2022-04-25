@@ -4,7 +4,7 @@
 #include "InterpolationTimeFrame.h"
 #include "IntegrationVector.h"
 
-#include "HubbleInterpolator.h"
+#include "InterpolationHubbleFrame.h"
 
 #include <iostream>
 #include <fstream>
@@ -22,8 +22,7 @@ class DataHandler{
     std::vector<InterpolationTimeFrame> interpolation_time;
     std::map<std::string, std::vector<IntegrationVector>> InterpolationPlanets;
 
-    std::map<Date, CartesianFrame> interpolation_hubble;
-    HubbleInterpolator hubble;
+    std::vector<InterpolationHubbleFrame> interpolation_hubble;
     public:
         void read_observations(std::string filename="./data/observations.txt");
         void read_observatory_data(std::string filename="./data/observatory.txt");

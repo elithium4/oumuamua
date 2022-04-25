@@ -68,8 +68,10 @@ void DataHandler::read_hubble_data(std::string filename){
             data_frame.set_from_string(data_line.substr(25, data_line.length() - 25));
             Date hubble_date(data_line.substr(0, 10));
             hubble_date.set_time_from_string(data_line.substr(0, 18));
-            hubble.set_dataframe(hubble_date, data_frame);
-            interpolation_hubble[hubble_date] = data_frame;
+            InterpolationHubbleFrame frame;
+            frame.set_date(hubble_date);
+            frame.set_data(data_frame);
+            interpolation_hubble.push_back(frame);
          }
     }
     file.close();
