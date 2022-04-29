@@ -2,6 +2,8 @@
 
 #include "CelestialCoord.h"
 #include "SphericalFrame.h"
+#include "BarycentricFrame.h"
+#include "GeocentricFrame.h"
 #include "Date.h"
 
 #include <string>
@@ -14,6 +16,8 @@ private:
     CelestialCoord ascension;
     CelestialCoord declination;
     SphericalFrame spherical_position;
+    GeocentricFrame geocentric_position;
+    BarycentricFrame barycentric_position;
 
     double x = NULL;
     double y = NULL;
@@ -30,6 +34,8 @@ public:
     void set_ascension_from_string(std::string value);
     void set_declination_from_string(std::string value);
     void set_spherical(double longitude, double latitude);
+    void set_geocentric(double, double, double);
+    void set_barycentric(double, double, double);
 
     double get_x();
     double get_y();
@@ -38,4 +44,6 @@ public:
     void set_y(double value);
     void set_z(double value);
     SphericalFrame get_spherical_position();
+    GeocentricFrame get_geocentric();
+    BarycentricFrame get_barycentric();
 };

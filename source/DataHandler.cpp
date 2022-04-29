@@ -69,7 +69,7 @@ void DataHandler::read_hubble_data(std::string filename){
             hubble_date.set_time_from_string(data_line.substr(0, 18));
             InterpolationHubbleFrame frame;
             frame.set_date(hubble_date);
-            frame.set_data(data_frame);
+            frame.set_geocentric(data_frame);
             interpolation_hubble.push_back(frame);
          }
     }
@@ -206,4 +206,8 @@ std::vector<IntegrationVector>* DataHandler::get_planet_by_name(std::string name
         return &InterpolationPlanets[name];
     }
     return nullptr;
+}
+
+std::map<std::string, ObservatoryData>* DataHandler::get_obsevatory_link() {
+    return &observatory;
 }

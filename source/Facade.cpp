@@ -26,6 +26,8 @@ void Facade::convert_observations(){
     std::vector<Observation>* data = dhand.get_observations();
     for (int ind = 0; ind < data->size(); ind++){
         cnv.julian_date_to_tt(data->at(ind).get_julian_date());
+        cnv.celestial_to_spherical(dhand.get_observation(ind));
+        cnv.spherical_to_geocentric(dhand.get_observation(ind));
     }
     cnv.interpolation_date_to_tt_tdb(data, dhand.get_interpolation_time());
     std::cout<<"Observation convertion done.\n";
@@ -73,13 +75,19 @@ void Facade::integrate(){
     //}
 
     std::map<std::string, std::vector<IntegrationVector>> map_planets = cnv.interpolation_center_planet(0.1, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), dhand.get_interpolation_planets());
+
     model_orbits = integration.dormand_prince(x0, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), 0.2, map_planets);
+    
     model_measures = cnv.interpolation_to_observation(dhand.get_observations_vector(), model_orbits);
+
+
+    cnv.geocentric_to_barycentric(dhand.get_observations(), dhand.get_obsevatory_link(), dhand.get_interpolation_hubble(), map_planets["earth"]);
     //model_measures = cnv.light_time_correction(model_measures, dhand.get_observatory(), dhand.get_observations_vector(), model_orbits, dhand.get_interpolation_hubble() ,map_planets["earth"]);
     //model_measures = cnv.gravitational_deflection(model_measures, dhand.get_observatory(), dhand.get_observations_vector(), model_orbits, dhand.get_interpolation_hubble(), map_planets["earth"]);
     //model_measures = cnv.aberration(model_measures, dhand.get_observatory(), dhand.get_observations_vector(), model_orbits, dhand.get_interpolation_hubble(), map_planets["earth"]);
     
     least_squares(model_measures);
+    std::cout<<"Fin\n";
 }
 
 //МНК (пока в процессе)
@@ -87,7 +95,8 @@ void Facade::least_squares(std::vector<IntegrationVector> model){
 
     for (int i = 0; i < model.size(); i++){
         cnv.barycentric_to_spherical(&model[i]);
-        cnv.celestial_to_spherical(dhand.get_observation(i));
+        cnv.barycentric_to_spherical_for_observations(dhand.get_observation(i));
+        //cnv.celestial_to_spherical(dhand.get_observation(i));
     }
 
     double wrms_longitude;

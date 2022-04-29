@@ -45,6 +45,18 @@ void Observation::set_spherical(double longitude, double latitude){
     spherical_position.set_longitude(longitude);
 }
 
+void Observation::set_barycentric(double x, double y, double z) {
+    barycentric_position.set_x(x);
+    barycentric_position.set_y(y);
+    barycentric_position.set_z(z);
+}
+
+void Observation::set_geocentric(double x, double y, double z) {
+    geocentric_position.set_x(x);
+    geocentric_position.set_y(y);
+    geocentric_position.set_z(z);
+}
+
 double Observation::get_x() {
     return x;
 }
@@ -71,4 +83,12 @@ void Observation::set_z(double value) {
 
 SphericalFrame Observation::get_spherical_position(){
     return spherical_position;
+}
+
+GeocentricFrame Observation::get_geocentric() {
+    return geocentric_position;
+}
+
+BarycentricFrame Observation::get_barycentric() {
+    return barycentric_position;
 }

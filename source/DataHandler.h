@@ -44,5 +44,6 @@ class DataHandler{
 
         std::vector<InterpolationHubbleFrame> get_interpolation_hubble();
         ObservatoryData* get_observatory_data_by_code(std::string);
+        std::map<std::string, ObservatoryData>* get_obsevatory_link();
 
 };

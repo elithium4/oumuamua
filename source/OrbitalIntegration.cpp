@@ -37,6 +37,7 @@ std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVec
         Date date;
         date.set_MJD(t);
         new_y.set_julian_date(date);
+        std::cout<<new_y.get_position().get_x()<<" "<<new_y.get_position().get_y()<<" "<<new_y.get_position().get_z()<<"\n";
         result.push_back(new_y);
     }
     return result;

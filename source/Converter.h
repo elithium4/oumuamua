@@ -40,6 +40,9 @@ class Converter{
     GeocentricFrame cartesian_to_geocentric(CartesianFrame, Date);
     BarycentricFrame interpolation_center_of_earth_for_observatory(Date date, GeocentricFrame frame, std::vector<IntegrationVector> interpolation_earth);
     std::map<std::string, std::vector<IntegrationVector>> interpolation_center_planet(double h, Date* date_start, Date* date_finish, std::map<std::string, std::vector<IntegrationVector>> interpolation_planet);
+    void geocentric_to_barycentric(std::vector<Observation>*, std::map<std::string, ObservatoryData>*, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector>);
+
+    
     void transpose(double mtr[3][3]);
 
     std::vector<IntegrationVector> light_time_correction(std::vector<IntegrationVector>, std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
@@ -51,4 +54,7 @@ class Converter{
 
     void celestial_to_spherical(Observation*);
     void barycentric_to_spherical(IntegrationVector*);
+    void spherical_to_geocentric(Observation*);
+
+    void barycentric_to_spherical_for_observations(Observation*);
 };
