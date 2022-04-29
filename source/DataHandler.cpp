@@ -63,7 +63,7 @@ void DataHandler::read_hubble_data(std::string filename){
     else
     {
          while (getline(file, data_line)) {
-            CartesianFrame data_frame;
+            GeocentricFrame data_frame;
             data_frame.set_from_string(data_line.substr(25, data_line.length() - 25));
             Date hubble_date(data_line.substr(0, 10));
             hubble_date.set_time_from_string(data_line.substr(0, 18));
@@ -199,4 +199,11 @@ std::vector<InterpolationHubbleFrame> DataHandler::get_interpolation_hubble() {
 
 ObservatoryData* DataHandler::get_observatory_data_by_code(std::string code){
     return &observatory[code];
+}
+
+std::vector<IntegrationVector>* DataHandler::get_planet_by_name(std::string name){
+    if (InterpolationPlanets.find(name) != InterpolationPlanets.end()) {
+        return &InterpolationPlanets[name];
+    }
+    return nullptr;
 }

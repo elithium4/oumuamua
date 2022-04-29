@@ -32,8 +32,8 @@ Velocity IntegrationVector::get_velocity(){
     return velocity;
 }
 
-Date IntegrationVector::get_julian_date(){
-    return julian_date;
+Date* IntegrationVector::get_julian_date(){
+    return &julian_date;
 }
 
 IntegrationVector operator+(IntegrationVector vector, double delta){

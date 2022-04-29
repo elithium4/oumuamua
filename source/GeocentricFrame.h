@@ -1,4 +1,6 @@
+#pragma once
 #include <cstddef>
+#include <string>
 
 //Класс геоцентрических координат
 class GeocentricFrame{
@@ -8,6 +10,7 @@ class GeocentricFrame{
         double z = NULL;
     public:
         GeocentricFrame() {};
+        void set_from_string(std::string);
         double get_x();
         double get_y();
         double get_z();

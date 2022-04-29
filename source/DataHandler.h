@@ -23,6 +23,7 @@ class DataHandler{
     std::map<std::string, std::vector<IntegrationVector>> InterpolationPlanets;
 
     std::vector<InterpolationHubbleFrame> interpolation_hubble;
+
     public:
         void read_observations(std::string filename="./data/observations.txt");
         void read_observatory_data(std::string filename="./data/observatory.txt");
@@ -33,6 +34,8 @@ class DataHandler{
         
         std::vector<IntegrationVector> get_interpolation_earth();
         std::map<std::string, std::vector<IntegrationVector>> get_interpolation_planets();
+        std::vector<IntegrationVector>* get_planet_by_name(std::string);
+
         std::vector<Observation>* get_observations();
         Observation* get_observation(int);
 

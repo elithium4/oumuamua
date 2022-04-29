@@ -22,7 +22,7 @@ class IntegrationVector{
         BarycentricFrame get_position();
         SphericalFrame get_spherical_position();
         Velocity get_velocity();
-        Date get_julian_date();
+        Date* get_julian_date();
 
         IntegrationVector(const IntegrationVector& other);
         IntegrationVector& operator=(const IntegrationVector& other);

@@ -31,9 +31,11 @@ class Converter{
     public:
 
     CartesianFrame cylindrical_to_cartesian(CylindricalFrame measure);
-    void julian_date_to_tdb(Date*);
+    void julian_date_to_tt(Date*);
     void interpolation_date_to_tt_tdb(std::vector<Observation>* observations, std::vector<InterpolationTimeFrame> interpolation_time);
-    
+    void interpolation_to_tdb(Date*, std::vector<InterpolationTimeFrame>);
+
+
     GeocentricFrame interpolation_hubble_data(Date date, std::vector<InterpolationHubbleFrame> interpolation_data);
     GeocentricFrame cartesian_to_geocentric(CartesianFrame, Date);
     BarycentricFrame interpolation_center_of_earth_for_observatory(Date date, GeocentricFrame frame, std::vector<IntegrationVector> interpolation_earth);

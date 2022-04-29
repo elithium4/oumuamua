@@ -6,8 +6,8 @@ IntegrationVector OrbitalIntegration::diff(double t, IntegrationVector asteroid,
     BarycentricFrame dx;
     BarycentricFrame dv;
     for (int i = 0; i < planets["earth"].size(); i++) {
-        if (planets["earth"][i].get_julian_date().get_MJD() == t) {
-            d_vector.set_julian_date(planets["earth"][i].get_julian_date());
+        if (planets["earth"][i].get_julian_date()->get_MJD() == t) {
+            d_vector.set_julian_date(*planets["earth"][i].get_julian_date());
             dx = sqrt((GM["sun"] * (planets["sun"][i].get_position() - asteroid.get_position())) / ((planets["sun"][i].get_position() - asteroid.get_position()).len()* (planets["sun"][i].get_position() - asteroid.get_position())) + (GM["jupiter"] * (planets["jupiter"][i].get_position() - asteroid.get_position()) / ((planets["jupiter"][i].get_position() - asteroid.get_position()).len()* (planets["jupiter"][i].get_position() - asteroid.get_position()))));
             dv = (GM["sun"] * (planets["sun"][i].get_position() - asteroid.get_position())) / (pow((planets["sun"][i].get_position() - asteroid.get_position()).len(),2) * (planets["sun"][i].get_position() - asteroid.get_position())) + (GM["jupiter"] * (planets["jupiter"][i].get_position() - asteroid.get_position()) / (pow((planets["jupiter"][i].get_position() - asteroid.get_position()).len(), 2) * (planets["jupiter"][i].get_position() - asteroid.get_position())));
             break;
