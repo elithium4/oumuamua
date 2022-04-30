@@ -21,6 +21,6 @@ class Facade{
         void convert_interpolation_data();
         void test_reading();
         void integrate();
-        void least_squares(std::vector<IntegrationVector>);
-        void write_to_file(std::vector<IntegrationVector>);
+        void least_squares(std::vector<IntegrationVector>, std::vector<IntegrationVector>);
+        void write_to_file(std::vector<IntegrationVector>, std::vector<IntegrationVector>);
 };

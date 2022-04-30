@@ -45,12 +45,12 @@ class Converter{
     
     void transpose(double mtr[3][3]);
 
-    std::vector<IntegrationVector> light_time_correction(std::vector<IntegrationVector>, std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
+    std::vector<IntegrationVector> light_time_correction(std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
     std::vector<IntegrationVector> interpolation_to_observation(std::vector<Observation> vector, std::vector<IntegrationVector> interpolation_orbits);
-    BarycentricFrame interpolation_orbits(double date, std::vector<IntegrationVector> interpolation_orbits);
+    BarycentricFrame interpolation_orbits(double date, std::vector<Observation> interpolation_orbits);
     BarycentricFrame n_abs(BarycentricFrame);
-    std::vector<IntegrationVector> gravitational_deflection(std::vector<IntegrationVector>, std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
-    std::vector<IntegrationVector> aberration(std::vector<IntegrationVector>, std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
+    std::vector<IntegrationVector> gravitational_deflection(std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
+    std::vector<IntegrationVector> aberration(std::map<std::string, ObservatoryData>, std::vector< Observation>, std::vector<IntegrationVector>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
 
     void celestial_to_spherical(Observation*);
     void barycentric_to_spherical(IntegrationVector*);
