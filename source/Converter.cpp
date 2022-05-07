@@ -74,6 +74,7 @@ GeocentricFrame Converter::interpolation_hubble_data(Date date, std::vector<Inte
 
             double z = interpolation_data[i].get_geocentric().get_z() + (interpolation_data[i+1].get_geocentric().get_z()
             - interpolation_data[i+1].get_geocentric().get_z())*(date.get_MJD() - interpolation_data[i].get_date().get_MJD());
+            std::cout<<"Good i: "<<i<<" "<<i+1<<"\n";
 
             new_frame.set_x(x);
             new_frame.set_y(y);
@@ -252,10 +253,10 @@ void Converter::geocentric_to_barycentric(std::vector<Observation>* observations
         observation_position.set_x(observatory_position.get_x() + observations->at(i).get_geocentric().get_x());
         observation_position.set_y(observatory_position.get_y() + observations->at(i).get_geocentric().get_y());
         observation_position.set_z(observatory_position.get_z() + observations->at(i).get_geocentric().get_z());
-        std::cout << "GEO "<<observations->at(i).get_geocentric().get_x() << " " << observations->at(i).get_geocentric().get_y() << " " << observations->at(i).get_geocentric().get_z() << std::endl;
-        std::cout << "OBS" << observatory_position.get_x() << " " << observatory_position.get_y() << " " << observatory_position.get_z() << std::endl;
+        //std::cout << "GEO "<<observations->at(i).get_geocentric().get_x() << " " << observations->at(i).get_geocentric().get_y() << " " << observations->at(i).get_geocentric().get_z() << std::endl;
+        //std::cout << "OBS" << observatory_position.get_x() << " " << observatory_position.get_y() << " " << observatory_position.get_z() << std::endl;
         observations->at(i).set_barycentric(observation_position.get_x(), observation_position.get_y(), observation_position.get_z());
-        std::cout << "Bar" << observations->at(i).get_barycentric().get_x() << " " << observations->at(i).get_barycentric().get_y() << " " << observations->at(i).get_barycentric().get_z() << std::endl;
+        //std::cout << "Bar" << observations->at(i).get_barycentric().get_x() << " " << observations->at(i).get_barycentric().get_y() << " " << observations->at(i).get_barycentric().get_z() << std::endl;
 
     }
 }
@@ -427,8 +428,16 @@ std::vector<IntegrationVector> Converter::aberration(std::map<std::string, Obser
 
 void Converter::barycentric_to_geocentric(IntegrationVector* model, std::vector<IntegrationVector> earth_orbit){
     BarycentricFrame earth_bary = interpolation_orbits(model->get_julian_date()->get_MJD(), earth_orbit);
+
     double x = model->get_position().get_x() - earth_bary.get_x();
+
+    //std::cout<<"In bary: "<<model->get_position().get_x()<<" - "<<earth_bary.get_x()<<" = "<<x<<"\n";
+
     double y = model->get_position().get_y() - earth_bary.get_y();
     double z = model->get_position().get_z() - earth_bary.get_z();
+
+    //std::cout<<"In bary: "<<model->get_position().get_z()<<" - "<<earth_bary.get_z()<<" = "<<z<<"\n";
+
+
     model->set_geocentric_position(x, y, z);
 }

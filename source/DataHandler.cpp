@@ -99,6 +99,8 @@ void DataHandler::read_interpolation_time_data(std::string filename) {
     file.close();
 }
 
+#include <iomanip>
+
 //Считывание данных для интерполяции центра небесного тела
 void DataHandler::read_interpolation_center_planet(std::string filename, std::string name) {
     std::ifstream file(filename);
@@ -124,6 +126,7 @@ void DataHandler::read_interpolation_center_planet(std::string filename, std::st
             int prev = 14;
             bool flag = false;
             int last = 0;
+            bool all_three = false;
 
             for (int i = 0; i < 3; i++) {
                 for (int j = prev; j < data_line.length() + 1; j++) {
@@ -144,21 +147,28 @@ void DataHandler::read_interpolation_center_planet(std::string filename, std::st
                             break;
                         case 2:
                             z = std::stod(data_line.substr(prev, last - prev));
+                            all_three = true;
                             break;
                         default:
                             break;
                         }
-                        data_frame.set_position(x, y, z);
-                        planet.push_back(data_frame);
-                        ind++;
+                        if (all_three){
+                            data_frame.set_position(x, y, z);
+                            planet.push_back(data_frame);
+                            //if (name == "sun")
+                            //std::cout<<std::setprecision(16)<<data_frame.get_position().get_x()<<" "<<data_frame.get_position().get_y()<<" "<<data_frame.get_position().get_z()<<"\n";
+                            ind++;
+                            all_three = false;
+                        }
                         prev = j + 1;
-                        flag = false;
+                            flag = false;
                         break;
                     }
 
                 }
             }
         }
+        std::cout<<planet.size()<<"\n";
         InterpolationPlanets[name] = planet;
     }
     file.close();
