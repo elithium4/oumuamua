@@ -12,6 +12,12 @@ void IntegrationVector::set_spherical_position(double longitude, double latitude
     this->spherical_position.set_latitude(latitude);
 }
 
+void IntegrationVector::set_geocentric_position(double x, double y, double z){
+    this->geocentric_position.set_x(x);
+    this->geocentric_position.set_y(y);
+    this->geocentric_position.set_z(z);
+}
+
 void IntegrationVector::set_velocity(double vx, double vy, double vz){
     this->velocity.set(vx, vy, vz);
 }
@@ -22,6 +28,10 @@ void IntegrationVector::set_julian_date(Date date){
 
 BarycentricFrame IntegrationVector::get_position(){
     return position;
+}
+
+GeocentricFrame IntegrationVector::get_geocentric_position(){
+    return geocentric_position;
 }
 
 SphericalFrame IntegrationVector::get_spherical_position(){
@@ -62,12 +72,14 @@ IntegrationVector::IntegrationVector(const IntegrationVector& other){
     this->velocity = other.velocity;
     this->spherical_position = other.spherical_position;
     this->julian_date = other.julian_date;
+    this->geocentric_position = other.geocentric_position;
 }
 
 IntegrationVector& IntegrationVector::operator=(const IntegrationVector& other){
     this->position = other.position;
     this->velocity = other.velocity;
     this->spherical_position = other.spherical_position;
+    this->geocentric_position = other.geocentric_position;
     this->julian_date = other.julian_date;
     return *this;
 }
@@ -76,6 +88,7 @@ IntegrationVector::IntegrationVector(const IntegrationVector&& other){
     this->position = other.position;
     this->velocity = other.velocity;
     this->spherical_position = other.spherical_position;
+    this->geocentric_position = other.geocentric_position;
     this->julian_date = other.julian_date;
 }
 
@@ -83,6 +96,7 @@ IntegrationVector& IntegrationVector::operator=(const IntegrationVector&& other)
     this->position = other.position;
     this->velocity = other.velocity;
     this->spherical_position = other.spherical_position;
+    this->geocentric_position = other.geocentric_position;
     this->julian_date = other.julian_date;
     return *this;
 }
