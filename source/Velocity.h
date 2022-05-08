@@ -6,7 +6,7 @@ class Velocity{
         double vy;
         double vz;
     public:
-        Velocity(){};
+        Velocity(){vx = 0; vy = 0; vz = 0;};
         void set(double, double, double);
 
         void set_vx(double);

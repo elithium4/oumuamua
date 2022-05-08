@@ -2,8 +2,8 @@
 #include <iomanip>
 
 Facade::Facade(){
-    x0.set_position(1.452674920249709E+08, 7.476202044529255E+07, -1.071281870835046E+07);
-    x0.set_velocity(4.483537051060935E+01, 1.039892688333976E+01, 1.433813590588367E+01);
+    x0.set_position(1.452674920249709E+08, 7.285412724042718E+07, 1.990980486534136E+07);
+    x0.set_velocity(4.483537051060935E+01, 3.837445958225554E+00, 1.729143805755713E+01);
 }
 
 //Считывание данных
@@ -53,36 +53,20 @@ void Facade::integrate(){
     std::vector<IntegrationVector> base_measures;
     std::vector<IntegrationVector> model_orbits;
 
-    //std::vector<Observation>* data = dhand.get_observations();
-    //for (int i = 0; i < data->size(); i++){
-    //    std::cout<<"TDB: "<<data->at(i).get_julian_date()->get_TDB()<<"\n";
-    //}
-
-    std::map<std::string, std::vector<IntegrationVector>> map_planets = cnv.interpolation_center_planet(0.1, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), dhand.get_interpolation_planets());
+    std::map<std::string, std::vector<IntegrationVector>> map_planets = cnv.interpolation_center_planet(0.2, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), dhand.get_interpolation_planets());
 
     model_orbits = integration.dormand_prince(x0, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), 0.2, map_planets);
     
     model_measures = cnv.interpolation_to_observation(dhand.get_observations_vector(), model_orbits);
    
+    std::ofstream model_out;
+    model_out.open("./data/model_bary.txt");
 
-    //cnv.geocentric_to_barycentric(dhand.get_observations(), dhand.get_obsevatory_link(), dhand.get_interpolation_hubble(), map_planets["earth"]);
-  /*  for (int i = 0; i < (dhand.get_observations_vector()).size(); i++) {
-        IntegrationVector tmp;
-        tmp.set_julian_date(*dhand.get_observations_vector()[i].get_julian_date());
-        tmp.set_position(dhand.get_observations_vector()[i].get_barycentric().get_x(), dhand.get_observations_vector()[i].get_barycentric().get_y(), dhand.get_observations_vector()[i].get_barycentric().get_z());
-       // std::cout << dhand.get_observations_vector()[i].get_barycentric().get_x() << " " << tmp.get_position().get_x() << std::endl;
-        base_measures.push_back(tmp);
-    }*/
-   // model_measures = cnv.light_time_correction(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), dhand.get_interpolation_hubble() ,map_planets["earth"]);
-   // model_measures = cnv.gravitational_deflection(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
- //   model_measures = cnv.aberration(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
-    
     for (int i = 0; i < model_measures.size(); i++){
+        model_out<<std::setprecision(9)<<model_measures[i].get_julian_date()->get_MJD()<<" "<<model_measures[i].get_position().get_x()<<" "<<model_measures[i].get_position().get_y()<<" "<<model_measures[i].get_position().get_z()<<"\n";
         cnv.barycentric_to_geocentric(&model_measures[i], map_planets["earth"]);
-        //cnv.barycentric_to_spherical(&model[i]);
-        //cnv.barycentric_to_spherical(&base_measures[i]);
-        //cnv.celestial_to_spherical(dhand.get_observation(i));
     }
+    model_out.close();
 
     least_squares(model_measures, base_measures);
     std::cout<<"Fin\n";
@@ -116,26 +100,6 @@ void Facade::write_to_file(std::vector<IntegrationVector> model, std::vector<Int
         std::cout<<"Что-то пошло не так.\n";
     }
 
-
-    /*if (model_out.is_open()){
-        for (int ind = 0; ind < model.size(); ind++){
-           model_out<<std::setprecision(9)<<model[ind].get_julian_date()->get_MJD()<<" "<<model[ind].get_spherical_position().get_longitude()<<" "<<model[ind].get_spherical_position().get_latitude()<<"\n";
-        }
-        model_out.close();
-    } else {
-        std::cout<<"Что-то пошло не так.\n";
-    }
-
-    std::ofstream base_out;
-    base_out.open("./data/base_measure.txt");
-    if (base_out.is_open()){
-            for (int ind = 0; ind < dhand.get_observations()->size(); ind++){
-                base_out<<std::setprecision(9)<< dhand.get_observation(ind)->get_julian_date()->get_MJD()<<" "<< dhand.get_observation(ind)->get_spherical_position().get_longitude()<<" "<< dhand.get_observation(ind)->get_spherical_position().get_latitude()<<"\n";
-            }
-        base_out.close();
-    } else {
-        std::cout<<"Что-то пошло не так.\n";
-    }*/
 
     std::ofstream codes;
     codes.open("./data/code.txt");

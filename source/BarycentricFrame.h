@@ -10,7 +10,7 @@ private:
     double y = NULL;
     double z = NULL;
 public:
-    BarycentricFrame(){};
+    BarycentricFrame(){x = 0; y = 0; z = 0;};
 
     double get_x();
     double get_y();

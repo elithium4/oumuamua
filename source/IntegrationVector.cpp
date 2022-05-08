@@ -47,23 +47,49 @@ Date* IntegrationVector::get_julian_date(){
 }
 
 IntegrationVector operator+(IntegrationVector vector, double delta){
-    IntegrationVector result = vector;
-    result.position.increase(delta);
-    result.velocity.increase(delta);
+    IntegrationVector result;
+    double x = vector.get_position().get_x() + delta;
+    double y = vector.get_position().get_y() + delta;
+    double z = vector.get_position().get_z() + delta;
+    result.set_position(x, y, z);
+    double vx = vector.get_velocity().get_vx() + delta;
+    double vy = vector.get_velocity().get_vy() + delta;
+    double vz = vector.get_velocity().get_vz() + delta;
+    result.set_velocity(vx, vy, vz);
+    //result.position.increase(delta);
+    //result.velocity.increase(delta);
     return result;
 }
 
 IntegrationVector operator+(IntegrationVector vector, IntegrationVector delta){
+    //IntegrationVector result;
+
     IntegrationVector result;
+    /*double x = vector.get_position().get_x() + delta.get_position().get_x();
+    double y = vector.get_position().get_y() + delta.get_position().get_y();
+    double z = vector.get_position().get_z() + delta.get_position().get_z();
+    result.set_position(x, y, z);
+    double vx = vector.get_velocity().get_vx() + delta.get_velocity().get_vx();
+    double vy = vector.get_velocity().get_vy() + delta.get_velocity().get_vy();
+    double vz = vector.get_velocity().get_vz() + delta.get_velocity().get_vz();
+    result.set_velocity(vx, vy, vz);*/
+
     result.position = vector.position + delta.position;
     result.velocity = vector.velocity + delta.velocity;
     return result;
 }
 
 IntegrationVector operator*(double delta, IntegrationVector vector){
-    IntegrationVector result = vector;
-    result.position.multiply(delta);
-    result.velocity.multiply(delta);
+    //IntegrationVector result = vector;
+    IntegrationVector result;
+    double x = vector.get_position().get_x() * delta;
+    double y = vector.get_position().get_y() * delta;
+    double z = vector.get_position().get_z() * delta;
+    result.set_position(x, y, z);
+    double vx = vector.get_velocity().get_vx() * delta;
+    double vy = vector.get_velocity().get_vy() * delta;
+    double vz = vector.get_velocity().get_vz() * delta;
+    result.set_velocity(vx, vy, vz);
     return result;
 }
 

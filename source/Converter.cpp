@@ -156,7 +156,7 @@ std::map<std::string, std::vector<IntegrationVector>> Converter::interpolation_c
         Date current_date = *date_start;
         int count = 0;
         std::vector<IntegrationVector> new_center_planet;
-        while (current_date.get_MJD() < date_finish->get_MJD()) {
+        while (current_date.get_MJD() < date_finish->get_MJD() + 0.5) {
             int j = last_min;
             for (j; j < interpolation_planet.second.size(); j++) {
                 if (current_date.get_MJD() < (*interpolation_planet.second[j].get_julian_date()).get_MJD()) {

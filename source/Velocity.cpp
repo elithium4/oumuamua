@@ -47,6 +47,7 @@ Velocity operator+(Velocity v1, Velocity v2){
     result.vx = v1.vx + v2.vx;
     result.vy = v1.vy + v2.vy;
     result.vz = v1.vz + v2.vz;
+    return result;
 }
 
 Velocity::Velocity(const Velocity& other){
