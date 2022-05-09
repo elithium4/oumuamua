@@ -153,6 +153,7 @@ void DataHandler::read_interpolation_center_planet(std::string filename, std::st
                             break;
                         }
                         if (all_three){
+
                             data_frame.set_position(x, y, z);
                             planet.push_back(data_frame);
                             //if (name == "sun")

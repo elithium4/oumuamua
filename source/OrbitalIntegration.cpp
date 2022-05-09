@@ -13,6 +13,8 @@ IntegrationVector OrbitalIntegration::diff(double t, IntegrationVector asteroid,
         if (planets["earth"][i].get_julian_date()->get_MJD() > t) {
             i = i-1;
             d_vector.set_julian_date(*planets["earth"][i].get_julian_date());
+            //std::cout<<std::setprecision(11)<<"Z: "<<(planets["sun"][i].get_position() - asteroid.get_position()).get_z()<<" "<<(pow((planets["sun"][i].get_position() - asteroid.get_position()).len(),3))<<" "<<(((planets["sun"][i].get_position() - asteroid.get_position()) / (pow((planets["sun"][i].get_position() - asteroid.get_position()).len(),3)))).get_z()<<"\n";
+            //std::cout<<std::setprecision(13)<<planets["sun"][i].get_position().get_z()<<" "<<asteroid.get_position().get_z()<<" "<<(planets["sun"][i].get_position() - asteroid.get_position()).get_z()<<"\n";
             dv = (GM["sun"] * (planets["sun"][i].get_position() - asteroid.get_position()) / (pow((planets["sun"][i].get_position() - asteroid.get_position()).len(),3))) + (GM["jupiter"] * (planets["jupiter"][i].get_position() - asteroid.get_position()) / (pow((planets["jupiter"][i].get_position() - asteroid.get_position()).len(), 3)));
             break;
         }
@@ -28,6 +30,9 @@ std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVec
 
 
     IntegrationVector new_y = y;
+
+    IntegrationVector tmp;
+
     for (double t = start->get_MJD(); t <= end->get_MJD() + h; t += h){
         std::ofstream out;
         k1 = diff(t,  new_y, planets);
@@ -38,8 +43,13 @@ std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVec
         k6 = diff(t +    h, new_y+h*(a61*k1+a62*k2+a63*k3+a64*k4+a65*k5), planets);
         k7 = diff(t +    h, new_y+h*(a71*k1+a72*k2+a73*k3+a74*k4+a75*k5+a76*k6), planets);
         
+        tmp = new_y;
+
         new_y = new_y + h * (b1 * k1 + b3 * k3 + b4 * k4 + b5 * k5 + b6 * k6);
 
+        std::cout<<"Delta x: "<<new_y.get_position().get_x() - tmp.get_position().get_x()<<"\n";
+        std::cout<<"Delta y: "<<new_y.get_position().get_y() - tmp.get_position().get_y()<<"\n";
+        std::cout<<"Delta z: "<<new_y.get_position().get_z() - tmp.get_position().get_z()<<"\n";
         Date date;
         date.set_MJD(t);
         new_y.set_julian_date(date);
