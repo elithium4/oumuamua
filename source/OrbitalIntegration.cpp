@@ -46,10 +46,6 @@ std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVec
         tmp = new_y;
 
         new_y = new_y + h * (b1 * k1 + b3 * k3 + b4 * k4 + b5 * k5 + b6 * k6);
-
-        std::cout<<"Delta x: "<<new_y.get_position().get_x() - tmp.get_position().get_x()<<"\n";
-        std::cout<<"Delta y: "<<new_y.get_position().get_y() - tmp.get_position().get_y()<<"\n";
-        std::cout<<"Delta z: "<<new_y.get_position().get_z() - tmp.get_position().get_z()<<"\n";
         Date date;
         date.set_MJD(t);
         new_y.set_julian_date(date);

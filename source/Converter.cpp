@@ -429,17 +429,11 @@ std::vector<IntegrationVector> Converter::aberration(std::map<std::string, Obser
 void Converter::barycentric_to_geocentric(IntegrationVector* model, std::vector<IntegrationVector> earth_orbit){
     BarycentricFrame earth_bary = interpolation_orbits(model->get_julian_date()->get_MJD(), earth_orbit);
 
-    std::cout<<"Got Earth: "<<earth_bary.get_x()<<" "<<earth_bary.get_y()<<" "<<earth_bary.get_z()<<"\n";
-
     double x = model->get_position().get_x() - earth_bary.get_x();
 
-    //std::cout<<"In bary: "<<model->get_position().get_x()<<" - "<<earth_bary.get_x()<<" = "<<x<<"\n";
 
     double y = model->get_position().get_y() - earth_bary.get_y();
     double z = model->get_position().get_z() - earth_bary.get_z();
-
-    //std::cout<<"In bary: "<<model->get_position().get_z()<<" - "<<earth_bary.get_z()<<" = "<<z<<"\n";
-
 
     model->set_geocentric_position(x, y, z);
 }

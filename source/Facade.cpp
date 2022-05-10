@@ -89,7 +89,7 @@ void Facade::least_squares(std::vector<IntegrationVector> model, std::vector<Int
 //Запись полученных модельных данных в файл
 void Facade::write_to_file(std::vector<IntegrationVector> model, std::vector<IntegrationVector> base_measures){
     std::ofstream model_out;
-    model_out.open("./data/model_measure.txt");
+    model_out.open("./data/model_geo.txt");
 
     if (model_out.is_open()){
         for (int ind = 0; ind < model.size(); ind++){
