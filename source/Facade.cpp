@@ -18,6 +18,12 @@ void Facade::read_data(){
     dhand.read_interpolation_center_planet("./data/interpolation_center_sun.txt", "sun");
     dhand.read_interpolation_center_planet("./data/interpolation_center_jupiter.txt", "jupiter");
 
+    dhand.read_interpolation_center_planet("./data/interpolation_center_mercury.txt", "mercury");
+    dhand.read_interpolation_center_planet("./data/interpolation_center_venus.txt", "venus");
+    dhand.read_interpolation_center_planet("./data/interpolation_center_mars.txt", "mars");
+    dhand.read_interpolation_center_planet("./data/interpolation_center_saturn.txt", "saturn");
+    dhand.read_interpolation_center_planet("./data/interpolation_center_moon.txt", "moon");
+
     std::cout<<"Data reading done.\n";
 }
 
@@ -129,7 +135,6 @@ void Facade::test_reading(){
         Date cur_date;
         double x, y, z;
         for (int i =0; i < data_line.length()+1; i++){
-            //std::cout<<data_line<<" "<<i<<" "<<data_line[i]<<"\n";
             if ((data_line[i] == ' ') or (data_line[i] == '\0')){
                 switch (ind){
                     case 0:
@@ -152,7 +157,6 @@ void Facade::test_reading(){
         }
         cur.set_position(x, y, z);
         hor_data.push_back(cur);
-        //std::cout<<"MJD: "<<cur.get_julian_date()->get_MJD()<<" x: "<<cur.get_position().get_x()<<" y: "<<cur.get_position().get_y()<<" z: "<<cur.get_position().get_z()<<"\n";
     }
 
     data.close();
