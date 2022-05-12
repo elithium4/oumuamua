@@ -22,6 +22,7 @@ IntegrationVector OrbitalIntegration::diff(double t, IntegrationVector asteroid,
     return d_vector;
 };
 
+//Метод Дормана-Принса 5-го порядка
 std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVector y, Date* start, Date* end, double h, std::map<std::string, std::vector<IntegrationVector>> planets){
     IntegrationVector k1, k2, k3, k4, k5, k6, k7;
     std::vector<IntegrationVector> result;

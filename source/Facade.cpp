@@ -33,7 +33,6 @@ void Facade::convert_observations(){
     for (int ind = 0; ind < data->size(); ind++){
         cnv.julian_date_to_tt(data->at(ind).get_julian_date());
         cnv.celestial_to_spherical(dhand.get_observation(ind));
-       // cnv.spherical_to_geocentric(dhand.get_observation(ind));
     }
     cnv.interpolation_date_to_tt_tdb(data, dhand.get_interpolation_time());
     std::cout<<"Observation convertion done.\n";
@@ -47,10 +46,6 @@ void Facade::convert_observatory(){
         cur_obs->set_cartesian(cnv.cylindrical_to_cartesian(cur_obs->get_cylindric()));
     }
     std::cout<<"Observatory convertion done.\n";
-}
-
-
-void Facade::convert_interpolation_data(){
 }
 
 //Численное интегрирование
@@ -185,34 +180,4 @@ void Facade::test_reading(){
     }
 
     outp.close();
-
-    /*data.open("./data/horizon.txt");
-    std::string data_line;
-    std::vector<Observation> cel;
-    while (getline(data, data_line)){
-        
-            Observation data_frame;
-            Date observation_date(data_line.substr(0, 10));
-            observation_date.set_time_from_fraction();
-            observation_date.set_JD();
-            data_frame.set_julian_date(observation_date);
-            data_frame.set_ascension_from_string(data_line.substr(11, 12));
-            data_frame.set_declination_from_string(data_line.substr(23, 11));
-            cel.push_back(data_frame);
-    }
-    data.close();
-    for (int i = 0; i < cel.size(); i++){
-        cnv.celestial_to_spherical(&cel[i]);
-    }
-
-    std::ofstream model_out;
-    model_out.open("./data/horizon_measure.txt");
-    if (model_out.is_open()){
-        for (int ind = 0; ind < cel.size(); ind++){
-           model_out<<std::setprecision(9)<<cel[ind].get_julian_date()->get_MJD()<<" "<<cel[ind].get_spherical_position().get_longitude()<<" "<<cel[ind].get_spherical_position().get_latitude()<<"\n";
-        }
-        model_out.close();
-    } else {
-        std::cout<<"Что-то пошло не так.\n";
-    }*/
 }
