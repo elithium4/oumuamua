@@ -160,7 +160,7 @@ std::map<std::string, std::vector<IntegrationVector>> Converter::interpolation_c
             int j = last_min;
             for (j; j < interpolation_planet.second.size(); j++) {
                 if (current_date.get_MJD() < (*interpolation_planet.second[j].get_julian_date()).get_MJD()) {
-               
+                    
                     last_min = j - 1;
                     if (current_date.get_MJD() == (*interpolation_planet.second[last_min].get_julian_date()).get_MJD()) // проверить какая дата у current_date get+MJD/TDB
                         flag = 0;
@@ -332,9 +332,25 @@ BarycentricFrame Converter::interpolation_orbits(double date, std::vector<Integr
     double delta_z;
     for (int j = 0; j < interpolation_orbits.size(); j++) {
         if (date < (*interpolation_orbits[j].get_julian_date()).get_MJD()) {
+            /*std::cout<<"I got date: "<<date<<"\n";
+            std::cout<<"Match: "<<interpolation_orbits[j].get_julian_date()->get_MJD()<<"\n";
+            std::cout<<"X next: "<<interpolation_orbits[j - 1].get_position().get_x()<<"\n";
+            std::cout<<"Y next: "<<interpolation_orbits[j - 1].get_position().get_y()<<"\n";
+            std::cout<<"Z next: "<<interpolation_orbits[j - 1].get_position().get_z()<<"\n";
+            std::cout<<"X prev: "<<interpolation_orbits[j].get_position().get_x()<<"\n";
+            std::cout<<"Y prev: "<<interpolation_orbits[j].get_position().get_y()<<"\n";
+            std::cout<<"Z prev: "<<interpolation_orbits[j].get_position().get_z()<<"\n";
+            */
             delta_x = interpolation_orbits[j - 1].get_position().get_x() + (interpolation_orbits[j].get_position().get_x() - interpolation_orbits[j - 1].get_position().get_x()) / ((*interpolation_orbits[j].get_julian_date()).get_MJD() - (*interpolation_orbits[j - 1].get_julian_date()).get_MJD()) * (date - (*interpolation_orbits[j - 1].get_julian_date()).get_MJD());
             delta_y = interpolation_orbits[j - 1].get_position().get_y() + (interpolation_orbits[j].get_position().get_y() - interpolation_orbits[j - 1].get_position().get_y()) / ((*interpolation_orbits[j].get_julian_date()).get_MJD() - (*interpolation_orbits[j - 1].get_julian_date()).get_MJD()) * (date - (*interpolation_orbits[j - 1].get_julian_date()).get_MJD());
             delta_z = interpolation_orbits[j - 1].get_position().get_z() + (interpolation_orbits[j].get_position().get_z() - interpolation_orbits[j - 1].get_position().get_z()) / ((*interpolation_orbits[j].get_julian_date()).get_MJD() - (*interpolation_orbits[j - 1].get_julian_date()).get_MJD()) * (date - (*interpolation_orbits[j - 1].get_julian_date()).get_MJD());
+            
+            /*
+            std::cout<<"X result: "<<delta_x<<"\n";
+            std::cout<<"Y result: "<<delta_y<<"\n";
+            std::cout<<"Z result: "<<delta_z<<"\n";
+            */
+
             BarycentricFrame new_frame;
             new_frame.set_x(delta_x);
             new_frame.set_y(delta_y);
@@ -429,11 +445,16 @@ std::vector<IntegrationVector> Converter::aberration(std::map<std::string, Obser
 void Converter::barycentric_to_geocentric(IntegrationVector* model, std::vector<IntegrationVector> earth_orbit){
     BarycentricFrame earth_bary = interpolation_orbits(model->get_julian_date()->get_MJD(), earth_orbit);
 
-    double x = model->get_position().get_x() - earth_bary.get_x();
 
+    //std::cout<<"Got X: "<<model->get_position().get_x()<<" minus "<<earth_bary.get_x()<<" resulted in ";
+    double x = model->get_position().get_x() - earth_bary.get_x();
+    //std::cout<<x<<"\n";
+
+    //std::cout<<"Got Y: "<<model->get_position().get_y()<<" minus "<<earth_bary.get_y()<<" resulted in ";
 
     double y = model->get_position().get_y() - earth_bary.get_y();
     double z = model->get_position().get_z() - earth_bary.get_z();
+    //std::cout<<y<<"\n";
 
     model->set_geocentric_position(x, y, z);
 }
