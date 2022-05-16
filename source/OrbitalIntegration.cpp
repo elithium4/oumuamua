@@ -1,22 +1,36 @@
 #include "OrbitalIntegration.h"
 #include <iomanip>
 
-
+OrbitalIntegration::OrbitalIntegration(){
+    for (auto pair: GM){
+        std::cout<<pair.first<<" "<<GM[pair.first]<<"\n";
+        GM[pair.first] = pair.second * 86400 * 86400;;//* 86400;
+        std::cout<<pair.first<<" "<<GM[pair.first]<<"\n";
+    }
+}
 
 IntegrationVector OrbitalIntegration::diff(double t, IntegrationVector asteroid, std::map<std::string, std::vector<IntegrationVector>> planets){
     IntegrationVector d_vector;
     BarycentricFrame dx;
     BarycentricFrame dv;
 
-
+    int num;
     for (int i = 0; i < planets["earth"].size(); i++) {
         if (planets["earth"][i].get_julian_date()->get_MJD() > t) {
             i = i-1;
             d_vector.set_julian_date(*planets["earth"][i].get_julian_date());
-            dv = (GM["sun"] * (planets["sun"][i].get_position() - asteroid.get_position()) / (pow((planets["sun"][i].get_position() - asteroid.get_position()).len(),3))) + (GM["jupiter"] * (planets["jupiter"][i].get_position() - asteroid.get_position()) / (pow((planets["jupiter"][i].get_position() - asteroid.get_position()).len(), 3))) + (GM["earth"] * (planets["earth"][i].get_position() - asteroid.get_position()) / (pow((planets["earth"][i].get_position() - asteroid.get_position()).len(), 3)))+ (GM["mercury"] * (planets["mercury"][i].get_position() - asteroid.get_position()) / (pow((planets["mercury"][i].get_position() - asteroid.get_position()).len(), 3))) + (GM["venus"] * (planets["venus"][i].get_position() - asteroid.get_position()) / (pow((planets["venus"][i].get_position() - asteroid.get_position()).len(), 3))) + (GM["mars"] * (planets["mars"][i].get_position() - asteroid.get_position()) / (pow((planets["mars"][i].get_position() - asteroid.get_position()).len(), 3))) + (GM["saturn"] * (planets["saturn"][i].get_position() - asteroid.get_position()) / (pow((planets["saturn"][i].get_position() - asteroid.get_position()).len(), 3))) + (GM["moon"] * (planets["moon"][i].get_position() - asteroid.get_position()) / (pow((planets["moon"][i].get_position() - asteroid.get_position()).len(), 3)));
+            dv = (GM["sun"] * ((planets["sun"][i].get_position() - asteroid.get_position()) / (pow((planets["sun"][i].get_position() - asteroid.get_position()).len(),3))))
+            + (GM["jupiter"] * ((planets["jupiter"][i].get_position() - asteroid.get_position()) / (pow((planets["jupiter"][i].get_position() - asteroid.get_position()).len(), 3))) )
+            + (GM["earth"] * ((planets["earth"][i].get_position() - asteroid.get_position()) / (pow((planets["earth"][i].get_position() - asteroid.get_position()).len(), 3))))
+            + (GM["mercury"] * ((planets["mercury"][i].get_position() - asteroid.get_position()) / (pow((planets["mercury"][i].get_position() - asteroid.get_position()).len(), 3))) )
+            + (GM["venus"] * ((planets["venus"][i].get_position() - asteroid.get_position()) / (pow((planets["venus"][i].get_position() - asteroid.get_position()).len(), 3))) )
+            + (GM["mars"] * ((planets["mars"][i].get_position() - asteroid.get_position()) / (pow((planets["mars"][i].get_position() - asteroid.get_position()).len(), 3))) )
+            + (GM["saturn"] * ((planets["saturn"][i].get_position() - asteroid.get_position()) / (pow((planets["saturn"][i].get_position() - asteroid.get_position()).len(), 3))) )
+            + (GM["moon"] * ((planets["moon"][i].get_position() - asteroid.get_position()) / (pow((planets["moon"][i].get_position() - asteroid.get_position()).len(), 3))));
             break;
         }
     }
+
     d_vector.set_position(asteroid.get_velocity().get_vx(), asteroid.get_velocity().get_vy(), asteroid.get_velocity().get_vz());
     d_vector.set_velocity(dv.get_x(), dv.get_y(), dv.get_z());
     return d_vector;
@@ -31,6 +45,7 @@ std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVec
     IntegrationVector new_y = y;
 
     for (double t = start->get_MJD(); t <= end->get_MJD() + h; t += h){
+
         std::ofstream out;
         k1 = diff(t,  new_y, planets);
         k2 = diff(t + c2*h, new_y+h*(a21*k1), planets);
@@ -40,7 +55,6 @@ std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVec
         k6 = diff(t +    h, new_y+h*(a61*k1+a62*k2+a63*k3+a64*k4+a65*k5), planets);
         k7 = diff(t +    h, new_y+h*(a71*k1+a72*k2+a73*k3+a74*k4+a75*k5+a76*k6), planets);
         
-
         new_y = new_y + h * (b1 * k1 + b3 * k3 + b4 * k4 + b5 * k5 + b6 * k6);
 
         Date date;
@@ -48,6 +62,7 @@ std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVec
         new_y.set_julian_date(date);
         result.push_back(new_y);
     }
+
     return result;
 };
 

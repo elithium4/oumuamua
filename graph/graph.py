@@ -23,10 +23,13 @@ def draw_graph(position, name, x_label, y_label, x_data, y_data, color, dotType)
 
 jpl_needed = False
 earth_orbit_needed = False
+full_orbit_needed = False
 
 if len(argv) > 1 and "bary" in argv:
     if "earth" in argv:
         earth_orbit_needed = True
+    if "full" in argv:
+        full_orbit_needed = True
     graph_name = "bary"
     file_model = open("../data/model_bary.txt", "r")
     file_example = open("graph_bary_equatorial.txt", "r")
@@ -36,6 +39,7 @@ else:
     graph_name = "geo"
     file_model = open("../data/model_geo.txt", "r")
     file_example = open("graph_geo_equatorial.txt", "r")
+    
 
 model_time = []
 model_x = []
@@ -86,6 +90,24 @@ if jpl_needed:
     draw_graph((3, 1, 1), f"X ({graph_name})", "Time", "X", orbit_time, orbit_x, "yellow", "")
     draw_graph((3, 1, 2), f"Y ({graph_name})", "Time", "Y", orbit_time, orbit_y, "yellow", "")
     draw_graph((3, 1, 3), f"Z ({graph_name})", "Time", "Z", orbit_time, orbit_z, "yellow", "")
+    file_jpl.close()
+
+if full_orbit_needed:
+    file_full = open("../debug/orbit.txt", "r")
+    full_x = []
+    full_y = []
+    full_z = []
+    full_time = []
+    for line in file_full:
+        data = line.strip().split()
+        full_time.append(float(data[0]))
+        full_x.append(float(data[1]))
+        full_y.append(float(data[2]))
+        full_z.append(float(data[3]))
+    draw_graph((3, 1, 1), f"X ({graph_name})", "Time", "X", full_time, full_x, "pink", "")
+    draw_graph((3, 1, 2), f"Y ({graph_name})", "Time", "Y", full_time, full_y, "pink", "")
+    draw_graph((3, 1, 3), f"Z ({graph_name})", "Time", "Z", full_time, full_z, "pink", "")
+    file_full.close()
 
 if earth_orbit_needed:
     earth_jpl = open("../debug/earth_for_graph.txt", "r")
@@ -102,5 +124,6 @@ if earth_orbit_needed:
     draw_graph((3, 1, 1), f"X ({graph_name})", "Time", "X", earth_time, earth_x, "blue", "")
     draw_graph((3, 1, 2), f"Y ({graph_name})", "Time", "Y", earth_time, earth_y, "blue", "")
     draw_graph((3, 1, 3), f"Z ({graph_name})", "Time", "Z", earth_time, earth_z, "blue", "")
+    earth_jpl.close()
 
 pylab.show()
