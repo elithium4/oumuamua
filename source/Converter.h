@@ -52,6 +52,7 @@ class Converter{
     std::vector<IntegrationVector> gravitational_deflection(std::map<std::string, ObservatoryData>, std::vector<IntegrationVector>,  std::vector< Observation>, std::vector<IntegrationVector>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
     std::vector<IntegrationVector> aberration(std::map<std::string, ObservatoryData>, std::vector<IntegrationVector>, std::vector< Observation>, std::vector<IntegrationVector>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
 
+
     void barycentric_to_geocentric(IntegrationVector*, std::vector<IntegrationVector>);
     void celestial_to_spherical(Observation*);
     void geocentric_to_spherical(IntegrationVector*);
