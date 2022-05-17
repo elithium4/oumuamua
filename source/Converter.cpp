@@ -194,17 +194,13 @@ void Converter::celestial_to_spherical(Observation* observation){
     arcseconds_AD = (arcseconds_AD - delta_sec)*60;
     double AD = NULL;
     double DEC = NULL;
-    std::cout<<degrees_AD<<" "<<arcminutes_AD<<" "<<arcseconds_AD<<"\n";
     iauAf2a('+', degrees_AD, arcminutes_AD, arcseconds_AD, &AD);
-    /*while (abs(AD) > M_PI){
-        if (AD > 0){
-            AD -= 2*M_PI;
-        }
-        else {
-            AD += 2*M_PI;
-        }
-    }*/
-    iauAf2a('+', observation->get_declination().get_h(), observation->get_declination().get_m(), observation->get_declination().get_s(), &DEC);
+
+    char sign = '+';
+    if (observation->get_declination().get_h() < 0) {
+    sign = '-';
+    }
+    iauAf2a(sign, observation->get_declination().get_h(), observation->get_declination().get_m(), observation->get_declination().get_s(), &DEC);
     observation->set_spherical(AD, DEC);
 }
 
@@ -217,11 +213,19 @@ void Converter::spherical_to_geocentric(Observation* observation) {
 
 //Перевод из геоцентрических координат в сферические
 void Converter::geocentric_to_spherical(IntegrationVector* vector){
-    double geo[3] = {vector->get_position().get_x(), vector->get_position().get_y(), vector->get_position().get_z()};
-    double longitude;
-    double latitude;
-    iauC2s(geo, &longitude, &latitude);
-    vector->set_spherical_position(longitude, latitude);
+
+    double r = vector->get_geocentric_position().len();
+    double delta = asin(vector->get_geocentric_position().get_z()/r);
+    
+    double alpha;
+
+    if (vector->get_geocentric_position().get_y()/r > 0){
+        alpha = acos( (vector->get_geocentric_position().get_x() / r) / cos(delta) );
+    } else {
+        alpha = 2*M_PI - acos( (vector->get_geocentric_position().get_x() / r) / cos(delta) );
+    }
+
+    vector->set_spherical_position(alpha, delta);
 }
 
 //Перевод барицентрических координат в сферические

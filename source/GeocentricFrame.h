@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <string>
+#include <cmath>
 
 //Класс геоцентрических координат
 class GeocentricFrame{
@@ -17,6 +18,8 @@ class GeocentricFrame{
         void set_x(double value);
         void set_y(double value);
         void set_z(double value);
+        double len();
+
         GeocentricFrame(const GeocentricFrame& other);
         GeocentricFrame& operator=(const GeocentricFrame& other);
         GeocentricFrame(const GeocentricFrame&& other);

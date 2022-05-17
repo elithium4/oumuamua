@@ -49,6 +49,11 @@ void GeocentricFrame::set_z(double value) {
     z = value;
 }
 
+double GeocentricFrame::len() {
+    return sqrt(x * x + y * y + z * z);
+}
+
+
 GeocentricFrame::GeocentricFrame(const GeocentricFrame & other){
     this->x = other.x;
     this->y = other.y;

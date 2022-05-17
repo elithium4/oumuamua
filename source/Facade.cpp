@@ -110,6 +110,18 @@ void Facade::integrate(){
 //МНК (пока в процессе)
 void Facade::least_squares(std::vector<IntegrationVector> model, std::vector<IntegrationVector> base_measures){
 
+    Observation obs;
+    CelestialCoord dec;
+    dec.set_from_string("04 56 48.3");
+    CelestialCoord asc;
+    asc.set_from_string("23 59 47.46");
+    obs.set_declination(dec);
+    obs.set_ascension(asc);
+
+    cnv.celestial_to_spherical(&obs);
+
+    std::cout<<"In rad: "<<obs.get_spherical_position().get_longitude()<<" "<<obs.get_spherical_position().get_latitude()<<"\n";
+
     std::ofstream spherical;
     spherical.open("./data/spherical_model.txt");
 
