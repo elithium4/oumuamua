@@ -71,7 +71,7 @@ void Facade::integrate(){
     model_out.open("./data/model_bary.txt");
 
     model_measures = cnv.light_time_correction(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), dhand.get_interpolation_hubble(), map_planets["earth"]);
-    //model_measures = cnv.aberration(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
+    model_measures = cnv.aberration(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
     //model_measures = cnv.gravitational_deflection(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
 
     for (int i = 0; i < model_measures.size(); i++){

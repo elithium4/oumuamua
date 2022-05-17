@@ -59,4 +59,5 @@ class Converter{
     void spherical_to_geocentric(Observation*);
 
     void barycentric_to_spherical_for_observations(Observation*);
+
 };

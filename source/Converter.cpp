@@ -395,12 +395,19 @@ std::vector<IntegrationVector> Converter::aberration(std::map<std::string, Obser
             observatory_position = interpolation_center_of_earth_for_observatory(*observations[i].get_julian_date(), tmp_position, earth_position);
         }
         IntegrationVector frame;
-        tmp = model[i].get_position() - observatory_position;
-        double direction_observatory_to_asteroid[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
+        tmp = model[i].get_position() - observatory_position;    
+        double tmp_len = tmp.len();
+
+        double direction_observatory_to_asteroid[3] = { tmp.get_x()/tmp.len(), tmp.get_y()/tmp.len(), tmp.get_z()/tmp.len() };
         tmp = observatory_position - sun_interpolation[i].get_position();
         double distance_sun_observatory = tmp.len();
+
         iauAb(direction_observatory_to_asteroid, velocity, distance_sun_observatory, 1, new_direction);
         frame.set_position(new_direction[0], new_direction[1], new_direction[2]);
+        double correct_direction[3] = {new_direction[0]*tmp_len, new_direction[1]*tmp_len, new_direction[2]*tmp_len};
+
+        frame.set_position(observatory_position.get_x() + correct_direction[0], observatory_position.get_y() + correct_direction[1], observatory_position.get_z() + correct_direction[2]);
+
         frame.set_julian_date(*model[i].get_julian_date());
         frame.set_velocity(0, 0, 0);
         result.push_back(frame);
@@ -419,3 +426,4 @@ void Converter::barycentric_to_geocentric(IntegrationVector* model, std::vector<
 
     model->set_geocentric_position(x, y, z);
 }
+
