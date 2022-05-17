@@ -194,7 +194,16 @@ void Converter::celestial_to_spherical(Observation* observation){
     arcseconds_AD = (arcseconds_AD - delta_sec)*60;
     double AD = NULL;
     double DEC = NULL;
+    std::cout<<degrees_AD<<" "<<arcminutes_AD<<" "<<arcseconds_AD<<"\n";
     iauAf2a('+', degrees_AD, arcminutes_AD, arcseconds_AD, &AD);
+    /*while (abs(AD) > M_PI){
+        if (AD > 0){
+            AD -= 2*M_PI;
+        }
+        else {
+            AD += 2*M_PI;
+        }
+    }*/
     iauAf2a('+', observation->get_declination().get_h(), observation->get_declination().get_m(), observation->get_declination().get_s(), &DEC);
     observation->set_spherical(AD, DEC);
 }

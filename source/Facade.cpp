@@ -65,6 +65,29 @@ void Facade::integrate(){
     }
     orbit_out.close();
 
+    for (int i = 0; i < dhand.get_observations()->size(); i++){
+        IntegrationVector vec;
+        cnv.celestial_to_spherical(dhand.get_observation(i));
+
+        Observation* obs = dhand.get_observation(i);
+
+        double asc_h = obs->get_ascension().get_h();
+        double asc_m = obs->get_ascension().get_m();
+        double asc_s = obs->get_ascension().get_s();
+
+        double dec_d = obs->get_declination().get_h();
+        double dec_m = obs->get_declination().get_m();
+        double dec_s = obs->get_declination().get_s();
+
+        vec.set_spherical_position(asc_h* (M_PI/12) + asc_m*(M_PI/720) + asc_s * (M_PI/43200),
+            dec_d*(M_PI/180) + dec_m*(M_PI/720) + dec_s * (M_PI/43200));
+
+        vec.set_spherical_position(dhand.get_observation(i)->get_spherical_position().get_longitude(), dhand.get_observation(i)->get_spherical_position().get_latitude());
+        double date = dhand.get_observation(i)->get_julian_date()->get_MJD();
+        (vec.get_julian_date())->set_MJD(date);
+        base_measures.push_back(vec);
+    }
+
     model_measures = cnv.interpolation_to_observation(dhand.get_observations_vector(), model_orbits);
    
     std::ofstream model_out;
@@ -86,6 +109,23 @@ void Facade::integrate(){
 
 //МНК (пока в процессе)
 void Facade::least_squares(std::vector<IntegrationVector> model, std::vector<IntegrationVector> base_measures){
+
+    std::ofstream spherical;
+    spherical.open("./data/spherical_model.txt");
+
+    std::ofstream spherical_base;
+    spherical_base.open("./data/spherical_base.txt");
+
+    for (int i = 0; i < model.size(); i++){
+        cnv.geocentric_to_spherical(&model[i]);
+
+
+        spherical<<model[i].get_julian_date()->get_MJD()<<" "<<model[i].get_spherical_position().get_longitude()<<" "<<model[i].get_spherical_position().get_latitude()<<"\n";
+        spherical_base<<base_measures[i].get_julian_date()->get_MJD()<<" "<<base_measures[i].get_spherical_position().get_longitude()<<" "<<base_measures[i].get_spherical_position().get_latitude()<<"\n";
+    }
+
+    spherical.close();
+    spherical_base.close();
 
     std::cout<< model.size()<<" "<<base_measures.size()<<"\n";
 
