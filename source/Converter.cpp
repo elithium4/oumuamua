@@ -359,16 +359,22 @@ std::vector<IntegrationVector> Converter::gravitational_deflection(std::map<std:
             observatory_position = interpolation_center_of_earth_for_observatory(*observations[i].get_julian_date(), tmp_position, earth_position);
         }
         IntegrationVector frame;
-        tmp = model[i].get_position() - observatory_position;
-        double direction_observatory_to_asteroid[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
-        tmp = model[i].get_position() - sun_interpolation[i].get_position();
-        double direction_sun_to_asteroid[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
-        tmp = observatory_position - sun_interpolation[i].get_position();
-        double direction_sun_to_observatory[3] = { tmp.get_x(), tmp.get_y(), tmp.get_z() };
-        double distance_sun_observatory = tmp.len();
-        iauLd(mass_sun, direction_observatory_to_asteroid, direction_sun_to_asteroid, direction_sun_to_observatory, distance_sun_observatory, 0, new_direction);
-        frame.set_position(new_direction[0], new_direction[1], new_direction[2]);
-        frame.set_julian_date(*model[i].get_julian_date());
+
+        tmp = (model[i].get_position() - observatory_position);
+        double tmp_len = tmp.len();
+        
+        double direction_observatory_to_asteroid[3] = { tmp.get_x() / tmp.len(), tmp.get_y() / tmp.len(), tmp.get_z() / tmp.len() };
+        
+        tmp = (model[i].get_position() - sun_interpolation[i].get_position());
+        double direction_sun_to_asteroid[3] = { tmp.get_x() / tmp.len(), tmp.get_y() / tmp.len(), tmp.get_z() / tmp.len() };
+        
+        tmp = (observatory_position - sun_interpolation[i].get_position());
+        double direction_sun_to_observatory[3] = { tmp.get_x() / tmp.len(), tmp.get_y() / tmp.len(), tmp.get_z() / tmp.len() };
+        double distance_sun_observatory = tmp.len() * 6.6845871226706E-09;
+        
+        iauLd(1, direction_observatory_to_asteroid, direction_sun_to_asteroid, direction_sun_to_observatory, distance_sun_observatory, 0, new_direction);
+        frame.set_position(observatory_position.get_x()+new_direction[0]*tmp_len, observatory_position.get_y()+ new_direction[1]* tmp_len, observatory_position.get_z()+ new_direction[2]*tmp_len);
+        frame.set_julian_date(*observations[i].get_julian_date());
         frame.set_velocity(0, 0, 0);
         result.push_back(frame);
     }
@@ -400,7 +406,7 @@ std::vector<IntegrationVector> Converter::aberration(std::map<std::string, Obser
 
         double direction_observatory_to_asteroid[3] = { tmp.get_x()/tmp.len(), tmp.get_y()/tmp.len(), tmp.get_z()/tmp.len() };
         tmp = observatory_position - sun_interpolation[i].get_position();
-        double distance_sun_observatory = tmp.len();
+        double distance_sun_observatory = tmp.len()*6.6845871226706E-09;
 
         iauAb(direction_observatory_to_asteroid, velocity, distance_sun_observatory, 1, new_direction);
         frame.set_position(new_direction[0], new_direction[1], new_direction[2]);
