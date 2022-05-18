@@ -1,5 +1,6 @@
 #include "IntegrationVector.h"
 #include "DataHandler.h"
+#include "Converter.h"
 #include <vector>
 #include <map>
 #include <math.h>
@@ -46,9 +47,10 @@ class OrbitalIntegration{
         double a76  = (11.0/84.0);
 
         std::map<std::string, double> GM = { {"sun", 132712440043.85333}, {"jupiter", 126712764.13345}, {"earth", 398600.43552}, {"mercury", 22031.78000}, {"venus", 324858.59200}, {"mars", 42828.37521}, {"saturn", 37940585.20000}, {"moon", 4902.80008}};
+        std::vector<std::string> planet_list = {"sun", "jupiter", "earth", "mercury", "venus", "mars", "saturn", "moon"};
     public:
         OrbitalIntegration();
-        IntegrationVector diff(double, IntegrationVector, std::map<std::string, std::vector<IntegrationVector>>);
-        std::vector<IntegrationVector> dormand_prince(IntegrationVector, Date*, Date*, double, std::map<std::string, std::vector<IntegrationVector>>);
+        IntegrationVector diff(double, IntegrationVector, std::map<std::string, std::vector<IntegrationVector>>, Converter);
+        std::vector<IntegrationVector> dormand_prince(IntegrationVector, Date*, Date*, double, std::map<std::string, std::vector<IntegrationVector>>, Converter);
         BarycentricFrame sqrt(BarycentricFrame);
 };
