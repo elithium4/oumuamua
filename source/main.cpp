@@ -13,7 +13,18 @@ int main(){
     f.test_reading();*/
     Matrix a(3, 3, {{1, 2, 5},
                     {3, 4, 6},
-                    {5, 7, 8}});
+                    {3, 4, 5}});
+    
+    Matrix b(3, 2, {
+        {3, 2},
+        {4, 1},
+        {2, 5}
+    });
+
     std::cout<<a;
+
+    Matrix c(2, 2);
+    c = (a*b);
+    std::cout<<c;
     return 0;
 }
