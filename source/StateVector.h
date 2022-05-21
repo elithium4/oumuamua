@@ -11,6 +11,11 @@ private:
 public:
     StateVector() {};
 
+    StateVector(const StateVector& other);
+    StateVector& operator=(const StateVector& other);
+    StateVector(const StateVector&& other);
+    StateVector& operator=(const StateVector&& other);
+
     void set_dX_dX0(Matrix);
     void set_dF_dX(Matrix);
     void set_dG_dX(Matrix);
