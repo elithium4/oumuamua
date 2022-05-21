@@ -32,6 +32,8 @@ class Matrix{
 
 
         Row operator[](int i) const;
+		
+		Matrix transpose(Matrix& A);
 		friend Matrix operator+(Matrix& A, Matrix& B);
 		friend Matrix operator-(Matrix& A, Matrix& B);
 		friend Matrix operator*(Matrix& A, Matrix& B);

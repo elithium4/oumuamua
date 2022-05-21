@@ -127,7 +127,7 @@ Matrix::Row Matrix::operator[](int i) const{
 
 Matrix operator+(Matrix& A, Matrix& B){
     if ((A.columns() != B.columns()) or (A.rows() != B.rows())){
-        throw std::invalid_argument("Be better than Padlo >:(\n");
+        throw std::invalid_argument("Different matrix size\n");
         return Matrix(1,1);
     }
 
