@@ -26,5 +26,26 @@ int main(){
     Matrix c(2, 2);
     c = (a*b);
     std::cout<<c;
+
+    Matrix G(6, 6);
+
+    for (int i = 0; i < 6; i++){
+        for (int j = 0; j < 6; j++){
+            G[i][j] = 9;
+        }
+    }
+
+    for (int i = 0; i < 3; i++){
+        for (int j = 0; j < 3; j++){
+            G[i][j] = 0;
+            G[6-i - 1][6-j-1] = 0;
+            G[i][j+3] = 0;
+            if (j == i){
+                G[i][j+3] = 1;
+            }
+        }
+    }
+
+    std::cout<<G;
     return 0;
 }

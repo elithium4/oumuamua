@@ -31,6 +31,81 @@ IntegrationVector OrbitalIntegration::diff(double t, IntegrationVector asteroid,
     return d_vector;
 };
 
+void OrbitalIntegration::diff_for_G_matrix(double t, Matrix* mtr, IntegrationVector r, std::map<std::string,                      std::vector<IntegrationVector>> planets, Converter cnv){
+     double daX_dX, daX_dY, daX_dZ,
+            daY_dX, daY_dY, daY_dZ,
+            daZ_dX, daZ_dY, daZ_dZ;
+    
+    std::map<std::string, BarycentricFrame> planet_positions = {};
+    
+    for (int pl_id = 0; pl_id < planet_list.size(); pl_id++){
+        planet_positions[planet_list[pl_id]] = cnv.interpolation_orbits(t, planets[planet_list[pl_id]]);
+    }
+    
+    for (int pl_id = 0; pl_id < planet_list.size(); pl_id++){
+
+        daX_dX = daX_dX + -GM[planet_list[pl_id]]/pow((planet_positions[planet_list[pl_id]] - r.get_position()).len(), 3) + 3*GM[planet_list[pl_id]] * pow(planet_positions[planet_list[pl_id]].get_x() - r.get_position().get_x(), 2)/pow((planet_positions[planet_list[pl_id]] - r.get_position()).len(), 5);
+
+        daX_dY = daX_dY + 3*GM[planet_list[pl_id]] * (planet_positions[planet_list[pl_id]].get_x() - r.get_position().get_x())*(planet_positions[planet_list[pl_id]].get_y() - r.get_position().get_y())/pow((planet_positions[planet_list[pl_id]] - r.get_position()).len(), 5);
+
+        daX_dZ = daX_dZ + 3*GM[planet_list[pl_id]] * (planet_positions[planet_list[pl_id]].get_x() - r.get_position().get_x())*(planet_positions[planet_list[pl_id]].get_z() - r.get_position().get_z())/pow((planet_positions[planet_list[pl_id]] - r.get_position()).len(), 5);
+
+        daY_dX = daY_dX + 3*GM[planet_list[pl_id]] * (planet_positions[planet_list[pl_id]].get_y() - r.get_position().get_y())*(planet_positions[planet_list[pl_id]].get_x() - r.get_position().get_x())/pow((planet_positions[planet_list[pl_id]] - r.get_position()).len(), 5);
+
+        daY_dY = daY_dY + -GM[planet_list[pl_id]]/pow((planet_positions[planet_list[pl_id]] - r.get_position()).len(), 3) + 3*GM[planet_list[pl_id]] * pow(planet_positions[planet_list[pl_id]].get_y() - r.get_position().get_y(), 2)/pow((planet_positions[planet_list[pl_id]] - r.get_position()).len(), 5);
+
+        daY_dZ = daY_dZ + 3*GM[planet_list[pl_id]] * (planet_positions[planet_list[pl_id]].get_y() - r.get_position().get_y())*(planet_positions[planet_list[pl_id]].get_z() - r.get_position().get_z())/pow((planet_positions[planet_list[pl_id]] - r.get_position()).len(), 5);
+
+        daZ_dX = daZ_dX + 3*GM[planet_list[pl_id]] * (planet_positions[planet_list[pl_id]].get_z() - r.get_position().get_z())*(planet_positions[planet_list[pl_id]].get_x() - r.get_position().get_x())/pow((planet_positions[planet_list[pl_id]] - r.get_position()).len(), 5);
+
+        daZ_dY = daZ_dY + 3*GM[planet_list[pl_id]] * (planet_positions[planet_list[pl_id]].get_z() - r.get_position().get_z())*(planet_positions[planet_list[pl_id]].get_y() - r.get_position().get_y())/pow((planet_positions[planet_list[pl_id]] - r.get_position()).len(), 5);
+
+        daZ_dZ = daZ_dZ + -GM[planet_list[pl_id]]/pow((planet_positions[planet_list[pl_id]] - r.get_position()).len(), 3) + 3*GM[planet_list[pl_id]] * pow(planet_positions[planet_list[pl_id]].get_z() - r.get_position().get_z(), 2)/pow((planet_positions[planet_list[pl_id]] - r.get_position()).len(), 5);
+    }
+
+    (*mtr)[3][0] = daX_dX;
+    (*mtr)[3][1] = daX_dY;
+    (*mtr)[3][2] = daX_dZ;
+
+    (*mtr)[4][0] = daY_dX;
+    (*mtr)[4][1] = daY_dY;
+    (*mtr)[4][2] = daY_dZ;
+
+    (*mtr)[5][0] = daZ_dX;
+    (*mtr)[5][1] = daZ_dY;
+    (*mtr)[5][2] = daZ_dZ;
+}
+
+
+StateVector OrbitalIntegration::diff(double t, StateVector s_vector, std::map<std::string , std::vector<IntegrationVector>> planets, Converter cnv){
+    StateVector new_s_vector;
+    IntegrationVector new_y;
+    new_y = diff(t, s_vector.get_state(), planets, cnv);
+
+    Matrix G(6, 6);
+
+    for (int i = 0; i < 3; i++){
+        for (int j = 0; j < 3; j++){
+            G[i][j] = 0;
+            G[6-i - 1][6-j-1] = 0;
+            G[i][j+3] = 0;
+            if (j == i){
+                G[i][j+3] = 1;
+            }
+        }
+    }
+
+    diff_for_G_matrix(t, &G, new_y, planets, cnv);
+
+    std::cout<<G;
+
+    new_s_vector.set_dG_dX(G);
+    new_s_vector.set_state(new_y);
+
+    return new_s_vector;
+}
+        
+
 //Метод Дормана-Принса 5-го порядка
 std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVector y, Date* start, Date* end, double h, std::map<std::string, std::vector<IntegrationVector>> planets, Converter cnv){
     IntegrationVector k1, k2, k3, k4, k5, k6, k7;
