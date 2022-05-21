@@ -99,7 +99,7 @@ StateVector OrbitalIntegration::diff(double t, StateVector s_vector, std::map<st
 
     std::cout<<G;
 
-    new_s_vector.set_dG_dX(G);
+    new_s_vector.set_dF_dX(G);
     new_s_vector.set_state(new_y);
 
     return new_s_vector;
@@ -136,6 +136,32 @@ std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVec
     return result;
 };
 
+std::vector<StateVector> OrbitalIntegration::dormand_prince(StateVector y, Date* start, Date* end, double h, std::map<std::string, std::vector<IntegrationVector>> planets, Converter cnv){
+    StateVector k1, k2, k3, k4, k5, k6, k7;
+    std::vector<StateVector> result;
+
+
+    StateVector new_y = y;
+    new_y.get_dX_dX0()->make_unit();
+
+    for (double t = start->get_MJD(); t <= end->get_MJD() + h; t += h){
+
+        std::ofstream out;
+        k1 = diff(t,  new_y, planets, cnv);
+        k2 = diff(t + c2*h, new_y+h*(a21*k1), planets, cnv);
+        k3 = diff(t + c3*h, new_y+h*(a31*k1+a32*k2), planets, cnv);
+        k4 = diff(t + c4*h, new_y+h*(a41*k1+a42*k2+a43*k3), planets, cnv);
+        k5 = diff(t + c5*h, new_y+h*(a51*k1+a52*k2+a53*k3+a54*k4), planets, cnv);
+        k6 = diff(t + c6*h, new_y+h*(a61*k1+a62*k2+a63*k3+a64*k4+a65*k5), planets, cnv);
+        k7 = diff(t + c7*h, new_y+h*(a71*k1+a72*k2+a73*k3+a74*k4+a75*k5+a76*k6), planets, cnv);
+        
+        new_y = new_y + h * (b1 * k1 + b3 * k3 + b4 * k4 + b5 * k5 + b6 * k6);
+
+        result.push_back(new_y);
+    }
+
+    return result;
+};
 
 BarycentricFrame OrbitalIntegration::sqrt(BarycentricFrame frame) {
     BarycentricFrame result;

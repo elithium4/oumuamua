@@ -55,5 +55,6 @@ class OrbitalIntegration{
         StateVector diff(double, StateVector, std::map<std::string, std::vector<IntegrationVector>>, Converter);
         void diff_for_G_matrix(double, Matrix* mtr, IntegrationVector r, std::map<std::string, std::vector<IntegrationVector>>, Converter);
         std::vector<IntegrationVector> dormand_prince(IntegrationVector, Date*, Date*, double, std::map<std::string, std::vector<IntegrationVector>>, Converter);
+        std::vector<StateVector> dormand_prince(StateVector, Date*, Date*, double, std::map<std::string, std::vector<IntegrationVector>>, Converter);
         BarycentricFrame sqrt(BarycentricFrame);
 };

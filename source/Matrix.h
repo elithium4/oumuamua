@@ -37,11 +37,14 @@ class Matrix{
 		friend Matrix operator+(Matrix& A, Matrix& B);
 		friend Matrix operator-(Matrix& A, Matrix& B);
 		friend Matrix operator*(Matrix& A, Matrix& B);
+		friend Matrix operator*(double& k, Matrix& A);
 		~Matrix();
 
         int rows() const;
         int columns() const;
         bool is_empty();
+
+		void make_unit();
 };
 
 std::ostream& operator<<(std::ostream& strm, Matrix& mtr);

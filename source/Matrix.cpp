@@ -174,6 +174,16 @@ Matrix operator*(Matrix& A, Matrix& B){
     return C;
 }
 
+Matrix operator*(double& k, Matrix& A){
+    Matrix C(A.n, A.m);
+    for (int i = 0; i < A.n; i++){
+        for (int j = 0; j < A.m; j++){
+            C[i][j] = A[i][j]*k;
+        }
+    }
+    return C;
+}
+
 Matrix::~Matrix(){
     if (mtr != nullptr){
         for (int i = 0; i < n; i++){
@@ -206,4 +216,17 @@ std::ostream& operator<<(std::ostream& strm, Matrix& mtr)
         strm<<"\n";
     }
     return strm;
+}
+
+void Matrix::make_unit(){
+    int k = std::min(n, m);
+    for (int i = 0; i < k; i++){
+        for (int j = 0; j < k; j++){
+            if (i == j){
+                mtr[i][j] = 1;
+            } else {
+                mtr[i][j] = 0;
+            }
+        }
+    }
 }

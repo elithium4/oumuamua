@@ -47,5 +47,6 @@ int main(){
     }
 
     std::cout<<G;
+
     return 0;
 }
