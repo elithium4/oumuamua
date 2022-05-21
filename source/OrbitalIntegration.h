@@ -1,6 +1,7 @@
 #include "IntegrationVector.h"
 #include "DataHandler.h"
 #include "Converter.h"
+#include "StateVector.h"
 #include <vector>
 #include <map>
 #include <math.h>
@@ -51,6 +52,7 @@ class OrbitalIntegration{
     public:
         OrbitalIntegration();
         IntegrationVector diff(double, IntegrationVector, std::map<std::string, std::vector<IntegrationVector>>, Converter);
+        StateVector diff(double, StateVector, std::map<std::string, std::vector<IntegrationVector>>, Converter);
         std::vector<IntegrationVector> dormand_prince(IntegrationVector, Date*, Date*, double, std::map<std::string, std::vector<IntegrationVector>>, Converter);
         BarycentricFrame sqrt(BarycentricFrame);
 };
