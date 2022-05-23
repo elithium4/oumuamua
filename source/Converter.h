@@ -21,6 +21,7 @@
 #include "InterpolationHubbleFrame.h"
 
 #include "IntegrationVector.h"
+#include "StateVector.h"
 
 #include "../sofa/sofa.h"
 
@@ -59,5 +60,9 @@ class Converter{
     void spherical_to_geocentric(Observation*);
 
     void barycentric_to_spherical_for_observations(Observation*);
+
+    std::vector<StateVector> interpolation_to_observation(std::vector<Observation> vector, std::vector<StateVector> interpolation_orbits);
+    IntegrationVector interpolation_state(IntegrationVector, IntegrationVector, double);
+    Matrix interpolation_matrix(Matrix, Matrix, double, double, double);
 
 };

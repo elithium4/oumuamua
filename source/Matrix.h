@@ -34,10 +34,11 @@ class Matrix{
         Row operator[](int i) const;
 		
 		Matrix transpose(Matrix& A);
-		friend Matrix operator+(Matrix& A, Matrix& B);
-		friend Matrix operator-(Matrix& A, Matrix& B);
-		friend Matrix operator*(Matrix& A, Matrix& B);
-		friend Matrix operator*(double& k, Matrix& A);
+		friend Matrix operator+(Matrix const A, Matrix const B);
+		friend Matrix operator-(Matrix const A, Matrix const B);
+		friend Matrix operator*(Matrix const A, Matrix const B);
+		friend Matrix operator*(double const k, Matrix const A);
+		friend Matrix operator*(Matrix const A, double const k);
 		~Matrix();
 
         int rows() const;

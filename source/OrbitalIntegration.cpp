@@ -2,6 +2,7 @@
 #include <iomanip>
 
 std::ofstream debug;
+std::ofstream matrix;
 
 OrbitalIntegration::OrbitalIntegration(){
     for (auto pair: GM){
@@ -97,7 +98,19 @@ StateVector OrbitalIntegration::diff(double t, StateVector s_vector, std::map<st
 
     diff_for_G_matrix(t, &G, new_y, planets, cnv);
 
-    std::cout<<G;
+    matrix<<"G: \n"<<G<<"\n";
+
+    matrix<<"old: \n"<<*s_vector.get_dX_dX0()<<"\n";
+
+    Matrix newdx = G*(*s_vector.get_dX_dX0());
+
+    matrix<<"new:\n"<<newdx<<"\n";
+
+    new_s_vector.set_dX_dX0(newdx);
+
+    matrix<<"dx\dx0: \n"<<*new_s_vector.get_dX_dX0()<<"\n";
+
+    matrix<<"____________________\n";
 
     new_s_vector.set_dF_dX(G);
     new_s_vector.set_state(new_y);
@@ -110,7 +123,6 @@ StateVector OrbitalIntegration::diff(double t, StateVector s_vector, std::map<st
 std::vector<IntegrationVector> OrbitalIntegration::dormand_prince(IntegrationVector y, Date* start, Date* end, double h, std::map<std::string, std::vector<IntegrationVector>> planets, Converter cnv){
     IntegrationVector k1, k2, k3, k4, k5, k6, k7;
     std::vector<IntegrationVector> result;
-
 
     IntegrationVector new_y = y;
 
@@ -140,9 +152,11 @@ std::vector<StateVector> OrbitalIntegration::dormand_prince(StateVector y, Date*
     StateVector k1, k2, k3, k4, k5, k6, k7;
     std::vector<StateVector> result;
 
+    matrix.open("./debug/mtr.txt");
 
     StateVector new_y = y;
     new_y.get_dX_dX0()->make_unit();
+
 
     for (double t = start->get_MJD(); t <= end->get_MJD() + h; t += h){
 
@@ -157,9 +171,16 @@ std::vector<StateVector> OrbitalIntegration::dormand_prince(StateVector y, Date*
         
         new_y = new_y + h * (b1 * k1 + b3 * k3 + b4 * k4 + b5 * k5 + b6 * k6);
 
+        Date date;
+        date.set_MJD(t);
+        IntegrationVector new_v = new_y.get_state();
+        new_v.set_julian_date(date);
+        new_y.set_state(new_v);
+
         result.push_back(new_y);
     }
 
+    matrix.close();
     return result;
 };
 

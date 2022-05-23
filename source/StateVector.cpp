@@ -88,6 +88,7 @@ Matrix StateVector::get_dR_dX0() {
 
 StateVector operator*(double k, StateVector vec){
 	StateVector result;
+    result.state = k*vec.state;
 	result.dF_dX0 = k*vec.dF_dX0;
     result.dF_dX = k*vec.dF_dX;
 	result.dg_dX = k*vec.dg_dX;
@@ -96,12 +97,23 @@ StateVector operator*(double k, StateVector vec){
 	return result;
 }
 
-StateVector operator+(StateVector v1, StateVector v2){
+/*StateVector operator*(StateVector v1, StateVector v2){
 	StateVector result;
 	result.dF_dX0 = v1.dF_dX0*v2.dF_dX0;
     result.dF_dX = v1.dF_dX*v2.dF_dX;
 	result.dg_dX = v1.dg_dX*v2.dg_dX;
 	result.dR_dX0 = v1.dR_dX0*v2.dR_dX0;
 	result.dX_dX0 = v1.dX_dX0*v2.dX_dX0;
+	return result;
+}*/
+
+StateVector operator+(StateVector v1, StateVector v2){
+	StateVector result;
+    result.state = v1.state + v2.state;
+	result.dF_dX0 = v1.dF_dX0+v2.dF_dX0;
+    result.dF_dX = v1.dF_dX+v2.dF_dX;
+	result.dg_dX = v1.dg_dX+v2.dg_dX;
+	result.dR_dX0 = v1.dR_dX0+v2.dR_dX0;
+	result.dX_dX0 = v1.dX_dX0+v2.dX_dX0;
 	return result;
 }

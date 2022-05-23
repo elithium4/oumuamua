@@ -446,3 +446,72 @@ void Converter::barycentric_to_geocentric(IntegrationVector* model, std::vector<
     model->set_geocentric_position(x, y, z);
 }
 
+//Линейная интерполяция координат
+IntegrationVector Converter::interpolation_state(IntegrationVector vec_t0, IntegrationVector vec_t1, double t){
+    double new_x, new_y, new_z;
+    BarycentricFrame f_t0 = vec_t0.get_position();
+    BarycentricFrame f_t1 = vec_t1.get_position();
+
+    double t0 = vec_t0.get_julian_date()->get_MJD();
+    double t1 = vec_t1.get_julian_date()->get_MJD();
+
+    new_x = f_t0.get_x() + (t - t0)*(f_t1.get_x() - f_t0.get_x())/(t1 - t0);
+    new_y = f_t0.get_y() + (t - t0)*(f_t1.get_y() - f_t0.get_y())/(t1 - t0);
+    new_z = f_t0.get_z() + (t - t0)*(f_t1.get_z() - f_t0.get_z())/(t1 - t0);
+
+    IntegrationVector result;
+    result.set_position(new_x, new_y, new_z);
+    return result;
+}
+
+//Линейная интерполяция матриц
+Matrix Converter::interpolation_matrix(Matrix m_t0, Matrix m_t1, double t0, double t1, double t){
+    if ((m_t0.rows() != m_t1.rows()) or (m_t0.columns() != m_t1.columns())){
+        std::cout<<"M_t0 size: "<<m_t0.columns()<<" "<<m_t0.rows()<<"\nM_t1 size: "<<m_t1.columns()<<" "<<m_t1.rows()<<"\n";
+        throw std::invalid_argument("Diffferent interpolating matrix size\n");
+    }
+
+    Matrix result(m_t0.rows(), m_t0.columns());
+    result = m_t0 + (m_t1 - m_t0) * ((t - t0)/(t1 - t0));
+    return result;
+}
+
+
+//Интерполяция для выявления смоделированных значений с нужными датами
+std::vector<StateVector> Converter::interpolation_to_observation(std::vector<Observation> vector, std::vector<StateVector> interpolation_orbits) {
+    double delta_x;
+    double delta_y;
+    double delta_z;
+    int last_min = 0;
+    std::vector<StateVector> result;
+    for (int i = 0; i < vector.size(); i++) {
+        StateVector new_vector;
+        int j = last_min;
+        int count = 0;
+        for (j; j < interpolation_orbits.size(); j++) {
+            count++;
+
+            if (vector[i].get_julian_date()->get_MJD() < interpolation_orbits[j].get_state().get_julian_date()->get_MJD()) {
+                last_min = j - 1;
+
+                double t = vector[i].get_julian_date()->get_MJD();
+
+                IntegrationVector new_state = interpolation_state(interpolation_orbits[j - 1].get_state(), interpolation_orbits[j].get_state(), t);
+                std::cout<<"Doing it for j: "<<j-1<<"\n";
+                Matrix dX_dX0 = interpolation_matrix(*interpolation_orbits[j-1].get_dX_dX0(), *interpolation_orbits[j].get_dX_dX0(), interpolation_orbits[j-1].get_state().get_julian_date()->get_MJD(), interpolation_orbits[j].get_state().get_julian_date()->get_MJD(), t);
+
+                Date new_data = *vector[i].get_julian_date();
+                new_state.set_julian_date(new_data);
+                new_state.set_position(delta_x, delta_y, delta_z);
+                new_state.set_velocity(0, 0, 0);
+
+                new_vector.set_state(new_state);
+                new_vector.set_dX_dX0(dX_dX0);
+
+                result.push_back(new_vector);
+                break;
+            }
+        }
+    }
+    return result;
+}

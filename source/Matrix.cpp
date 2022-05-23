@@ -7,6 +7,9 @@ Matrix::Matrix(int n, int m){
     this->m = m;
     for (int i = 0; i < n; i++){
         mtr[i] = new double[m];
+        for (int j = 0; j < m; j++){
+            mtr[i][j] = 0;
+        }
     }
 }
 
@@ -125,7 +128,7 @@ Matrix::Row Matrix::operator[](int i) const{
     return Row(mtr[i]);
 }
 
-Matrix operator+(Matrix& A, Matrix& B){
+Matrix operator+(Matrix const A, Matrix const B){
     if ((A.columns() != B.columns()) or (A.rows() != B.rows())){
         throw std::invalid_argument("Different matrix size\n");
         return Matrix(1,1);
@@ -141,7 +144,7 @@ Matrix operator+(Matrix& A, Matrix& B){
     return C;
 }
 
-Matrix operator-(Matrix& A, Matrix& B){
+Matrix operator-(Matrix const A, Matrix const B){
     if ((A.columns() != B.columns()) or (A.rows() != B.rows())){
         throw std::invalid_argument("Diffferent matrix size\n");
         return Matrix(1,1);
@@ -157,7 +160,7 @@ Matrix operator-(Matrix& A, Matrix& B){
     return C;
 }
 
-Matrix operator*(Matrix& A, Matrix& B){
+Matrix operator*(Matrix const A, Matrix const B){
     if (A.columns() != B.rows()){
         return Matrix(1,1);
     }
@@ -174,7 +177,17 @@ Matrix operator*(Matrix& A, Matrix& B){
     return C;
 }
 
-Matrix operator*(double& k, Matrix& A){
+Matrix operator*(double const k, Matrix const A){
+    Matrix C(A.n, A.m);
+    for (int i = 0; i < A.n; i++){
+        for (int j = 0; j < A.m; j++){
+            C[i][j] = A[i][j]*k;
+        }
+    }
+    return C;
+}
+
+Matrix operator*(Matrix const A, double const k){
     Matrix C(A.n, A.m);
     for (int i = 0; i < A.n; i++){
         for (int j = 0; j < A.m; j++){
@@ -207,7 +220,6 @@ int Matrix::columns() const{
 
 std::ostream& operator<<(std::ostream& strm, Matrix& mtr)
 {
-    std::cout<<"I work\n";
     for (int i = 0; i < mtr.rows(); i++){
         for (int j = 0; j < mtr.columns(); j++){
             

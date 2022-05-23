@@ -50,18 +50,24 @@ void Facade::convert_observatory(){
 
 //Численное интегрирование
 void Facade::integrate(){
-    std::vector<IntegrationVector> model_measures;
+    //std::vector<IntegrationVector> model_measures;
     std::vector<IntegrationVector> base_measures;
-    std::vector<IntegrationVector> model_orbits;
+    //std::vector<IntegrationVector> model_orbits;
+
+    std::vector<StateVector> model_orbits;
+    std::vector<StateVector> model_measures;
 
     std::map<std::string, std::vector<IntegrationVector>> map_planets = cnv.interpolation_center_planet(0.2, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), dhand.get_interpolation_planets());
 
-    model_orbits = integration.dormand_prince(x0, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), 0.2, dhand.get_interpolation_planets(), cnv);
+    StateVector start;
+    start.set_state(x0);
+
+    model_orbits = integration.dormand_prince(start, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), 0.2, dhand.get_interpolation_planets(), cnv);
     
     std::ofstream orbit_out;
     orbit_out.open("./debug/orbit.txt");
     for (int i = 0; i < model_orbits.size(); i++){
-        orbit_out<<std::setprecision(10)<<model_orbits[i].get_julian_date()->get_MJD()<<" "<<model_orbits[i].get_position().get_x()<<" "<<model_orbits[i].get_position().get_y()<<" "<<model_orbits[i].get_position().get_z()<<"\n";
+        orbit_out<<std::setprecision(10)<<model_orbits[i].get_state().get_julian_date()->get_MJD()<<" "<<model_orbits[i].get_state().get_position().get_x()<<" "<<model_orbits[i].get_state().get_position().get_y()<<" "<<model_orbits[i].get_state().get_position().get_z()<<"\n";
     }
     orbit_out.close();
 
@@ -93,34 +99,30 @@ void Facade::integrate(){
     std::ofstream model_out;
     model_out.open("./data/model_bary.txt");
 
-    model_measures = cnv.light_time_correction(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), dhand.get_interpolation_hubble(), map_planets["earth"]);
-    model_measures = cnv.aberration(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
-    model_measures = cnv.gravitational_deflection(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
+    //model_measures = cnv.light_time_correction(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), dhand.get_interpolation_hubble(), map_planets["earth"]);
+    //model_measures = cnv.aberration(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
+    //model_measures = cnv.gravitational_deflection(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
 
     for (int i = 0; i < model_measures.size(); i++){
-        model_out<<std::setprecision(9)<<model_measures[i].get_julian_date()->get_MJD()<<" "<<model_measures[i].get_position().get_x()<<" "<<model_measures[i].get_position().get_y()<<" "<<model_measures[i].get_position().get_z()<<"\n";
-        cnv.barycentric_to_geocentric(&model_measures[i], map_planets["earth"]);
+        //model_out<<std::setprecision(9)<<model_measures[i].get_state().get_julian_date()->get_MJD()<<" "<<model_measures[i].get_state().get_position().get_x()<<" "<<model_measures[i].get_state().get_position().get_y()<<" "<<model_measures[i].get_state().get_position().get_z()<<"\n";
+        //cnv.barycentric_to_geocentric(&model_measures[i], map_planets["earth"]);
     }
     model_out.close();
 
+    /*
+    StateVector v;
+    v.set_state(model_measures[0]);
+    std::cout<<"Ill integrate dx/dx0\n";
+    integration.dormand_prince(v, dhand.get_observation(0)->get_julian_date(), dhand.get_observation(221)->get_julian_date(), 0.2, dhand.get_interpolation_planets(), cnv);
+    
+
+
     least_squares(model_measures, base_measures);
-    std::cout<<"Fin\n";
+    std::cout<<"Fin\n";*/
 }
 
 //МНК (пока в процессе)
 void Facade::least_squares(std::vector<IntegrationVector> model, std::vector<IntegrationVector> base_measures){
-
-    Observation obs;
-    CelestialCoord dec;
-    dec.set_from_string("04 56 48.3");
-    CelestialCoord asc;
-    asc.set_from_string("23 59 47.46");
-    obs.set_declination(dec);
-    obs.set_ascension(asc);
-
-    cnv.celestial_to_spherical(&obs);
-
-    std::cout<<"In rad: "<<obs.get_spherical_position().get_longitude()<<" "<<obs.get_spherical_position().get_latitude()<<"\n";
 
     std::ofstream spherical;
     spherical.open("./data/spherical_model.txt");
@@ -164,13 +166,6 @@ void Facade::write_to_file(std::vector<IntegrationVector> model, std::vector<Int
         std::cout<<"Что-то пошло не так.\n";
     }
 
-
-    std::ofstream codes;
-    codes.open("./data/code.txt");
-    for (int ind = 0; ind < dhand.get_observations()->size(); ind++){
-        codes<<dhand.get_observation(ind)->get_code()<<"\n";
-    }
-    codes.close();
 }
 
 void Facade::test_reading(){
@@ -236,4 +231,7 @@ void Facade::test_reading(){
     }
 
     outp.close();
+}
+
+void Facade::test_new_func(){
 }

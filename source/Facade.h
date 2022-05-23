@@ -23,4 +23,6 @@ class Facade{
         void integrate();
         void least_squares(std::vector<IntegrationVector>, std::vector<IntegrationVector>);
         void write_to_file(std::vector<IntegrationVector>, std::vector<IntegrationVector>);
+
+        void test_new_func();
 };
