@@ -81,7 +81,7 @@ void OrbitalIntegration::diff_for_G_matrix(double t, Matrix* mtr, IntegrationVec
 StateVector OrbitalIntegration::diff(double t, StateVector s_vector, std::map<std::string , std::vector<IntegrationVector>> planets, Converter cnv){
     StateVector new_s_vector;
     IntegrationVector new_y;
-    new_y = diff(t, s_vector.get_state(), planets, cnv);
+    new_y = diff(t, *s_vector.get_state(), planets, cnv);
 
     Matrix G(6, 6);
 
@@ -96,7 +96,7 @@ StateVector OrbitalIntegration::diff(double t, StateVector s_vector, std::map<st
         }
     }
 
-    diff_for_G_matrix(t, &G, new_y, planets, cnv);
+    diff_for_G_matrix(t, &G, *s_vector.get_state(), planets, cnv);
 
     matrix<<"G: \n"<<G<<"\n";
 
@@ -161,19 +161,22 @@ std::vector<StateVector> OrbitalIntegration::dormand_prince(StateVector y, Date*
     for (double t = start->get_MJD(); t <= end->get_MJD() + h; t += h){
 
         std::ofstream out;
-        k1 = diff(t,  new_y, planets, cnv);
-        k2 = diff(t + c2*h, new_y+h*(a21*k1), planets, cnv);
-        k3 = diff(t + c3*h, new_y+h*(a31*k1+a32*k2), planets, cnv);
-        k4 = diff(t + c4*h, new_y+h*(a41*k1+a42*k2+a43*k3), planets, cnv);
-        k5 = diff(t + c5*h, new_y+h*(a51*k1+a52*k2+a53*k3+a54*k4), planets, cnv);
-        k6 = diff(t + c6*h, new_y+h*(a61*k1+a62*k2+a63*k3+a64*k4+a65*k5), planets, cnv);
-        k7 = diff(t + c7*h, new_y+h*(a71*k1+a72*k2+a73*k3+a74*k4+a75*k5+a76*k6), planets, cnv);
+        k1 = diff(t, new_y, planets, cnv);
+        k2 = diff(t + c2 * h, new_y + h * (a21 * k1), planets, cnv);
+        k3 = diff(t + c3 * h, new_y + h * (a31 * k1 + a32 * k2), planets, cnv);
+        k4 = diff(t + c4 * h, new_y + h * (a41 * k1 + a42 * k2 + a43 * k3), planets, cnv);
+        k5 = diff(t + c5 * h, new_y + h * (a51 * k1 + a52 * k2 + a53 * k3 + a54 * k4), planets, cnv);
+        k6 = diff(t + c6 * h, new_y + h * (a61 * k1 + a62 * k2 + a63 * k3 + a64 * k4 + a65 * k5), planets, cnv);
+        k7 = diff(t + c7 * h, new_y + h * (a71 * k1 + a72 * k2 + a73 * k3 + a74 * k4 + a75 * k5 + a76 * k6), planets, cnv);
         
-        new_y = new_y + h * (b1 * k1 + b3 * k3 + b4 * k4 + b5 * k5 + b6 * k6);
+        new_y = new_y + (h * (b1 * k1 + b3 * k3 + b4 * k4 + b5 * k5 + b6 * k6));
+        matrix << "____________________\n";
+        matrix << "____________________\n";
+        matrix << "Y: \n" << (*new_y.get_dX_dX0()) << "\n";
 
         Date date;
         date.set_MJD(t);
-        IntegrationVector new_v = new_y.get_state();
+        IntegrationVector new_v = *new_y.get_state();
         new_v.set_julian_date(date);
         new_y.set_state(new_v);
 
@@ -190,4 +193,29 @@ BarycentricFrame OrbitalIntegration::sqrt(BarycentricFrame frame) {
     result.set_y(std::sqrt(frame.get_y()));
     result.set_z(std::sqrt(frame.get_z()));
     return result;
+}
+
+void OrbitalIntegration::calculate_dg(StateVector* vec){
+    BarycentricFrame r = vec->get_state()->get_position();
+    double dRA_dX, dRA_dY, dRA_dZ, dDEC_dX, dDEC_dY, dDEC_dZ;
+    double sign = -1;
+    double cos_f = cos(asin(r.get_z() / r.len()));
+    dRA_dX = -1 * r.get_x() * r.get_z() / (std::sqrt(1 - r.get_z()*r.get_z()) / (r.len() * r.len()));
+    dRA_dX = -1 * r.get_x() * r.get_z() / (std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2)) * pow(r.len(), 3));
+    dRA_dY = -1 * r.get_y() * r.get_z() / (std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2)) * pow(r.len(), 3));
+    dRA_dZ = (pow(r.get_z(), 3) - pow(r.get_z(), 2)) / ((std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2)) * pow(r.len(), 3)));
+
+    if (r.get_y()/r.len() >0)
+	    sign = 1;
+
+    dDEC_dX = sign*(-1 * r.get_x() * (r.get_z() * dRA_dX - r.get_x() * cos_f / r.len()) + r.len() * cos_f) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2))));
+    dDEC_dY = sign*(r.get_x() * (-1 * r.get_z() * dRA_dY + r.get_y() * cos_f / r.len())) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2))));
+    dDEC_dZ = sign*(r.get_x() * (-1 * r.get_z() * dRA_dZ + r.get_z() * cos_f / r.len())) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2))));
+    
+    Matrix result(2, 6, {
+        {dRA_dX, dRA_dY, dRA_dZ, 0, 0, 0},
+        {dDEC_dX, dDEC_dY, dDEC_dZ, 0, 0, 0},
+    });
+
+    vec->set_dg_dX(result);
 }

@@ -10,7 +10,7 @@ private:
     Matrix dF_dX = Matrix(6, 6); //блочная G
     Matrix dg_dX = Matrix(6, 2); //страшная штука
     Matrix dF_dX0 = Matrix(6, 6);
-    Matrix dR_dX0 = Matrix(6, 1);
+    Matrix dR_dX0 = Matrix(6, 2);
 public:
     StateVector() {};
 
@@ -30,7 +30,9 @@ public:
     void set_dF_dX0(Matrix);
     void set_dR_dX0(Matrix);
 
-    IntegrationVector get_state();
+    void calculate_dR_dX0();
+
+    IntegrationVector* get_state();
     Matrix* get_dX_dX0();
     Matrix* get_dF_dX();
     Matrix get_dg_dX();

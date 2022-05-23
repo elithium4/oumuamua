@@ -62,8 +62,8 @@ void StateVector::set_dR_dX0(Matrix other) {
     dR_dX0 = other;
 }
 
-IntegrationVector StateVector::get_state() {
-    return state;
+IntegrationVector* StateVector::get_state() {
+    return &state;
 }
 
 Matrix* StateVector::get_dX_dX0() {
@@ -116,4 +116,8 @@ StateVector operator+(StateVector v1, StateVector v2){
 	result.dR_dX0 = v1.dR_dX0+v2.dR_dX0;
 	result.dX_dX0 = v1.dX_dX0+v2.dX_dX0;
 	return result;
+}
+#include <iostream>
+void StateVector::calculate_dR_dX0(){
+    dR_dX0 = (dg_dX * dX_dX0);
 }

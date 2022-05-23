@@ -48,4 +48,4 @@ class Matrix{
 		void make_unit();
 };
 
-std::ostream& operator<<(std::ostream& strm, Matrix& mtr);
+std::ostream& operator<<(std::ostream& strm, Matrix mtr);

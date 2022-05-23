@@ -51,6 +51,7 @@ Matrix::Matrix(const Matrix& other){
     this->n = other.n;
     this->m = other.m;
 
+
     for (int i = 0; i < this->n; i++){
         for (int j = 0; j < this->m; j++){
             mtr[i][j] = other[i][j];
@@ -167,8 +168,8 @@ Matrix operator*(Matrix const A, Matrix const B){
 
     Matrix C(A.rows(), B.columns());
 
-    for (int i = 0; i < A.columns(); i++){
-        for (int j = 0; j < B.rows(); j++){
+    for (int i = 0; i < A.rows(); i++){
+        for (int j = 0; j < B.columns(); j++){
             for (int k = 0; k < B.rows(); k++){
                 C[i][j] += A[i][k] * B[k][j];
             }
@@ -218,7 +219,7 @@ int Matrix::columns() const{
 }
 
 
-std::ostream& operator<<(std::ostream& strm, Matrix& mtr)
+std::ostream& operator<<(std::ostream& strm, Matrix mtr)
 {
     for (int i = 0; i < mtr.rows(); i++){
         for (int j = 0; j < mtr.columns(); j++){

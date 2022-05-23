@@ -57,4 +57,6 @@ class OrbitalIntegration{
         std::vector<IntegrationVector> dormand_prince(IntegrationVector, Date*, Date*, double, std::map<std::string, std::vector<IntegrationVector>>, Converter);
         std::vector<StateVector> dormand_prince(StateVector, Date*, Date*, double, std::map<std::string, std::vector<IntegrationVector>>, Converter);
         BarycentricFrame sqrt(BarycentricFrame);
+        
+        void calculate_dg(StateVector*);
 };

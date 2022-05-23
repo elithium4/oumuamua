@@ -26,6 +26,7 @@ public:
     friend BarycentricFrame operator+(BarycentricFrame, BarycentricFrame);
     friend BarycentricFrame operator-(BarycentricFrame, BarycentricFrame);
     friend BarycentricFrame operator*(const double&, BarycentricFrame);
+    friend BarycentricFrame operator*(BarycentricFrame, const double&);
     friend BarycentricFrame operator/(BarycentricFrame, BarycentricFrame);
     friend BarycentricFrame operator/(BarycentricFrame, const double&);
 

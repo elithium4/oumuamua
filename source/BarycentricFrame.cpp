@@ -94,6 +94,14 @@ BarycentricFrame operator*(const double& m, BarycentricFrame frame) {
     return result;
 }
 
+BarycentricFrame operator*(BarycentricFrame frame, const double& m) {
+    BarycentricFrame result;
+    result.x = m * frame.x;
+    result.y = m * frame.y;
+    result.z = m * frame.z;
+    return result;
+}
+
 BarycentricFrame operator/(BarycentricFrame frame_1, BarycentricFrame frame_2) {
     BarycentricFrame result;
     result.x = frame_1.x / frame_2.x;
