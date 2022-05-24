@@ -88,6 +88,9 @@ IntegrationVector LeastSquares::gauss_newton(std::vector<StateVector> model, std
     filee<<"\n\n_______________MATRIX A_t_________________\n\n";
     filee<<A_t;
 
+    filee<<"\n\n_______________MATRIX w_________________\n\n";
+    filee<<W;
+
     filee<<"\n\n_______________MATRIX grad_f_________________\n\n";
     filee<<grad_f;
 
@@ -142,7 +145,42 @@ IntegrationVector LeastSquares::gauss_newton(std::vector<StateVector> model, std
 Matrix LeastSquares::cholesky(Matrix A){
     Matrix L(A.rows(), A.columns());
 
-    for (int i = 0; i < A.columns(); i++) {
+
+    /*for (int i = 0; i < A.columns(); i++) {
+        L[i][i] = A[i][i];
+        for (int k = 0; k < i - 1; k++) {
+            L[i][i] = L[i][i] - (A[i][k]) * (A[i][k]);
+        }
+        L[i][i] = std::sqrt(L[i][i]);
+        for (int j = i; j < A.columns(); j++) {
+            L[j][i] = A[j][i];
+            for (int k = 0; k < i - 1; k++) {
+                L[j][i] = L[j][i] - A[i][k] * A[j][k];
+            }
+            L[j][i] = L[j][i] / L[i][i];
+        }
+    }*/
+
+    for (int i = 0; i < A.columns(); i++){
+        for (int j = 0; j <= i; j++){
+            double sum = 0;
+            if (j == i){
+                for (int k = 0; k < j; k++){
+                    sum += (L[j][k]*L[j][k]);
+                }
+                L[j][j] = sqrt(A[j][j] - sum);
+            } else {
+                for (int k = 0; k < j; k++){
+                    sum += (L[i][k]*L[j][k]);
+                }
+                if (L[j][j] != 0){
+                    L[i][j] = (A[i][j] - sum) / L[j][j];
+                }
+            }
+        }
+    }
+
+    /*for (int i = 0; i < A.columns(); i++) {
         for (int j = 0; j <= i; j++) {
             double sum = 0;
             if (j == i){
@@ -159,7 +197,7 @@ Matrix LeastSquares::cholesky(Matrix A){
                 L[i][j] = (A[i][j] - sum) / L[j][j];
             }
         }
-    } 
+    }*/
     return L;
 };
 

@@ -66,10 +66,11 @@ void Facade::integrate(){
     x0.set_julian_date(start_date);
     start.set_state(x0);
 
-    start = cnv.light_time_correction(dhand.get_observatory(), start, dhand.get_observations_vector(), dhand.get_interpolation_hubble(), map_planets["earth"]);
-    start = cnv.aberration(dhand.get_observatory(), start, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
-    start = cnv.gravitational_deflection(dhand.get_observatory(), start, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
-
+    if (counter == 0){
+        start = cnv.light_time_correction(dhand.get_observatory(), start, dhand.get_observations_vector(), dhand.get_interpolation_hubble(), map_planets["earth"]);
+        start = cnv.aberration(dhand.get_observatory(), start, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
+        start = cnv.gravitational_deflection(dhand.get_observatory(), start, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
+    }
     model_orbits = integration.dormand_prince(start, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), 0.2, dhand.get_interpolation_planets(), cnv);
 
     model_measures = cnv.interpolation_to_observation(dhand.get_observations_vector(), model_orbits);
@@ -89,8 +90,6 @@ void Facade::integrate(){
 
     for (int i = 0; i < model_measures.size(); i++){
         integration.calculate_dg(&model_measures[i]);
-        //std::cout<<"X: "<<model_measures[i].get_state()->get_position().get_x()<<" Y: "<<model_measures[i].get_state()->get_position().get_y()<<" Z: "<<model_measures[i].get_state()->get_position().get_z()<<"\n";
-        //std::cout<<model_measures[i].get_dg_dX()<<"\n";
         model_measures[i].calculate_dR_dX0();
     }
 
@@ -132,13 +131,18 @@ void Facade::least_squares(std::vector<StateVector> model, std::vector<Integrati
     double wrms_asc;
     double wrms_dec;
 
-    //write_to_file(model, base_measures);
+    write_to_file(model, base_measures);
 
     std::vector<SphericalFrame> r_i;
     std::vector<SphericalFrame> delta_i;
 
     r_i = least_sq.calculate_wmrs(model, *dhand.get_observations(), &delta_i, &wrms_asc, &wrms_dec);
     x0 = least_sq.gauss_newton(model, r_i, delta_i, x0);
+
+    std::cout<<"WRMS ASC: "<<wrms_asc<<"\n";
+    std::cout<<"WRMS DEC: "<<wrms_dec<<"\n";
+
+    counter  =1;
 }
 
 //Запись полученных модельных данных в файл

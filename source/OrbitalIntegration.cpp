@@ -33,9 +33,9 @@ IntegrationVector OrbitalIntegration::diff(double t, IntegrationVector asteroid,
 };
 
 void OrbitalIntegration::diff_for_G_matrix(double t, Matrix* mtr, IntegrationVector r, std::map<std::string,                      std::vector<IntegrationVector>> planets, Converter cnv){
-     double daX_dX, daX_dY, daX_dZ,
-            daY_dX, daY_dY, daY_dZ,
-            daZ_dX, daZ_dY, daZ_dZ;
+     double daX_dX = 0, daX_dY = 0, daX_dZ = 0,
+            daY_dX = 0, daY_dY = 0, daY_dZ = 0,
+            daZ_dX = 0, daZ_dY = 0, daZ_dZ = 0;
     
     std::map<std::string, BarycentricFrame> planet_positions = {};
     
