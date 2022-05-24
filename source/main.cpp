@@ -11,6 +11,8 @@ int main(){
     f.convert_observatory();
     f.integrate();
     f.integrate();
+    //f.integrate();
+    //f.integrate();
     //f.test_reading();
 
    /* LeastSquares sq;

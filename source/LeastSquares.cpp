@@ -36,8 +36,8 @@ std::vector<SphericalFrame> LeastSquares::calculate_wmrs(std::vector<StateVector
 
         SphericalFrame delta_i;
 
-        double delta_asc = model[i].get_state()->get_spherical_position().get_ascension() - measure[i].get_spherical_position().get_ascension();
-        double delta_dec = model[i].get_state()->get_spherical_position().get_declination() - measure[i].get_spherical_position().get_declination();
+        double delta_asc = measure[i].get_spherical_position().get_ascension() - model[i].get_state()->get_spherical_position().get_ascension();
+        double delta_dec = measure[i].get_spherical_position().get_declination() - model[i].get_state()->get_spherical_position().get_declination();
 
         delta_i.set_ascension(delta_asc);
         delta_i.set_declination(delta_dec);
@@ -125,12 +125,12 @@ IntegrationVector LeastSquares::gauss_newton(std::vector<StateVector> model, std
     filee.close();
 
     double x, y, z, vx, vy, vz;
-    x = b_q.get_position().get_x() + x_res[0][0];
-    y = b_q.get_position().get_y() + x_res[1][0];
-    z = b_q.get_position().get_z() + x_res[2][0];
-    vx = b_q.get_velocity().get_vx() + x_res[3][0];
-    vy = b_q.get_velocity().get_vy() + x_res[4][0];
-    vz = b_q.get_velocity().get_vz() + x_res[5][0];
+    x = b_q.get_position().get_x() - x_res[0][0];
+    y = b_q.get_position().get_y() - x_res[1][0];
+    z = b_q.get_position().get_z() - x_res[2][0];
+    vx = b_q.get_velocity().get_vx() - x_res[3][0];
+    vy = b_q.get_velocity().get_vy() - x_res[4][0];
+    vz = b_q.get_velocity().get_vz() - x_res[5][0];
 
     IntegrationVector b_next;
     b_next.set_position(x, y, z);
