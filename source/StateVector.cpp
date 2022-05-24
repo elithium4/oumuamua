@@ -117,7 +117,7 @@ StateVector operator+(StateVector v1, StateVector v2){
 	result.dX_dX0 = v1.dX_dX0+v2.dX_dX0;
 	return result;
 }
-#include <iostream>
+
 void StateVector::calculate_dR_dX0(){
     dR_dX0 = (dg_dX * dX_dX0);
 }
