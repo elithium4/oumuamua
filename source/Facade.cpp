@@ -1,6 +1,8 @@
 #include "Facade.h"
 #include <iomanip>
 
+int counter = 0;
+
 Facade::Facade(){
     x0.set_position(1.469662678584988E+08, 7.299822249002472E+07, 2.056575565443711E+07);
     x0.set_velocity((4.466861553600886E+01)*86400, (3.754895272084024E+00)*86400, (1.726865669233104E+01)*86400);
@@ -90,8 +92,6 @@ void Facade::integrate(){
         //std::cout<<"X: "<<model_measures[i].get_state()->get_position().get_x()<<" Y: "<<model_measures[i].get_state()->get_position().get_y()<<" Z: "<<model_measures[i].get_state()->get_position().get_z()<<"\n";
         //std::cout<<model_measures[i].get_dg_dX()<<"\n";
         model_measures[i].calculate_dR_dX0();
-       //std::cout<<model_measures[i].get_dR_dX0()<<"\n";
-        std::cout<<model_measures[i].get_dR_dX0()<<"\n";
     }
 
     for (int i = 0; i < model_measures.size(); i++){
@@ -129,16 +129,16 @@ void Facade::least_squares(std::vector<StateVector> model, std::vector<Integrati
 
     std::cout<< model.size()<<" "<<base_measures.size()<<"\n";
 
-    double wrms_longitude;
-    double wrms_latitude;
+    double wrms_asc;
+    double wrms_dec;
 
     //write_to_file(model, base_measures);
 
     std::vector<SphericalFrame> r_i;
+    std::vector<SphericalFrame> delta_i;
 
-    r_i = least_sq.calculate_wmrs(model, *dhand.get_observations(), &wrms_longitude, &wrms_latitude);
-    least_sq.gauss_newton(model, r_i);
-
+    r_i = least_sq.calculate_wmrs(model, *dhand.get_observations(), &delta_i, &wrms_asc, &wrms_dec);
+    x0 = least_sq.gauss_newton(model, r_i, delta_i, x0);
 }
 
 //Запись полученных модельных данных в файл
