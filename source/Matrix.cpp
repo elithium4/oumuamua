@@ -129,6 +129,7 @@ Matrix::Row Matrix::operator[](int i) const{
     return Row(mtr[i]);
 }
 
+
 Matrix operator+(Matrix const A, Matrix const B){
     if ((A.columns() != B.columns()) or (A.rows() != B.rows())){
         throw std::invalid_argument("Different matrix size\n");
@@ -242,4 +243,14 @@ void Matrix::make_unit(){
             }
         }
     }
+}
+
+Matrix Matrix::transpose(){
+    Matrix result(m, n);
+    for (int i = 0; i < n; i++){
+        for (int j = 0; j < m; j++){
+            result[j][i] = mtr[i][j];
+        }
+    }
+    return result;
 }

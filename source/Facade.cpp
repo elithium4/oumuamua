@@ -2,9 +2,10 @@
 #include <iomanip>
 
 Facade::Facade(){
-    x0.set_position(1.452674920249709E+08, 7.285412724042718E+07, 1.990980486534136E+07);
-    x0.set_velocity((4.483537051060935E+01)*86400, (3.837445958225554E+00)*86400, (1.729143805755713E+01)*86400);
+    x0.set_position(1.469662678584988E+08, 7.299822249002472E+07, 2.056575565443711E+07);
+    x0.set_velocity((4.466861553600886E+01)*86400, (3.754895272084024E+00)*86400, (1.726865669233104E+01)*86400);
 }
+
 
 //Считывание данных
 void Facade::read_data(){
@@ -57,7 +58,15 @@ void Facade::integrate(){
     std::map<std::string, std::vector<IntegrationVector>> map_planets = cnv.interpolation_center_planet(0.2, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), dhand.get_interpolation_planets());
 
     StateVector start;
+    Date start_date("2017 10 14.0");
+    start_date.set_time_from_fraction();
+    start_date.set_JD();
+    x0.set_julian_date(start_date);
     start.set_state(x0);
+
+    start = cnv.light_time_correction(dhand.get_observatory(), start, dhand.get_observations_vector(), dhand.get_interpolation_hubble(), map_planets["earth"]);
+    start = cnv.aberration(dhand.get_observatory(), start, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
+    start = cnv.gravitational_deflection(dhand.get_observatory(), start, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
 
     model_orbits = integration.dormand_prince(start, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), 0.2, dhand.get_interpolation_planets(), cnv);
 
@@ -66,7 +75,7 @@ void Facade::integrate(){
     //Перевод данных из файлах в сферические
     for (int i = 0; i < dhand.get_observations()->size(); i++){
         IntegrationVector vec;
-        vec.set_spherical_position(dhand.get_observation(i)->get_spherical_position().get_longitude(), dhand.get_observation(i)->get_spherical_position().get_latitude());
+        vec.set_spherical_position(dhand.get_observation(i)->get_spherical_position().get_ascension(), dhand.get_observation(i)->get_spherical_position().get_declination());
         double date = dhand.get_observation(i)->get_julian_date()->get_MJD();
         (vec.get_julian_date())->set_MJD(date);
         base_measures.push_back(vec);
@@ -76,15 +85,12 @@ void Facade::integrate(){
     std::ofstream model_out;
     model_out.open("./data/model_bary.txt");
 
-    model_measures = cnv.light_time_correction(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), dhand.get_interpolation_hubble(), map_planets["earth"]);
-    model_measures = cnv.aberration(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
-    model_measures = cnv.gravitational_deflection(dhand.get_observatory(), model_measures, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
-
     for (int i = 0; i < model_measures.size(); i++){
         integration.calculate_dg(&model_measures[i]);
         //std::cout<<"X: "<<model_measures[i].get_state()->get_position().get_x()<<" Y: "<<model_measures[i].get_state()->get_position().get_y()<<" Z: "<<model_measures[i].get_state()->get_position().get_z()<<"\n";
         //std::cout<<model_measures[i].get_dg_dX()<<"\n";
         model_measures[i].calculate_dR_dX0();
+       //std::cout<<model_measures[i].get_dR_dX0()<<"\n";
         std::cout<<model_measures[i].get_dR_dX0()<<"\n";
     }
 
@@ -114,8 +120,8 @@ void Facade::least_squares(std::vector<StateVector> model, std::vector<Integrati
         cnv.geocentric_to_spherical(model[i].get_state());
 
 
-        spherical<<model[i].get_state()->get_julian_date()->get_MJD()<<" "<<model[i].get_state()->get_spherical_position().get_longitude()<<" "<<model[i].get_state()->get_spherical_position().get_latitude()<<"\n";
-        spherical_base<<base_measures[i].get_julian_date()->get_MJD()<<" "<<base_measures[i].get_spherical_position().get_longitude()<<" "<<base_measures[i].get_spherical_position().get_latitude()<<"\n";
+        spherical<<model[i].get_state()->get_julian_date()->get_MJD()<<" "<<model[i].get_state()->get_spherical_position().get_ascension()<<" "<<model[i].get_state()->get_spherical_position().get_declination()<<"\n";
+        spherical_base<<base_measures[i].get_julian_date()->get_MJD()<<" "<<base_measures[i].get_spherical_position().get_ascension()<<" "<<base_measures[i].get_spherical_position().get_declination()<<"\n";
     }
 
     spherical.close();
@@ -131,6 +137,7 @@ void Facade::least_squares(std::vector<StateVector> model, std::vector<Integrati
     std::vector<SphericalFrame> r_i;
 
     r_i = least_sq.calculate_wmrs(model, *dhand.get_observations(), &wrms_longitude, &wrms_latitude);
+    least_sq.gauss_newton(model, r_i);
 
 }
 

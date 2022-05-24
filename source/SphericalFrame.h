@@ -3,11 +3,11 @@
 //Класс для сферических координат (в радианах)
 class SphericalFrame{
     private:
-        double longitude;
-        double latitude;
+        double ascension;
+        double declination;
     public:
-        void set_longitude(double);
-        void set_latitude(double);
-        double get_longitude();
-        double get_latitude();
+        void set_ascension(double);
+        void set_declination(double);
+        double get_ascension();
+        double get_declination();
 };

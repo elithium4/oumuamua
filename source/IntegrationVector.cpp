@@ -8,8 +8,8 @@ void IntegrationVector::set_position(double x, double y, double z){
 }
 
 void IntegrationVector::set_spherical_position(double longitude, double latitude){
-    this->spherical_position.set_longitude(longitude);
-    this->spherical_position.set_latitude(latitude);
+    this->spherical_position.set_ascension(longitude);
+    this->spherical_position.set_declination(latitude);
 }
 
 void IntegrationVector::set_geocentric_position(double x, double y, double z){

@@ -2,6 +2,7 @@
 #include <vector>
 #include <ostream>
 
+
 class Matrix{
 	private:
 		class Row{
@@ -33,7 +34,7 @@ class Matrix{
 
         Row operator[](int i) const;
 		
-		Matrix transpose(Matrix& A);
+		Matrix transpose();
 		friend Matrix operator+(Matrix const A, Matrix const B);
 		friend Matrix operator-(Matrix const A, Matrix const B);
 		friend Matrix operator*(Matrix const A, Matrix const B);

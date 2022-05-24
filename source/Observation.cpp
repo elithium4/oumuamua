@@ -41,8 +41,8 @@ void Observation::set_declination_from_string(std::string value) {
 }
 
 void Observation::set_spherical(double longitude, double latitude){
-    spherical_position.set_latitude(latitude);
-    spherical_position.set_longitude(longitude);
+    spherical_position.set_declination(latitude);
+    spherical_position.set_ascension(longitude);
 }
 
 void Observation::set_barycentric(double x, double y, double z) {

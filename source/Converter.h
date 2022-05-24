@@ -22,6 +22,7 @@
 
 #include "IntegrationVector.h"
 #include "StateVector.h"
+#include <iomanip>      // std::setprecision
 
 #include "../sofa/sofa.h"
 
@@ -65,11 +66,12 @@ class Converter{
     IntegrationVector interpolation_state(IntegrationVector, IntegrationVector, double);
     Matrix interpolation_matrix(Matrix, Matrix, double, double, double);
 
-    std::vector<StateVector> light_time_correction(std::map<std::string, ObservatoryData>, std::vector<StateVector>,  std::vector< Observation>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
-    std::vector<StateVector> gravitational_deflection(std::map<std::string, ObservatoryData>, std::vector<StateVector>,  std::vector< Observation>, std::vector<IntegrationVector>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
-    std::vector<StateVector> aberration(std::map<std::string, ObservatoryData>, std::vector<StateVector>, std::vector< Observation>, std::vector<IntegrationVector>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
+    StateVector light_time_correction(std::map<std::string, ObservatoryData>, StateVector,  std::vector< Observation>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
+    StateVector gravitational_deflection(std::map<std::string, ObservatoryData>, StateVector,  std::vector< Observation>, std::vector<IntegrationVector>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
+    StateVector aberration(std::map<std::string, ObservatoryData>, StateVector, std::vector< Observation>, std::vector<IntegrationVector>, std::vector<InterpolationHubbleFrame>, std::vector<IntegrationVector> earth_position);
     BarycentricFrame interpolation_orbits(double date, std::vector<StateVector> interpolation_orbits);
-    
+    BarycentricFrame interpolation_orbits(double date, StateVector interpolation_orbits);
+
     std::vector<IntegrationVector> celestial_to_spherical(std::vector<Observation>);
 
 };
