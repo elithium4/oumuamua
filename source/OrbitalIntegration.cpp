@@ -75,6 +75,7 @@ void OrbitalIntegration::diff_for_G_matrix(double t, Matrix* mtr, IntegrationVec
     (*mtr)[5][0] = daZ_dX;
     (*mtr)[5][1] = daZ_dY;
     (*mtr)[5][2] = daZ_dZ;
+
 }
 
 
@@ -166,13 +167,14 @@ BarycentricFrame OrbitalIntegration::sqrt(BarycentricFrame frame) {
 }
 
 void OrbitalIntegration::calculate_dg(StateVector* vec){
-    BarycentricFrame r = vec->get_state()->get_position();
+    GeocentricFrame r = vec->get_state()->get_geocentric_position();
     double dRA_dX, dRA_dY, dRA_dZ, dDEC_dX, dDEC_dY, dDEC_dZ;
     double sign = -1;
     double cos_f = cos(asin(r.get_z() / r.len()));
     dRA_dX = -1 * r.get_x() * r.get_z() / (std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2)) * pow(r.len(), 3));
     dRA_dY = -1 * r.get_y() * r.get_z() / (std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2)) * pow(r.len(), 3));
-    dRA_dZ = (pow(r.get_z(), 3) - pow(r.get_z(), 2)) / ((std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2)) * pow(r.len(), 3)));
+    dRA_dZ = (1 / pow(r.len(), 1) - pow(r.get_z(), 2) /pow(r.len(), 3)) / ((std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2))));
+
 
     if (r.get_y()/r.len() >0)
 	    sign = 1;
@@ -180,7 +182,8 @@ void OrbitalIntegration::calculate_dg(StateVector* vec){
     dDEC_dX = sign*(-1 * r.get_x() * (r.get_z() * dRA_dX - r.get_x() * cos_f / r.len()) + r.len() * cos_f) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2))));
     dDEC_dY = sign*(r.get_x() * (-1 * r.get_z() * dRA_dY + r.get_y() * cos_f / r.len())) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2))));
     dDEC_dZ = sign*(r.get_x() * (-1 * r.get_z() * dRA_dZ + r.get_z() * cos_f / r.len())) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2))));
-    
+
+
     Matrix result(2, 6, {
         {dRA_dX, dRA_dY, dRA_dZ, 0, 0, 0},
         {dDEC_dX, dDEC_dY, dDEC_dZ, 0, 0, 0},

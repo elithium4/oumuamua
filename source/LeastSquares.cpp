@@ -17,7 +17,7 @@ std::vector<SphericalFrame> LeastSquares::calculate_wmrs(std::vector<StateVector
         if (var_asc == 0){
             var_asc = 0.0005;
         } else {
-            var_asc /= 2;
+            var_asc /= 2.0;
         }
 
         double var_dec = model[i].get_state()->get_spherical_position().get_declination() - (int)model[i].get_state()->get_spherical_position().get_declination();
@@ -26,7 +26,7 @@ std::vector<SphericalFrame> LeastSquares::calculate_wmrs(std::vector<StateVector
         if (var_dec == 0){
             var_dec = 0.0005;
         } else {
-            var_dec /= 2;
+            var_dec /= 2.0;
         }
 
         var_i.set_ascension(var_asc);
@@ -68,8 +68,8 @@ IntegrationVector LeastSquares::gauss_newton(std::vector<StateVector> model, std
         for (int j = 0; j < tmp.columns(); j++){
             A[line_id][j] = -tmp[0][j];
             A[line_id + 1][j] = -tmp[1][j];
-            W[line_id][line_id] = var[i].get_ascension();
-            W[line_id + 1][line_id + 1] = var[i].get_declination();
+            W[line_id][line_id] = 1.0/var[i].get_ascension();
+            W[line_id + 1][line_id + 1] = 1.0/var[i].get_declination();
             R_b[line_id][0] = r[i].get_ascension();
             R_b[line_id + 1][0] = r[i].get_declination();
         }
@@ -119,12 +119,6 @@ IntegrationVector LeastSquares::gauss_newton(std::vector<StateVector> model, std
     filee<<"\n\n_______________MATRIX x_________________\n\n";
     filee<<x_res;
     std::cout<<x_res;
-    //std::cout<<"Grad f:\n";
-    //std::cout<<grad_f;
-    //std::cout<<"\nL:\n";
-    //std::cout<<L;
-    //std::cout<<"UPPER: \n";
-    //std::cout<<L_t;
     filee.close();
 
     double x, y, z, vx, vy, vz;
@@ -145,22 +139,6 @@ IntegrationVector LeastSquares::gauss_newton(std::vector<StateVector> model, std
 Matrix LeastSquares::cholesky(Matrix A){
     Matrix L(A.rows(), A.columns());
 
-
-    /*for (int i = 0; i < A.columns(); i++) {
-        L[i][i] = A[i][i];
-        for (int k = 0; k < i - 1; k++) {
-            L[i][i] = L[i][i] - (A[i][k]) * (A[i][k]);
-        }
-        L[i][i] = std::sqrt(L[i][i]);
-        for (int j = i; j < A.columns(); j++) {
-            L[j][i] = A[j][i];
-            for (int k = 0; k < i - 1; k++) {
-                L[j][i] = L[j][i] - A[i][k] * A[j][k];
-            }
-            L[j][i] = L[j][i] / L[i][i];
-        }
-    }*/
-
     for (int i = 0; i < A.columns(); i++){
         for (int j = 0; j <= i; j++){
             double sum = 0;
@@ -180,24 +158,6 @@ Matrix LeastSquares::cholesky(Matrix A){
         }
     }
 
-    /*for (int i = 0; i < A.columns(); i++) {
-        for (int j = 0; j <= i; j++) {
-            double sum = 0;
-            if (j == i){
-
-                for (int k = 0; k < j; k++)
-                    sum += L[j][k]*L[j][k];
-
-                L[j][j] = sqrt(A[j][j] - sum);
-            } else {
-
-                for (int k = 0; k < j; k++)
-                    sum += L[i][k] * L[j][k];
-
-                L[i][j] = (A[i][j] - sum) / L[j][j];
-            }
-        }
-    }*/
     return L;
 };
 

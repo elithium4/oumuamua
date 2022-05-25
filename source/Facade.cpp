@@ -88,14 +88,12 @@ void Facade::integrate(){
     std::ofstream model_out;
     model_out.open("./data/model_bary.txt");
 
-    for (int i = 0; i < model_measures.size(); i++){
-        integration.calculate_dg(&model_measures[i]);
-        model_measures[i].calculate_dR_dX0();
-    }
 
     for (int i = 0; i < model_measures.size(); i++){
         model_out<<std::setprecision(9)<<model_measures[i].get_state()->get_julian_date()->get_MJD()<<" "<<model_measures[i].get_state()->get_position().get_x()<<" "<<model_measures[i].get_state()->get_position().get_y()<<" "<<model_measures[i].get_state()->get_position().get_z()<<"\n";
         cnv.barycentric_to_geocentric(model_measures[i].get_state(), map_planets["earth"]);
+        integration.calculate_dg(&model_measures[i]);
+        model_measures[i].calculate_dR_dX0();
     }
     model_out.close();
 
@@ -139,7 +137,7 @@ void Facade::least_squares(std::vector<StateVector> model, std::vector<Integrati
     r_i = least_sq.calculate_wmrs(model, *dhand.get_observations(), &delta_i, &wrms_asc, &wrms_dec);
     x0 = least_sq.gauss_newton(model, r_i, delta_i, x0);
 
-    std::cout<<"WRMS ASC: "<<wrms_asc<<"\n";
+    std::cout<<std::setprecision(10)<< "WRMS ASC: "<<wrms_asc<<"\n";
     std::cout<<"WRMS DEC: "<<wrms_dec<<"\n";
 
     counter  =1;
