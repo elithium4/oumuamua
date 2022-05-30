@@ -10,7 +10,7 @@ int main(){
     f.convert_observations();
     f.convert_observatory();
     f.integrate();
-    f.integrate();
+    //f.integrate();
     //f.integrate();
     //f.integrate();
     //f.test_reading();

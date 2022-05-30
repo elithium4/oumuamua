@@ -22,6 +22,9 @@ private:
     double x = NULL;
     double y = NULL;
     double z = NULL;
+
+    double asc_var = 0.0005;
+    double dec_var = 0.0005;
 public:
     Date* get_julian_date();
     std::string get_code();
@@ -40,6 +43,10 @@ public:
     double get_x();
     double get_y();
     double get_z();
+
+    double get_asc_var();
+    double get_dec_var();
+
     void set_x(double value);
     void set_y(double value);
     void set_z(double value);

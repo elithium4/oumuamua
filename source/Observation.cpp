@@ -32,12 +32,26 @@ void Observation::set_declination(CelestialCoord value) {
     declination = value;
 }
 
+#include <iostream>
+
 void Observation::set_ascension_from_string(std::string value) {
     ascension.set_from_string(value);
+    int dot_pos = value.find(".");
+    std::cout<<value<<" "<<dot_pos<<"\n";
+    if ((value[dot_pos+3] != ' ') and (value[dot_pos+3] != '0')){
+        asc_var = (0.001 * ((int)value[dot_pos+3] - 48)) / 2.0;
+    }
+    //std::cout<<"ASC: "<<asc_var<<"\n";
 }
 
 void Observation::set_declination_from_string(std::string value) {
     declination.set_from_string(value);
+    int dot_pos = value.find(".");
+    std::cout<<value<<" "<<dot_pos<<"\n";
+    if ((value[dot_pos+3] != ' ') and (value[dot_pos+3] != '0') and (value[dot_pos+3] != '\0') and (dot_pos + 3 < value.length())){
+        dec_var = (0.001 * ((int)value[dot_pos+3] - 48)) / 2.0;
+    } 
+    //std::cout<<"DEC: "<<dec_var<<"\n";
 }
 
 void Observation::set_spherical(double longitude, double latitude){
@@ -91,4 +105,12 @@ GeocentricFrame Observation::get_geocentric() {
 
 BarycentricFrame Observation::get_barycentric() {
     return barycentric_position;
+}
+
+double Observation::get_asc_var(){
+    return asc_var;
+}
+
+double Observation::get_dec_var(){
+    return dec_var;
 }

@@ -21,7 +21,6 @@ void DataHandler::read_observations(std::string filename){
                 data_frame.set_code(data_line.substr(77, 3));
                 data_frame.set_ascension_from_string(data_line.substr(32, 12));
                 data_frame.set_declination_from_string(data_line.substr(44, 12));
-
                 observations.push_back(data_frame);
             }
         }

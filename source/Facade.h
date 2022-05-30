@@ -13,6 +13,11 @@ class Facade{
         OrbitalIntegration integration;
 
         LeastSquares least_sq;
+
+        std::vector<IntegrationVector> earth_orbit;
+        std::map<std::string, std::vector<IntegrationVector>> map_planets;
+        std::vector<IntegrationVector> base_measures;
+
     public:
         Facade();
         void read_data();
@@ -21,8 +26,8 @@ class Facade{
         void convert_interpolation_data();
         void test_reading();
         void integrate();
-        void least_squares(std::vector<StateVector>, std::vector<IntegrationVector>);
-        void write_to_file(std::vector<StateVector>, std::vector<IntegrationVector>);
+        void least_squares(std::vector<StateVector>);
+        void write_to_file(std::vector<StateVector>);
 
         void test_new_func();
 };

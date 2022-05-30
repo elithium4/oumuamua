@@ -544,3 +544,14 @@ StateVector Converter::aberration(std::map<std::string, ObservatoryData> observa
     
     return frame;
 }
+
+//Перевод из барицентрических координат в геоцентрические
+void Converter::geocentric_to_barycentric(IntegrationVector* model, std::vector<IntegrationVector> earth_orbit){
+    BarycentricFrame earth_bary = interpolation_orbits(model->get_julian_date()->get_MJD(), earth_orbit);
+
+    double x = model->get_geocentric_position().get_x() + earth_bary.get_x();
+    double y = model->get_geocentric_position().get_y() + earth_bary.get_y();
+    double z = model->get_geocentric_position().get_z() + earth_bary.get_z();
+
+    model->set_position(x, y, z);
+}

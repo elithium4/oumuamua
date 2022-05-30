@@ -12,7 +12,7 @@ std::vector<SphericalFrame> LeastSquares::calculate_wmrs(std::vector<StateVector
 
         SphericalFrame var_i;
 
-        double var_asc = model[i].get_state()->get_spherical_position().get_ascension() - (int)model[i].get_state()->get_spherical_position().get_ascension();
+        /*double var_asc = measure[i].get_spherical_position().get_ascension() - (int)measure[i].get_spherical_position().get_ascension();
         var_asc = 0.001*((int)std::trunc(var_asc*1000)%10);
         if (var_asc == 0){
             var_asc = 0.0005;
@@ -20,17 +20,17 @@ std::vector<SphericalFrame> LeastSquares::calculate_wmrs(std::vector<StateVector
             var_asc /= 2.0;
         }
 
-        double var_dec = model[i].get_state()->get_spherical_position().get_declination() - (int)model[i].get_state()->get_spherical_position().get_declination();
+        double var_dec = measure[i].get_spherical_position().get_declination() - (int)measure[i].get_spherical_position().get_declination();
         var_dec = 0.001*((int)std::trunc(var_dec*1000)%10);
 
         if (var_dec == 0){
             var_dec = 0.0005;
         } else {
             var_dec /= 2.0;
-        }
+        }*/
 
-        var_i.set_ascension(var_asc);
-        var_i.set_declination(var_dec);
+        var_i.set_ascension(measure[i].get_asc_var());
+        var_i.set_declination(measure[i].get_dec_var());
 
         var_i_vec.push_back(var_i);
 
@@ -43,8 +43,10 @@ std::vector<SphericalFrame> LeastSquares::calculate_wmrs(std::vector<StateVector
         delta_i.set_declination(delta_dec);
         delta->push_back(delta_i);
 
-        wrms_ascension += pow(delta_asc, 2) / var_asc;
-        wrms_declination += pow(delta_dec, 2) / var_dec; 
+
+        //std::cout<<"Div to: "<<measure[i].get_asc_var()<<"\n";
+        wrms_ascension += pow(delta_asc, 2) / measure[i].get_asc_var();
+        wrms_declination += pow(delta_dec, 2) / measure[i].get_dec_var(); 
     
     }
 
@@ -120,6 +122,11 @@ IntegrationVector LeastSquares::gauss_newton(std::vector<StateVector> model, std
     filee<<x_res;
     std::cout<<x_res;
     filee.close();
+
+    filee.open("./debug/gradf.txt");
+    filee<<grad_f*y_res - b;
+    filee.close();
+
 
     double x, y, z, vx, vy, vz;
     x = b_q.get_position().get_x() - x_res[0][0];

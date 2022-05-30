@@ -39,6 +39,18 @@ void Facade::convert_observations(){
     }
     cnv.interpolation_date_to_tt_tdb(data, dhand.get_interpolation_time());
     std::cout<<"Observation convertion done.\n";
+
+    map_planets = cnv.interpolation_center_planet(0.2, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), dhand.get_interpolation_planets());
+
+    //Перевод данных из файлах в сферические
+    for (int i = 0; i < dhand.get_observations()->size(); i++){
+        IntegrationVector vec;
+        vec.set_spherical_position(dhand.get_observation(i)->get_spherical_position().get_ascension(), dhand.get_observation(i)->get_spherical_position().get_declination());
+        double date = dhand.get_observation(i)->get_julian_date()->get_MJD();
+        (vec.get_julian_date())->set_MJD(date);
+        base_measures.push_back(vec);
+    }
+
 }
 
 //Перевод положения обсерваторий
@@ -53,11 +65,10 @@ void Facade::convert_observatory(){
 
 //Численное интегрирование
 void Facade::integrate(){
-    std::vector<IntegrationVector> base_measures;
     std::vector<StateVector> model_orbits;
     std::vector<StateVector> model_measures;
 
-    std::map<std::string, std::vector<IntegrationVector>> map_planets = cnv.interpolation_center_planet(0.2, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), dhand.get_interpolation_planets());
+    //std::map<std::string, std::vector<IntegrationVector>> map_planets = cnv.interpolation_center_planet(0.2, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), dhand.get_interpolation_planets());
 
     StateVector start;
     Date start_date("2017 10 14.0");
@@ -71,18 +82,13 @@ void Facade::integrate(){
         start = cnv.aberration(dhand.get_observatory(), start, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
         start = cnv.gravitational_deflection(dhand.get_observatory(), start, dhand.get_observations_vector(), map_planets["sun"], dhand.get_interpolation_hubble(), map_planets["earth"]);
     }
+
     model_orbits = integration.dormand_prince(start, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), 0.2, dhand.get_interpolation_planets(), cnv);
 
     model_measures = cnv.interpolation_to_observation(dhand.get_observations_vector(), model_orbits);
 
-    //Перевод данных из файлах в сферические
-    for (int i = 0; i < dhand.get_observations()->size(); i++){
-        IntegrationVector vec;
-        vec.set_spherical_position(dhand.get_observation(i)->get_spherical_position().get_ascension(), dhand.get_observation(i)->get_spherical_position().get_declination());
-        double date = dhand.get_observation(i)->get_julian_date()->get_MJD();
-        (vec.get_julian_date())->set_MJD(date);
-        base_measures.push_back(vec);
-    }
+    earth_orbit = map_planets["earth"];
+
 
 
     std::ofstream model_out;
@@ -97,15 +103,15 @@ void Facade::integrate(){
     }
     model_out.close();
 
-    write_to_file(model_measures, base_measures);
+    write_to_file(model_measures);
     
 
-    least_squares(model_measures, base_measures);
+    least_squares(model_measures);
     std::cout<<"Fin\n";
 }
 
 //МНК (пока в процессе)
-void Facade::least_squares(std::vector<StateVector> model, std::vector<IntegrationVector> base_measures){
+void Facade::least_squares(std::vector<StateVector> model){
 
     std::ofstream spherical;
     spherical.open("./data/spherical_model.txt");
@@ -115,8 +121,6 @@ void Facade::least_squares(std::vector<StateVector> model, std::vector<Integrati
 
     for (int i = 0; i < model.size(); i++){
         cnv.geocentric_to_spherical(model[i].get_state());
-
-
         spherical<<model[i].get_state()->get_julian_date()->get_MJD()<<" "<<model[i].get_state()->get_spherical_position().get_ascension()<<" "<<model[i].get_state()->get_spherical_position().get_declination()<<"\n";
         spherical_base<<base_measures[i].get_julian_date()->get_MJD()<<" "<<base_measures[i].get_spherical_position().get_ascension()<<" "<<base_measures[i].get_spherical_position().get_declination()<<"\n";
     }
@@ -129,7 +133,7 @@ void Facade::least_squares(std::vector<StateVector> model, std::vector<Integrati
     double wrms_asc;
     double wrms_dec;
 
-    write_to_file(model, base_measures);
+    write_to_file(model);
 
     std::vector<SphericalFrame> r_i;
     std::vector<SphericalFrame> delta_i;
@@ -140,11 +144,11 @@ void Facade::least_squares(std::vector<StateVector> model, std::vector<Integrati
     std::cout<<std::setprecision(10)<< "WRMS ASC: "<<wrms_asc<<"\n";
     std::cout<<"WRMS DEC: "<<wrms_dec<<"\n";
 
-    counter  =1;
+    counter = 1;
 }
 
 //Запись полученных модельных данных в файл
-void Facade::write_to_file(std::vector<StateVector> model, std::vector<IntegrationVector> base_measures){
+void Facade::write_to_file(std::vector<StateVector> model){
     std::ofstream model_out;
     model_out.open("./data/model_geo.txt");
 

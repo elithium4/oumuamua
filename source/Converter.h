@@ -53,6 +53,7 @@ class Converter{
 
 
     void barycentric_to_geocentric(IntegrationVector*, std::vector<IntegrationVector>);
+    void geocentric_to_barycentric(IntegrationVector*, std::vector<IntegrationVector>);
     void celestial_to_spherical(Observation*);
     void geocentric_to_spherical(IntegrationVector*);
     void spherical_to_geocentric(Observation*);
