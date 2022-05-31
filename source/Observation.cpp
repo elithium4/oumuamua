@@ -37,21 +37,31 @@ void Observation::set_declination(CelestialCoord value) {
 void Observation::set_ascension_from_string(std::string value) {
     ascension.set_from_string(value);
     int dot_pos = value.find(".");
-    std::cout<<value<<" "<<dot_pos<<"\n";
-    if ((value[dot_pos+3] != ' ') and (value[dot_pos+3] != '0')){
-        asc_var = (0.001 * ((int)value[dot_pos+3] - 48)) / 2.0;
+    for (int i = dot_pos + 1; i < value.length() + 1; i++){
+        if ((value[i] == '\0') or (value[i] == ' ')){
+            if (value[i-1] == '0'){
+                asc_var = pow(0.1, i-dot_pos-1) / 2.0;
+            } else {
+                asc_var = (0.001 * ((int)value[i-1] - 48)) / 2.0;
+            }
+            break;
+        }
     }
-    //std::cout<<"ASC: "<<asc_var<<"\n";
 }
 
 void Observation::set_declination_from_string(std::string value) {
     declination.set_from_string(value);
     int dot_pos = value.find(".");
-    std::cout<<value<<" "<<dot_pos<<"\n";
-    if ((value[dot_pos+3] != ' ') and (value[dot_pos+3] != '0') and (value[dot_pos+3] != '\0') and (dot_pos + 3 < value.length())){
-        dec_var = (0.001 * ((int)value[dot_pos+3] - 48)) / 2.0;
-    } 
-    //std::cout<<"DEC: "<<dec_var<<"\n";
+    for (int i = dot_pos + 1; i < value.length() + 1; i++){
+        if ((value[i] == '\0') or (value[i] == ' ')){
+            if (value[i-1] == '0'){
+                dec_var = pow(0.1, i-dot_pos-1) / 2.0;
+            } else {
+                dec_var = (0.001 * ((int)value[i-1] - 48)) / 2.0;
+            }
+            break;
+        }
+    }
 }
 
 void Observation::set_spherical(double longitude, double latitude){
