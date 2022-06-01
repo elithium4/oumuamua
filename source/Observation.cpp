@@ -39,11 +39,9 @@ void Observation::set_ascension_from_string(std::string value) {
     int dot_pos = value.find(".");
     for (int i = dot_pos + 1; i < value.length() + 1; i++){
         if ((value[i] == '\0') or (value[i] == ' ')){
-            if (value[i-1] == '0'){
-                asc_var = pow(0.1, i-dot_pos-1) / 2.0;
-            } else {
-                asc_var = (0.001 * ((int)value[i-1] - 48)) / 2.0;
-            }
+            asc_var = pow(0.1, i-dot_pos-1) * 15.0 / 2.0;
+            //asc_var = (asc_var * 15.0);// * M_PI/648000;
+            //asc_var = pow(asc_var, 2);
             break;
         }
     }
@@ -54,11 +52,9 @@ void Observation::set_declination_from_string(std::string value) {
     int dot_pos = value.find(".");
     for (int i = dot_pos + 1; i < value.length() + 1; i++){
         if ((value[i] == '\0') or (value[i] == ' ')){
-            if (value[i-1] == '0'){
-                dec_var = pow(0.1, i-dot_pos-1) / 2.0;
-            } else {
-                dec_var = (0.001 * ((int)value[i-1] - 48)) / 2.0;
-            }
+            dec_var = pow(0.1, i-dot_pos-1) / 2.0;
+            //dec_var = dec_var * M_PI/648000;
+            //dec_var =pow(dec_var, 2);
             break;
         }
     }

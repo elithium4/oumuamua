@@ -200,6 +200,12 @@ void Converter::celestial_to_spherical(Observation* observation){
     sign = '-';
     }
     iauAf2a(sign, observation->get_declination().get_h(), observation->get_declination().get_m(), observation->get_declination().get_s(), &DEC);
+    
+    while ((AD > M_PI) or (AD < -M_PI)){
+        int sign = AD > M_PI ? -1 : 1;
+        AD = AD + sign*M_PI;
+    }
+    
     observation->set_spherical(AD, DEC);
 }
 
@@ -222,6 +228,11 @@ void Converter::geocentric_to_spherical(IntegrationVector* vector){
         alpha = acos( (vector->get_geocentric_position().get_x() / r) / cos(delta) );
     } else {
         alpha = 2*M_PI - acos( (vector->get_geocentric_position().get_x() / r) / cos(delta) );
+    }
+
+    while ((alpha > M_PI) or (alpha < -M_PI)){
+        int sign = alpha > M_PI ? -1 : 1;
+        alpha = alpha + sign*M_PI;
     }
 
     vector->set_spherical_position(alpha, delta);

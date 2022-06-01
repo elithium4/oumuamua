@@ -71,7 +71,7 @@ void Facade::integrate(){
     //std::map<std::string, std::vector<IntegrationVector>> map_planets = cnv.interpolation_center_planet(0.2, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), dhand.get_interpolation_planets());
 
     StateVector start;
-    Date start_date("2017 10 14.0");
+    Date start_date("2017 10 14.43936");
     start_date.set_time_from_fraction();
     start_date.set_JD();
     x0.set_julian_date(start_date);
@@ -128,7 +128,7 @@ void Facade::least_squares(std::vector<StateVector> model){
     spherical.close();
     spherical_base.close();
 
-    std::cout<< model.size()<<" "<<base_measures.size()<<"\n";
+    //std::cout<< model.size()<<" "<<base_measures.size()<<"\n";
 
     double wrms_asc;
     double wrms_dec;
@@ -138,13 +138,17 @@ void Facade::least_squares(std::vector<StateVector> model){
     std::vector<SphericalFrame> r_i;
     std::vector<SphericalFrame> delta_i;
 
-    r_i = least_sq.calculate_wmrs(model, *dhand.get_observations(), &delta_i, &wrms_asc, &wrms_dec);
-    x0 = least_sq.gauss_newton(model, r_i, delta_i, x0);
 
+    r_i = least_sq.calculate_wmrs(model, *dhand.get_observations(), &delta_i, &wrms_asc, &wrms_dec);
+    
+    std::cout<<"__________№"<<counter+1<<"\n";
     std::cout<<std::setprecision(10)<< "WRMS ASC: "<<wrms_asc<<"\n";
     std::cout<<"WRMS DEC: "<<wrms_dec<<"\n";
+    
+    x0 = least_sq.gauss_newton(model, r_i, delta_i, x0);
 
-    counter = 1;
+
+    counter += 1;
 }
 
 //Запись полученных модельных данных в файл

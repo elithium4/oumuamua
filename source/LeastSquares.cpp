@@ -2,9 +2,14 @@
 #include <iostream>
 #include <fstream>
 
+std::ofstream debugg;
+int counterr = 0;
+
 std::vector<SphericalFrame> LeastSquares::calculate_wmrs(std::vector<StateVector> model, std::vector<Observation> measure, std::vector<SphericalFrame>* delta, double* ra_wmrs, double* dec_mwrs){
     double wrms_ascension = 0;
     double wrms_declination = 0;
+
+    debugg.open("./debug/diff_"+std::to_string(counterr) + ".txt");
 
     std::vector<SphericalFrame> var_i_vec;
 
@@ -36,8 +41,25 @@ std::vector<SphericalFrame> LeastSquares::calculate_wmrs(std::vector<StateVector
 
         SphericalFrame delta_i;
 
+        debugg<<measure[i].get_spherical_position().get_ascension()<<" "<<model[i].get_state()->get_spherical_position().get_ascension()<<"\n";
+        debugg<<measure[i].get_spherical_position().get_declination()<<" "<<model[i].get_state()->get_spherical_position().get_declination()<<"\n";
+        debugg<<"___________________________________\n";
+
+
         double delta_asc = measure[i].get_spherical_position().get_ascension() - model[i].get_state()->get_spherical_position().get_ascension();
-        double delta_dec = measure[i].get_spherical_position().get_declination() - model[i].get_state()->get_spherical_position().get_declination();
+        double delta_dec = measure[i].get_spherical_position().get_declination()- model[i].get_state()->get_spherical_position().get_declination();
+
+        //std::cout<<"MEAURE RA: "<<measure[i].get_spherical_position().get_ascension()<<" MODEL RA: "<<model[i].get_state()->get_spherical_position().get_ascension()<<"\n";
+
+        while ((delta_asc > M_PI) or (delta_asc < -M_PI)){
+            int sign = delta_asc > M_PI ? -1 : 1;
+            delta_asc = delta_asc + sign*M_PI;
+        }
+
+       //std::cout<<"For i asc: "<<delta_asc<<" will be divided by "<<measure[i].get_asc_var()<<" will add "<<pow(delta_asc, 2) / measure[i].get_asc_var()<<"\n";
+        //std::cout<<"For i dec: "<<delta_dec<<" will be divided by "<<measure[i].get_dec_var()<<" will add "<<pow(delta_dec, 2) / measure[i].get_dec_var()<<"\n";
+
+        //std::cout<<"Delta RA: "<<delta_asc<<"\n";
 
         delta_i.set_ascension(delta_asc);
         delta_i.set_declination(delta_dec);
@@ -45,14 +67,17 @@ std::vector<SphericalFrame> LeastSquares::calculate_wmrs(std::vector<StateVector
 
 
         //std::cout<<"Div to: "<<measure[i].get_asc_var()<<"\n";
-        wrms_ascension += pow(delta_asc, 2) / measure[i].get_asc_var();
-        wrms_declination += pow(delta_dec, 2) / measure[i].get_dec_var(); 
+        wrms_ascension += pow(delta_asc, 2) / (measure[i].get_asc_var()*measure[i].get_asc_var());
+        wrms_declination += pow(delta_dec, 2) / (measure[i].get_dec_var()*measure[i].get_dec_var()); 
     
     }
 
 
     (*ra_wmrs) = wrms_ascension;
     (*dec_mwrs) = wrms_declination;
+
+    debugg.close();
+    counterr++;
 
     return var_i_vec;
 }
@@ -70,8 +95,8 @@ IntegrationVector LeastSquares::gauss_newton(std::vector<StateVector> model, std
         for (int j = 0; j < tmp.columns(); j++){
             A[line_id][j] = -tmp[0][j];
             A[line_id + 1][j] = -tmp[1][j];
-            W[line_id][line_id] = 1.0/var[i].get_ascension();
-            W[line_id + 1][line_id + 1] = 1.0/var[i].get_declination();
+            W[line_id][line_id] = 1.0/(var[i].get_ascension()*var[i].get_ascension());
+            W[line_id + 1][line_id + 1] = 1.0/(var[i].get_declination()*var[i].get_declination());
             R_b[line_id][0] = r[i].get_ascension();
             R_b[line_id + 1][0] = r[i].get_declination();
         }
@@ -120,6 +145,8 @@ IntegrationVector LeastSquares::gauss_newton(std::vector<StateVector> model, std
 
     filee<<"\n\n_______________MATRIX x_________________\n\n";
     filee<<x_res;
+
+    std::cout<<"Correction:\n";
     std::cout<<x_res;
     filee.close();
 
