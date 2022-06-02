@@ -53,7 +53,7 @@ std::vector<SphericalFrame> LeastSquares::calculate_wmrs(std::vector<StateVector
 
         while ((delta_asc > M_PI) or (delta_asc < -M_PI)){
             int sign = delta_asc > M_PI ? -1 : 1;
-            delta_asc = delta_asc + sign*M_PI;
+            delta_asc = delta_asc + sign*2*M_PI;
         }
 
        //std::cout<<"For i asc: "<<delta_asc<<" will be divided by "<<measure[i].get_asc_var()<<" will add "<<pow(delta_asc, 2) / measure[i].get_asc_var()<<"\n";
@@ -156,12 +156,12 @@ IntegrationVector LeastSquares::gauss_newton(std::vector<StateVector> model, std
 
 
     double x, y, z, vx, vy, vz;
-    x = b_q.get_position().get_x() - x_res[0][0];
-    y = b_q.get_position().get_y() - x_res[1][0];
-    z = b_q.get_position().get_z() - x_res[2][0];
-    vx = b_q.get_velocity().get_vx() - x_res[3][0];
-    vy = b_q.get_velocity().get_vy() - x_res[4][0];
-    vz = b_q.get_velocity().get_vz() - x_res[5][0];
+    x = b_q.get_position().get_x() + x_res[0][0];
+    y = b_q.get_position().get_y() + x_res[1][0];
+    z = b_q.get_position().get_z() + x_res[2][0];
+    vx = b_q.get_velocity().get_vx() + x_res[3][0];
+    vy = b_q.get_velocity().get_vy() + x_res[4][0];
+    vz = b_q.get_velocity().get_vz() + x_res[5][0];
 
     IntegrationVector b_next;
     b_next.set_position(x, y, z);

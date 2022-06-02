@@ -203,7 +203,7 @@ void Converter::celestial_to_spherical(Observation* observation){
     
     while ((AD > M_PI) or (AD < -M_PI)){
         int sign = AD > M_PI ? -1 : 1;
-        AD = AD + sign*M_PI;
+        AD = AD + sign*2*M_PI;
     }
     
     observation->set_spherical(AD, DEC);

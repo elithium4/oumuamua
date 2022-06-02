@@ -9,9 +9,9 @@ int main(){
     f.read_data();
     f.convert_observations();
     f.convert_observatory();
-    for (int i = 0; i < 10; i++){
+    //for (int i = 0; i < 10; i++){
         f.integrate();
-    }
+    //}
     //f.integrate();
     //f.integrate();
     //f.integrate();

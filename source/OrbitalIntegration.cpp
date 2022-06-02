@@ -171,22 +171,29 @@ void OrbitalIntegration::calculate_dg(StateVector* vec){
     double dRA_dX, dRA_dY, dRA_dZ, dDEC_dX, dDEC_dY, dDEC_dZ;
     double sign = -1;
     double cos_f = cos(asin(r.get_z() / r.len()));
-    dRA_dX = -1 * r.get_x() * r.get_z() / (std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2)) * pow(r.len(), 3));
-    dRA_dY = -1 * r.get_y() * r.get_z() / (std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2)) * pow(r.len(), 3));
-    dRA_dZ = (1 / pow(r.len(), 1) - pow(r.get_z(), 2) /pow(r.len(), 3)) / ((std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2))));
+    //dRA_dX = -1 * r.get_x() * r.get_z() / (std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2)) * pow(r.len(), 3));
+    //dRA_dY = -1 * r.get_y() * r.get_z() / (std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2)) * pow(r.len(), 3));
+    //dRA_dZ = (1 / pow(r.len(), 1) - pow(r.get_z(), 2) /pow(r.len(), 3)) / ((std::sqrt(1 - pow(r.get_z(), 2) / pow(r.len(), 2))));
+
+    dRA_dX = -r.get_y() / ( r.get_x() * r.get_x() + r.get_y() * r.get_y());
+    dRA_dY = r.get_x() / ( r.get_x() * r.get_x() + r.get_y() * r.get_y());
+    dRA_dY = 0;
 
 
-    if (r.get_y()/r.len() >0)
-	    sign = 1;
+    //if (r.get_y()/r.len() >0)
+	//    sign = 1;
 
     //dDEC_dX = -1 * sign * ((r.get_x() * (r.get_z() * dRA_dX - r.get_x() * cos_f / r.len()) + r.len() * cos_f) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2)))));
     //dDEC_dY = -1 * sign * ((r.get_x() * (r.get_z() * dRA_dY - r.get_y() * cos_f / r.len())) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2)))));
     //dDEC_dZ = -1 * sign * ((r.get_x() * (r.get_z() * dRA_dZ - r.get_z() * cos_f / r.len())) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2)))));
     
+    dDEC_dX = - r.get_x() * r.get_z() / (std::sqrt(r.get_x() * r.get_x() + r.get_y() * r.get_y()) * (r.get_x() * r.get_x() + r.get_y() * r.get_y() + r.get_z() * r.get_z()) );
+    dDEC_dY = - r.get_y() * r.get_z() / (std::sqrt(r.get_x() * r.get_x() + r.get_y() * r.get_y()) * (r.get_x() * r.get_x() + r.get_y() * r.get_y() + r.get_z() * r.get_z()) );
+    dDEC_dZ = std::sqrt(r.get_x() * r.get_x() + r.get_y() * r.get_y()) / (r.get_x() * r.get_x() + r.get_y() * r.get_y() + r.get_z() * r.get_z());
 
-    dDEC_dX = sign*(-1 * r.get_x() * (r.get_z() * dRA_dX - r.get_x() * cos_f / r.len()) + r.len() * cos_f) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2))));
-    dDEC_dY = sign*(r.get_x() * (-1 * r.get_z() * dRA_dY + r.get_y() * cos_f / r.len())) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2))));
-    dDEC_dZ = sign*(r.get_x() * (-1 * r.get_z() * dRA_dZ + r.get_z() * cos_f / r.len())) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2))));
+    //dDEC_dX = sign*(-1 * r.get_x() * (r.get_z() * dRA_dX - r.get_x() * cos_f / r.len()) + r.len() * cos_f) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2))));
+    //dDEC_dY = sign*(r.get_x() * (-1 * r.get_z() * dRA_dY + r.get_y() * cos_f / r.len())) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2))));
+    //dDEC_dZ = sign*(r.get_x() * (-1 * r.get_z() * dRA_dZ + r.get_z() * cos_f / r.len())) / (pow(r.len(), 2) * pow(cos_f, 2) * std::sqrt(1 - pow(r.get_x(), 2) / (pow(r.len(), 2) * pow(cos_f, 2))));
 
 
 

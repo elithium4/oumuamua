@@ -120,7 +120,19 @@ void Facade::least_squares(std::vector<StateVector> model){
     spherical_base.open("./data/spherical_base.txt");
 
     for (int i = 0; i < model.size(); i++){
-        cnv.geocentric_to_spherical(model[i].get_state());
+        
+        double pv[3] = {
+            model[i].get_state()->get_geocentric_position().get_x(),
+            model[i].get_state()->get_geocentric_position().get_y(),
+            model[i].get_state()->get_geocentric_position().get_z()
+        };
+
+        double asc, dec;
+
+        iauC2s(pv, &asc, &dec);
+
+        model[i].get_state()->set_spherical_position(asc, dec);
+
         spherical<<model[i].get_state()->get_julian_date()->get_MJD()<<" "<<model[i].get_state()->get_spherical_position().get_ascension()<<" "<<model[i].get_state()->get_spherical_position().get_declination()<<"\n";
         spherical_base<<base_measures[i].get_julian_date()->get_MJD()<<" "<<base_measures[i].get_spherical_position().get_ascension()<<" "<<base_measures[i].get_spherical_position().get_declination()<<"\n";
     }
