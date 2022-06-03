@@ -219,23 +219,19 @@ void Converter::spherical_to_geocentric(Observation* observation) {
 //Перевод из геоцентрических координат в сферические
 void Converter::geocentric_to_spherical(IntegrationVector* vector){
 
-    double r = vector->get_geocentric_position().len();
-    double delta = asin(vector->get_geocentric_position().get_z()/r);
-    
-    double alpha;
 
-    if (vector->get_geocentric_position().get_y()/r > 0){
-        alpha = acos( (vector->get_geocentric_position().get_x() / r) / cos(delta) );
-    } else {
-        alpha = 2*M_PI - acos( (vector->get_geocentric_position().get_x() / r) / cos(delta) );
-    }
+    double pv[3] = {
+        vector->get_geocentric_position().get_x(),
+        vector->get_geocentric_position().get_y(),
+        vector->get_geocentric_position().get_z()
+    };
 
-    while ((alpha > M_PI) or (alpha < -M_PI)){
-        int sign = alpha > M_PI ? -1 : 1;
-        alpha = alpha + sign*M_PI;
-    }
+    double asc, dec;
 
-    vector->set_spherical_position(alpha, delta);
+    iauC2s(pv, &asc, &dec);
+
+    vector->set_spherical_position(asc, dec);
+
 }
 
 //Перевод барицентрических координат в сферические

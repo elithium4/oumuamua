@@ -177,7 +177,7 @@ void OrbitalIntegration::calculate_dg(StateVector* vec){
 
     dRA_dX = -r.get_y() / ( r.get_x() * r.get_x() + r.get_y() * r.get_y());
     dRA_dY = r.get_x() / ( r.get_x() * r.get_x() + r.get_y() * r.get_y());
-    dRA_dY = 0;
+    dRA_dZ = 0;
 
 
     //if (r.get_y()/r.len() >0)

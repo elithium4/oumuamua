@@ -1,8 +1,6 @@
 #include "Facade.h"
 #include <iomanip>
 
-int counter = 0;
-
 Facade::Facade(){
     x0.set_position(1.469662678584988E+08, 7.299822249002472E+07, 2.056575565443711E+07);
     x0.set_velocity((4.466861553600886E+01)*86400, (3.754895272084024E+00)*86400, (1.726865669233104E+01)*86400);
@@ -68,8 +66,6 @@ void Facade::integrate(){
     std::vector<StateVector> model_orbits;
     std::vector<StateVector> model_measures;
 
-    //std::map<std::string, std::vector<IntegrationVector>> map_planets = cnv.interpolation_center_planet(0.2, dhand.get_observations()->at(0).get_julian_date(), dhand.get_observations()->at(221).get_julian_date(), dhand.get_interpolation_planets());
-
     StateVector start;
     Date start_date("2017 10 14.43936");
     start_date.set_time_from_fraction();
@@ -107,10 +103,9 @@ void Facade::integrate(){
     
 
     least_squares(model_measures);
-    std::cout<<"Fin\n";
 }
 
-//МНК (пока в процессе)
+//МНК
 void Facade::least_squares(std::vector<StateVector> model){
 
     std::ofstream spherical;
@@ -121,17 +116,7 @@ void Facade::least_squares(std::vector<StateVector> model){
 
     for (int i = 0; i < model.size(); i++){
         
-        double pv[3] = {
-            model[i].get_state()->get_geocentric_position().get_x(),
-            model[i].get_state()->get_geocentric_position().get_y(),
-            model[i].get_state()->get_geocentric_position().get_z()
-        };
-
-        double asc, dec;
-
-        iauC2s(pv, &asc, &dec);
-
-        model[i].get_state()->set_spherical_position(asc, dec);
+        cnv.geocentric_to_spherical(model[i].get_state());
 
         spherical<<model[i].get_state()->get_julian_date()->get_MJD()<<" "<<model[i].get_state()->get_spherical_position().get_ascension()<<" "<<model[i].get_state()->get_spherical_position().get_declination()<<"\n";
         spherical_base<<base_measures[i].get_julian_date()->get_MJD()<<" "<<base_measures[i].get_spherical_position().get_ascension()<<" "<<base_measures[i].get_spherical_position().get_declination()<<"\n";
@@ -139,11 +124,6 @@ void Facade::least_squares(std::vector<StateVector> model){
 
     spherical.close();
     spherical_base.close();
-
-    //std::cout<< model.size()<<" "<<base_measures.size()<<"\n";
-
-    double wrms_asc;
-    double wrms_dec;
 
     write_to_file(model);
 
@@ -153,12 +133,7 @@ void Facade::least_squares(std::vector<StateVector> model){
 
     r_i = least_sq.calculate_wmrs(model, *dhand.get_observations(), &delta_i, &wrms_asc, &wrms_dec);
     
-    std::cout<<"__________№"<<counter+1<<"\n";
-    std::cout<<std::setprecision(10)<< "WRMS ASC: "<<wrms_asc<<"\n";
-    std::cout<<"WRMS DEC: "<<wrms_dec<<"\n";
-    
     x0 = least_sq.gauss_newton(model, r_i, delta_i, x0);
-
 
     counter += 1;
 }
@@ -179,70 +154,10 @@ void Facade::write_to_file(std::vector<StateVector> model){
 
 }
 
-void Facade::test_reading(){
-    std::ifstream data;
-
-    data.open("./data/graph_bary_equatorial.txt");
-    std::string data_line;
-    std::vector<IntegrationVector> hor_data;
-    while (getline(data, data_line)){
-        int ind = 0;
-        int prev = 0;
-        IntegrationVector cur;
-        Date cur_date;
-        double x, y, z;
-        for (int i =0; i < data_line.length()+1; i++){
-            if ((data_line[i] == ' ') or (data_line[i] == '\0')){
-                switch (ind){
-                    case 0:
-                    cur_date.set_MJD(std::stod(data_line.substr(prev, i - prev)));
-                    cur.set_julian_date(cur_date);
-                    break;
-                    case 1:
-                        x = std::stod(data_line.substr(prev, i - prev));
-                        break;
-                    case 2:
-                        y = std::stod(data_line.substr(prev, i - prev));
-                        break;
-                    case 3:
-                        z = std::stod(data_line.substr(prev, i - prev));
-                        break;
-                }
-                ind++;
-                prev = i+1;
-            }
-        }
-        cur.set_position(x, y, z);
-        hor_data.push_back(cur);
-    }
-
-    data.close();
-
-    std::ofstream outp;
-
-    outp.open("./debug/convert_result.txt");
-
-    std::map<std::string, std::vector<IntegrationVector>> map_planets = cnv.interpolation_center_planet(0.2, hor_data[0].get_julian_date(), hor_data[hor_data.size()-1].get_julian_date(), dhand.get_interpolation_planets());
-
-
-    for (int i = 0; i < hor_data.size(); i++){
-        //model_out<<std::setprecision(9)<<model_measures[i].get_julian_date()->get_MJD()<<" "<<model_measures[i].get_position().get_x()<<" "<<model_measures[i].get_position().get_y()<<" "<<model_measures[i].get_position().get_z()<<"\n";
-        cnv.barycentric_to_geocentric(&hor_data[i], map_planets["earth"]);
-        //std::cout<<"Old: "<<hor_data[i].get_position().get_x()<<" New: "<<hor_data[i].get_geocentric_position().get_x()<<"\n";
-        outp<<hor_data[i].get_julian_date()->get_MJD()<<" "<<hor_data[i].get_geocentric_position().get_x()<<" "<<hor_data[i].get_geocentric_position().get_y()<<" "<<hor_data[i].get_geocentric_position().get_z()<<"\n";
-    }
-    outp.close();
-
-    outp.open("./debug/earth_for_graph.txt");
-
-    std::vector<IntegrationVector> earthData = *dhand.get_planet_by_name("earth");
-
-    for (int i = 0; i < earthData.size(); i++){
-        outp<<std::setprecision(10)<<earthData[i].get_julian_date()->get_MJD()<<" "<<earthData[i].get_position().get_x()<<" "<<earthData[i].get_position().get_y()<<" "<<earthData[i].get_position().get_z()<<"\n";
-    }
-
-    outp.close();
+double Facade::get_wrms_asc(){
+    return wrms_asc;
 }
 
-void Facade::test_new_func(){
+double Facade::get_wrms_dec(){
+    return wrms_dec;
 }

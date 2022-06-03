@@ -32,16 +32,12 @@ void Observation::set_declination(CelestialCoord value) {
     declination = value;
 }
 
-#include <iostream>
-
 void Observation::set_ascension_from_string(std::string value) {
     ascension.set_from_string(value);
     int dot_pos = value.find(".");
     for (int i = dot_pos + 1; i < value.length() + 1; i++){
         if ((value[i] == '\0') or (value[i] == ' ')){
             asc_var = pow(0.1, i-dot_pos-1) * 15.0 / 2.0;
-            //asc_var = (asc_var * 15.0);// * M_PI/648000;
-            //asc_var = pow(asc_var, 2);
             break;
         }
     }
@@ -53,8 +49,6 @@ void Observation::set_declination_from_string(std::string value) {
     for (int i = dot_pos + 1; i < value.length() + 1; i++){
         if ((value[i] == '\0') or (value[i] == ' ')){
             dec_var = pow(0.1, i-dot_pos-1) / 2.0;
-            //dec_var = dec_var * M_PI/648000;
-            //dec_var =pow(dec_var, 2);
             break;
         }
     }

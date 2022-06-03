@@ -18,16 +18,20 @@ class Facade{
         std::map<std::string, std::vector<IntegrationVector>> map_planets;
         std::vector<IntegrationVector> base_measures;
 
+        int counter = 0;
+
+        double wrms_asc;
+        double wrms_dec;
+
     public:
         Facade();
         void read_data();
         void convert_observations();
         void convert_observatory();
         void convert_interpolation_data();
-        void test_reading();
         void integrate();
         void least_squares(std::vector<StateVector>);
         void write_to_file(std::vector<StateVector>);
-
-        void test_new_func();
+        double get_wrms_asc();
+        double get_wrms_dec();
 };

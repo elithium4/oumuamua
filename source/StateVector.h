@@ -8,7 +8,7 @@ private:
     IntegrationVector state;
     Matrix dX_dX0 = Matrix(6, 6); //после умножения G на пред. шаг
     Matrix dF_dX = Matrix(6, 6); //блочная G
-    Matrix dg_dX = Matrix(6, 2); //страшная штука
+    Matrix dg_dX = Matrix(2, 6); //страшная штука
     Matrix dF_dX0 = Matrix(6, 6);
     Matrix dR_dX0 = Matrix(6, 2);
 public:
