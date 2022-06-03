@@ -1,8 +1,0 @@
-dv = (GM["sun"] * (planets["sun"][i].get_position() - asteroid.get_position()) / (pow((planets["sun"][i].get_position() - asteroid.get_position()).len(),3)))
-            + (GM["jupiter"] * (planets["jupiter"][i].get_position() - asteroid.get_position()) / (pow((planets["jupiter"][i].get_position() - asteroid.get_position()).len(), 3))) 
-            + (GM["earth"] * (planets["earth"][i].get_position() - asteroid.get_position()) / (pow((planets["earth"][i].get_position() - asteroid.get_position()).len(), 3)))
-            + (GM["mercury"] * (planets["mercury"][i].get_position() - asteroid.get_position()) / (pow((planets["mercury"][i].get_position() - asteroid.get_position()).len(), 3))) 
-            + (GM["venus"] * (planets["venus"][i].get_position() - asteroid.get_position()) / (pow((planets["venus"][i].get_position() - asteroid.get_position()).len(), 3))) 
-            + (GM["mars"] * (planets["mars"][i].get_position() - asteroid.get_position()) / (pow((planets["mars"][i].get_position() - asteroid.get_position()).len(), 3))) 
-            + (GM["saturn"] * (planets["saturn"][i].get_position() - asteroid.get_position()) / (pow((planets["saturn"][i].get_position() - asteroid.get_position()).len(), 3))) 
-            + (GM["moon"] * (planets["moon"][i].get_position() - asteroid.get_position()) / (pow((planets["moon"][i].
