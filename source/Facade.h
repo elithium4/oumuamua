@@ -34,4 +34,5 @@ class Facade{
         void write_to_file(std::vector<StateVector>);
         double get_wrms_asc();
         double get_wrms_dec();
+        IntegrationVector get_x0();
 };

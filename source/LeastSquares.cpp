@@ -7,6 +7,9 @@ std::vector<SphericalFrame> LeastSquares::calculate_wmrs(std::vector<StateVector
     double wrms_ascension = 0;
     double wrms_declination = 0;
 
+    double asc_det = 0;
+    double dec_det = 0;
+
     std::vector<SphericalFrame> var_i_vec;
 
     for (int i = 0; i < model.size(); i++){
@@ -32,15 +35,23 @@ std::vector<SphericalFrame> LeastSquares::calculate_wmrs(std::vector<StateVector
         delta_i.set_declination(delta_dec);
         delta->push_back(delta_i);
 
-        wrms_ascension += pow(delta_asc, 2) / (measure[i].get_asc_var()*measure[i].get_asc_var());
-        wrms_declination += pow(delta_dec, 2) / (measure[i].get_dec_var()*measure[i].get_dec_var()); 
+
+        wrms_ascension += measure[i].get_asc_var()*pow(delta_asc, 2);
+        asc_det += (measure[i].get_asc_var()*measure[i].get_asc_var());
+        wrms_declination += pow(delta_dec, 2)* measure[i].get_dec_var();
+        dec_det += measure[i].get_dec_var(); 
+
+        //wrms_ascension += pow(delta_asc, 2)/ (measure[i].get_asc_var()*measure[i].get_asc_var());
+        //wrms_declination += pow(delta_dec, 2) / (measure[i].get_dec_var()*measure[i].get_dec_var()); 
     
     }
 
 
-    (*ra_wmrs) = wrms_ascension;
-    (*dec_mwrs) = wrms_declination;
+    //(*ra_wmrs) = wrms_ascension/222;
+    //(*dec_mwrs) = wrms_declination/222;
 
+    (*ra_wmrs) = sqrt(wrms_ascension/asc_det);
+    (*dec_mwrs) = sqrt(wrms_declination/dec_det);
 
     return var_i_vec;
 }

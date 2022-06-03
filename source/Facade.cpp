@@ -161,3 +161,7 @@ double Facade::get_wrms_asc(){
 double Facade::get_wrms_dec(){
     return wrms_dec;
 }
+
+IntegrationVector Facade::get_x0(){
+    return x0;
+}
