@@ -124,8 +124,8 @@ def graph_cel(graph_name, args, file_model, file_base):
         ex_long.append(float(data[1]))
         ex_lat.append(float(data[2]))
     
-    draw_graph((2, 1, 1), f"AD ({graph_name})", "Time", "AD", ex_time, ex_long, "green", "o")
-    draw_graph((2, 1, 1), f"AD ({graph_name})", "Time", "AD", model_time, model_long, "red", "o")
+    draw_graph((2, 1, 1), f"RA ({graph_name})", "Time", "RA", ex_time, ex_long, "green", "o")
+    draw_graph((2, 1, 1), f"RA ({graph_name})", "Time", "RA", model_time, model_long, "red", "o")
     draw_graph((2, 1, 2), f"DEC ({graph_name})", "Time", "DEC", ex_time, ex_lat, "green", "o")
     draw_graph((2, 1, 2), f"DEC ({graph_name})", "Time", "DEC", model_time, model_lat, "red", "o")
 
